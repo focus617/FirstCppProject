@@ -19,3 +19,14 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 
+### clangd ###
+.cache/clangd
+compile_commands.json
+
+### CLion ###
+.idea
+
+### other ###
+_build
+tmp
+
