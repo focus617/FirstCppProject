@@ -1,18 +1,26 @@
+#include <string>
+
 #include "log.h"
 #include "xuzy_math.h"
 
-using std::cout;
-using std::endl;
 using xuzy::Log;
 
 int main(){
-    Log log;
 
-    log.setLevel(Log::Level::LevelInfo);
+    Log::SetLevel(Log::LevelTrace);
 
-    int result = xuzy::add(12,56);
-    cout << "12 + 56 = " << result << endl;
-    log.info("success");
+    int i{0};
+    LOG_TRACE("%d: Test Log Level %s", i++, "Trace");
+    LOG_DEBUG("%d: Test Log Level %s", i++, "Debug");
+    LOG_INFO("%d: Test Log Level %s", i++, "Info");
+    LOG_WARN("%d: Test Log Level %s", i++, "Warn");
+    LOG_ERROR("%d: Test Log Level %s", i++, "Error");
+    LOG_CRITICAL("%d: Test Log Level %s", i++, "Critical");
+
+    int a = 12;
+    int b = 56;
+    int result = xuzy::add(a, b);
+    LOG_INFO("%d + %d = %d", a, b, result);
 
     return EXIT_SUCCESS;
 }

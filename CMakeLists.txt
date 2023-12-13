@@ -6,7 +6,7 @@ project(my_first_prog VERSION 0.1.0 LANGUAGES C CXX)
 list(APPEND 
     CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -std=c++14")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -std=c++17")
 set(SOURCE_DIR "${PROJECT_SOURCE_DIR}/src/")
 
 add_subdirectory(src)
