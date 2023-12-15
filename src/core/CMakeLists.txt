@@ -3,7 +3,6 @@
 aux_source_directory(. _SOURCES)
 
 # 添加子目录
-add_subdirectory(include)
 add_subdirectory(cpp)
 
 # 生成静态链接库
