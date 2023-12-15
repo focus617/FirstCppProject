@@ -12,4 +12,7 @@ add_library(xuzymath STATIC ${_SOURCES})
 target_compile_features(xuzymath PRIVATE cxx_std_20)
 
 # 指定头文件路径
-target_include_directories(xuzymath PUBLIC include)
+target_include_directories(xuzymath PUBLIC "${SOURCE_DIR}/math_lib/include")
+
+# 添加链接库
+target_link_libraries(xuzymath PRIVATE core)
