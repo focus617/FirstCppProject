@@ -6,7 +6,7 @@ aux_source_directory(. _SOURCES)
 add_subdirectory(cpp)
 
 # 生成静态链接库
-add_library(xuzymath ${_SOURCES})
+add_library(xuzymath STATIC ${_SOURCES})
 
 # 指定编译语言标准
 target_compile_features(xuzymath PRIVATE cxx_std_20)

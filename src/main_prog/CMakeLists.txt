@@ -12,12 +12,10 @@ add_executable(my_app ${_SOURCES})
 target_compile_features(my_app PRIVATE cxx_std_20)
 
 # 指定头文件路径
-target_include_directories(my_app PRIVATE include)
+target_include_directories(my_app PRIVATE
+                            include
+                            "${SOURCE_DIR}/core/include"
+)
 
 # 添加链接库
 target_link_libraries(my_app PRIVATE ${EXTRA_LIBS})
-
-# 指定链接库路径
-target_link_directories(my_app PRIVATE ${PROJECT_BINARY_DIR}/math_lib/)
-
-

@@ -8,6 +8,8 @@ list(APPEND
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -std=c++17")
 set(SOURCE_DIR "${PROJECT_SOURCE_DIR}/src/")
+set(CXX_STANDARD_REQUIRED ON)      # Make C++20 a hard requirement
+set(CMAKE_CXX_STANDARD 20)         # Default C++ standard for targets
 
 add_subdirectory(src)
 
