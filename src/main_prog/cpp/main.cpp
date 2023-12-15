@@ -2,6 +2,7 @@
 
 #include "log.h"
 #include "xuzy_math.h"
+#include "singleton.h"
 
 using xuzy::Log;
 
@@ -21,6 +22,14 @@ int main(){
     int b = 56;
     int result = xuzy::add(a, b);
     LOG_INFO("%d + %d = %d", a, b, result);
+
+    Singleton* s1 = Singleton::get_instance(10);
+    s1->PrintUniqueID();
+    std::cout << "S1 memory location: " << s1 << std::endl;
+
+    Singleton* s2 = Singleton::get_instance(5);
+    s2->PrintUniqueID();
+    std::cout << "S2 memory location: " << s2 << std::endl;
 
     return EXIT_SUCCESS;
 }

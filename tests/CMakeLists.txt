@@ -23,7 +23,7 @@ if (NOT googleTest_POPULATED)
 endif()
 
 
-# include(CTest)
+include(CTest)
 # enable_testing()
 # set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 # set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
