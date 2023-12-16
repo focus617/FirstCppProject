@@ -2,25 +2,27 @@
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-include(FetchContent)
-FetchContent_Declare(
-  googletest
-  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
-)
-# For Windows: Prevent overriding the parent project's compiler/linker settings
-#set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+option(FETCH_GOOGLE_TEST "Fetch GoogleTest" OFF)
 
-FetchContent_GetProperties(googleTest)
+if(FETCH_GOOGLE_TEST)
+  include(FetchContent)
+  FetchContent_Declare(
+    googletest
+    URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+  )
+  # For Windows: Prevent overriding the parent project's compiler/linker settings
+  #set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
-if (NOT googleTest_POPULATED)
-  message(STATUS "Fetching Google Test...")
-  # FetchContent_Populate(googleTest)
-  # add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BUILD_DIR})
-  FetchContent_MakeAvailable(googletest)
+  FetchContent_GetProperties(googleTest)
+
+  if (NOT googleTest_POPULATED)
+    message(STATUS "Fetching Google Test...")
+    # FetchContent_Populate(googleTest)
+    # add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BUILD_DIR})
+    FetchContent_MakeAvailable(googletest)
+  endif()
 endif()
 
-
-include(CTest)
 enable_testing()
 
 # set(CPACK_PROJECT_NAME ${PROJECT_NAME})
@@ -31,6 +33,7 @@ enable_testing()
 aux_source_directory(. _TEST_SOURCES)
 
 option(TEST_MATH_LIB "Test Math Lib" ON)
+
 if (TEST_MATH_LIB)
     message(STATUS "Building test for My Math Library...")
     add_subdirectory(math_lib)

@@ -13,8 +13,10 @@ set(CMAKE_CXX_STANDARD 20)         # Default C++ standard for targets
 
 add_subdirectory(src)
 
-option(BUILD_TEST "Build Test" ON)
-if (BUILD_TEST)
+add_subdirectory(extern)
+
+include(CTest)
+if (BUILD_TESTING)
     message(STATUS "Building Testing...")
     add_subdirectory(tests)
 endif()
