@@ -4,7 +4,7 @@
 // Demonstrate some basic assertions.
 TEST(MathTest, BasicAssertions) {
   // Expect two strings not to be equal.
-  EXPECT_STRNE("hello", "world");
+  int result = xuzy::add(7, 12);
   // Expect equality.
-  EXPECT_EQ(7 * 6, 42);
+  EXPECT_EQ(result, 19);
 }

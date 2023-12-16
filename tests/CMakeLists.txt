@@ -41,7 +41,7 @@ endif()
 add_executable(testRunner ${_TEST_SOURCES})
 
 # 添加链接库
-target_link_libraries(testRunner PUBLIC
+target_link_libraries(testRunner
   GTest::gtest_main
   ${TEST_EXTRA_LIBS}
 )
