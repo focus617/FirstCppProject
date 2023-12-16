@@ -10,4 +10,4 @@ add_subdirectory(cpp)
 add_library(core STATIC ${_SOURCES})
 
 # 指定头文件路径
-target_include_directories(core PUBLIC "${SOURCE_DIR}/core/include")
+target_include_directories(core PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
