@@ -1,5 +1,5 @@
 # GoogleTest requires at least C++14
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 option(FETCH_GOOGLE_TEST "Fetch GoogleTest" OFF)
@@ -32,7 +32,14 @@ enable_testing()
 # 查找当前目录下的所有源文件，并将名称保存到 _SOURCES 变量
 aux_source_directory(. _TEST_SOURCES)
 
+option(TEST_CORE_LIB "Test Core Lib" ON)
 option(TEST_MATH_LIB "Test Math Lib" ON)
+
+if (TEST_CORE_LIB)
+    message(STATUS "Building test for Core Library...")
+    add_subdirectory(core)
+    set (TEST_EXTRA_LIBS ${TEST_EXTRA_LIBS} core)
+endif()
 
 if (TEST_MATH_LIB)
     message(STATUS "Building test for My Math Library...")

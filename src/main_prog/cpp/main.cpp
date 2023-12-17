@@ -24,11 +24,11 @@ int main(){
     LOG_INFO("%d + %d = %d", a, b, result);
 
     Singleton* s1 = Singleton::get_instance(10);
-    s1->PrintUniqueID();
+    s1->print_unique_id();
     std::cout << "S1 memory location: " << s1 << std::endl;
 
     Singleton* s2 = Singleton::get_instance(5);
-    s2->PrintUniqueID();
+    s2->print_unique_id();
     std::cout << "S2 memory location: " << s2 << std::endl;
 
     return EXIT_SUCCESS;

@@ -8,6 +8,6 @@ TEST(MathTest, BasicAddtions) {
 }
 
 TEST(MathTest, AssertNoEqual) {
-  // Expect equality.
-  ASSERT_EQ(xuzy::add(7, 12), 18) << "Oh no, a mistake!";
+  // Expect NOT equality.
+  ASSERT_NE(xuzy::add(7, 12), 18) << "Oh no, a mistake!";
 }

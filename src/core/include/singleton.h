@@ -30,7 +30,11 @@ public:
     Singleton(Singleton &other) = delete;
     void operator=(const Singleton &) = delete;
 
-    void PrintUniqueID() {
+    int get_unique_id() {
+        return this->unique_id;
+    }
+
+    void print_unique_id() {
         std::cout << "Instance's unique id: " << this->unique_id << std::endl;
     }
 

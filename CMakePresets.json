@@ -1,0 +1,11 @@
+{
+    "version": 2,
+    "configurePresets": [
+    {
+        "name": "MyApp",
+        "description": "first C++ Project",
+        "generator": "Unix Base",
+        "binaryDir": "${sourceDir}/build"
+    }
+    ]
+}
