@@ -30,6 +30,7 @@ void Dummy_Test_Fixture::TearDown()
 {    
 }
 
+// 测试函数的返回值
 TEST_F(Dummy_Test_Fixture, dummy_int)
 {
     std::string str {"Hello World."};
@@ -40,7 +41,7 @@ TEST_F(Dummy_Test_Fixture, dummy_int)
     ASSERT_EQ(result, str.size());
 }
 
-
+// 测试函数的引用参数被正确修改
 TEST_F(Dummy_Test_Fixture, dummy_str)
 {
     std::string input_str {"Hello World."};
