@@ -3,6 +3,8 @@
 #include <iostream>
 #include <mutex>
 
+// #include "log.h"
+
 class Singleton {
 private:
     static Singleton* one_and_only_instance;

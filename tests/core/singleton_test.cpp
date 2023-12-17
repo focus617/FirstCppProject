@@ -10,21 +10,16 @@ private:
 public:
   Singleton *p_singleton;
 
-  Singleton_Test_Fixture(/* args */);
+  Singleton_Test_Fixture(/* args */){}
   ~Singleton_Test_Fixture(){}
 
   void SetUp();
   void TearDown();
 };
 
-Singleton_Test_Fixture::Singleton_Test_Fixture()
-{
-  p_singleton = Singleton::get_instance(1);
-}
-
-
 void Singleton_Test_Fixture::SetUp(/* args */)
 {
+    p_singleton = Singleton::get_instance(1);
 }
 
 void Singleton_Test_Fixture::TearDown()

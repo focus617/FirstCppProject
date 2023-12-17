@@ -53,6 +53,7 @@ add_executable(testRunner ${_TEST_SOURCES})
 # 添加链接库
 target_link_libraries(testRunner
   GTest::gtest_main
+  GTest::gmock_main
   ${TEST_EXTRA_LIBS}
 )
 
