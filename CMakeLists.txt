@@ -6,10 +6,14 @@ project(my_first_prog VERSION 0.1.0 LANGUAGES C CXX)
 list(APPEND 
     CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -std=c++17")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -std=c++20")
 set(SOURCE_DIR "${PROJECT_SOURCE_DIR}/src/")
 set(CXX_STANDARD_REQUIRED ON)      # Make C++20 a hard requirement
 set(CMAKE_CXX_STANDARD 20)         # Default C++ standard for targets
+
+set(EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin")   # Set executable output directory
+
+set(CMAKE_BUILD_TYPE Debug)
 
 add_subdirectory(src)
 
