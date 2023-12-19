@@ -76,7 +76,7 @@ class Log
                 print_timestamp();
                 printf("%11s: ", message_level_str);
                 printf(message, args...);
-                printf(" on line %d in %s", line_number, source_file_name);
+                printf("\n\t\t\t\t     on line %d in %s", line_number, source_file_name);
                 printf("\n");
             }
         }

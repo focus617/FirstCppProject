@@ -9,4 +9,9 @@ add_subdirectory(cpp)
 add_executable(my_app ${_SOURCES})
 
 # 添加链接库
-target_link_libraries(my_app PRIVATE ${EXTRA_LIBS})
+target_link_libraries(my_app PUBLIC
+     ${EXTRA_LIBS}
+     absl::flags
+     absl::flags_parse
+     absl::flags_usage
+)

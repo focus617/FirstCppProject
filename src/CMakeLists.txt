@@ -6,8 +6,8 @@ add_subdirectory(core)
 set (EXTRA_LIBS ${EXTRA_LIBS} core)
 
 
-option(BUILD_MAIN "Build Main Program" ON)
 option(BUILD_MATH_LIB "Build Math Lib" ON)
+option(BUILD_MAIN "Build Main Program" ON)
 
 if (BUILD_MATH_LIB)
     message(STATUS "Building My Math Library...")
