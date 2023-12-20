@@ -4,74 +4,108 @@
 #include <mutex>
 #include <ctime>
 
-#define LOG_CRITICAL(Message, ...) (xuzy::Log::Critical(__LINE__,__FILE__,Message,__VA_ARGS__))
-#define LOG_ERROR(Message, ...) (xuzy::Log::Error(__LINE__,__FILE__,Message,__VA_ARGS__))
-#define LOG_WARN(Message, ...) (xuzy::Log::Warn(__LINE__,__FILE__,Message,__VA_ARGS__))
-#define LOG_INFO(Message, ...) (xuzy::Log::Info(__LINE__,__FILE__,Message,__VA_ARGS__))
-#define LOG_DEBUG(Message, ...) (xuzy::Log::Debug(__LINE__,__FILE__,Message,__VA_ARGS__))
-#define LOG_TRACE(Message, ...) (xuzy::Log::Trace(__LINE__,__FILE__,Message,__VA_ARGS__))
-namespace xuzy {
-class Log
+#define LOG_CRITICAL(Message, ...) (xuzy::Log::Critical(__LINE__, __FILE__, Message, __VA_ARGS__))
+#define LOG_ERROR(Message, ...) (xuzy::Log::Error(__LINE__, __FILE__, Message, __VA_ARGS__))
+#define LOG_WARN(Message, ...) (xuzy::Log::Warn(__LINE__, __FILE__, Message, __VA_ARGS__))
+#define LOG_INFO(Message, ...) (xuzy::Log::Info(__LINE__, __FILE__, Message, __VA_ARGS__))
+#define LOG_DEBUG(Message, ...) (xuzy::Log::Debug(__LINE__, __FILE__, Message, __VA_ARGS__))
+#define LOG_TRACE(Message, ...) (xuzy::Log::Trace(__LINE__, __FILE__, Message, __VA_ARGS__))
+namespace xuzy
 {
+    class Log
+    {
     public:
-        enum Level { LevelCritical = 0, LevelError, LevelWarn, LevelInfo, LevelDebug, LevelTrace };
+        enum Level
+        {
+            LevelCritical = 0,
+            LevelError,
+            LevelWarn,
+            LevelInfo,
+            LevelDebug,
+            LevelTrace,
+            LevelCount
+        };
 
     private:
-        static Level        m_LogLevel;
-        static std::mutex   m_LogMutex;
-    
+        static Level m_LogLevel;
+        static std::mutex m_LogMutex;
+
     public:
-        static void SetLevel(const Level newLevel){
+        static void SetLevel(const Level newLevel)
+        {
             m_LogLevel = newLevel;
+            LOG_INFO("set log level to: %s", to_string(m_LogLevel));
         }
 
-        template<typename... Args>
-        static void Trace(int line_number, const char* source_file_name, const char* message, Args... args)
+        static const char *to_string(const Level &log_level)
+        {
+            switch (log_level)
+            {
+            case Log::Level::LevelCritical:
+                return "critical";
+            case Log::Level::LevelError:
+                return "error";
+            case Log::Level::LevelWarn:
+                return "warn";
+            case Log::Level::LevelInfo:
+                return "info";
+            case Log::Level::LevelDebug:
+                return "debug";
+            case Log::Level::LevelTrace:
+                return "trace";
+            default:
+                return "error log level";
+            }
+        }
+
+        template <typename... Args>
+        static void Trace(int line_number, const char *source_file_name, const char *message, Args... args)
         {
             log(line_number, source_file_name, "[TRACE]", LevelTrace, message, args...);
         }
 
-        template<typename... Args>
-        static void Debug(int line_number, const char* source_file_name, const char* message, Args... args)
+        template <typename... Args>
+        static void Debug(int line_number, const char *source_file_name, const char *message, Args... args)
         {
             log(line_number, source_file_name, "[DEBUG]", LevelDebug, message, args...);
         }
 
-        template<typename... Args>
-        static void Info(int line_number, const char* source_file_name, const char* message, Args... args)
+        template <typename... Args>
+        static void Info(int line_number, const char *source_file_name, const char *message, Args... args)
         {
             log(line_number, source_file_name, "[INFO]", LevelInfo, message, args...);
         }
 
-        template<typename... Args>
-        static void Warn(int line_number, const char* source_file_name, const char* message, Args... args)
+        template <typename... Args>
+        static void Warn(int line_number, const char *source_file_name, const char *message, Args... args)
         {
             log(line_number, source_file_name, "[WARN]", LevelWarn, message, args...);
         }
 
-        template<typename... Args>
-        static void Error(int line_number, const char* source_file_name, const char* message, Args... args)
+        template <typename... Args>
+        static void Error(int line_number, const char *source_file_name, const char *message, Args... args)
         {
             log(line_number, source_file_name, "[ERROR]", LevelError, message, args...);
         }
 
-        template<typename... Args>
-        static void Critical(int line_number, const char* source_file_name, const char* message, Args... args)
+        template <typename... Args>
+        static void Critical(int line_number, const char *source_file_name, const char *message, Args... args)
         {
             log(line_number, source_file_name, "[CRITICAL]", LevelCritical, message, args...);
         }
 
     private:
-        template<typename... Args>
+        template <typename... Args>
         static void log(
             int line_number,
-            const char* source_file_name,
-            const char* message_level_str, 
+            const char *source_file_name,
+            const char *message_level_str,
             Level message_level,
-            const char* message,
+            const char *message,
             Args... args)
         {
-            if(m_LogLevel >= message_level){
+            if (m_LogLevel >= message_level)
+            {
                 std::scoped_lock lock(m_LogMutex);
                 print_timestamp();
                 printf("%11s: ", message_level_str);
@@ -84,15 +118,14 @@ class Log
         static void print_timestamp()
         {
             std::time_t current_time = std::time(0);
-            std::tm* timestamp = std::localtime(&current_time);
-            
+            std::tm *timestamp = std::localtime(&current_time);
+
             char buffer[80];
             strftime(buffer, 80, "%c", timestamp);
             printf("%s", buffer);
         }
-};
+    };
 
-Log::Level Log::m_LogLevel = Log::LevelInfo;
-std::mutex Log::m_LogMutex;
-
+    Log::Level Log::m_LogLevel = Log::LevelInfo;
+    std::mutex Log::m_LogMutex;
 }
