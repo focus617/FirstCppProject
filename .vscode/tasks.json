@@ -1,0 +1,120 @@
+{
+	"version": "2.0.0",
+	"options": {
+		"cwd": "${workspaceFolder}/build"
+	},
+	"tasks": [
+		{
+			"type": "shell",
+			"label": "CMake: clean",
+			"options": {
+				"cwd": "${workspaceFolder}/build"
+			},
+			"command": "rm",
+			"args": [
+				"-rf",
+				"*"
+			]
+		},
+		{
+			"type": "shell",
+			"label": "CMake: make build directory",
+			"options": {
+				"cwd": "${workspaceFolder}/build"
+			},
+			"command": "mkdir",
+			"args": [
+				"debug",
+				"release"
+			]
+		},
+		{
+			"type": "shell",
+			"label": "CMake: configure debug",
+			"options": {
+				"cwd": "${workspaceFolder}/build/debug"
+			},
+			"command": "cmake",
+			"args": [
+				"-DCMAKE_BUILD_TYPE=debug",
+				"-S ../.."
+			]
+		},
+		{
+			"type": "shell",
+			"label": "CMake: configure release",
+			"options": {
+				"cwd": "${workspaceFolder}/build/release"
+			},
+			"command": "cmake",
+			"args": [
+				"-DCMAKE_BUILD_TYPE=release",
+				"-S ../.."
+			]
+		},
+		{
+			"type": "shell",
+			"label": "CMake: build debug",
+			"options": {
+				"cwd": "${workspaceFolder}/build/debug"
+			},
+			"command": "cmake",
+			"args": [
+				"--build",
+				"."
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		},
+		{
+			"type": "shell",
+			"label": "CMake: build release",
+			"options": {
+				"cwd": "${workspaceFolder}/build/release"
+			},
+			"command": "cmake",
+			"args": [
+				"--build",
+				"."
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		},
+		{
+			"type": "shell",
+			"label": "CMake: configure and build debug",
+			"dependsOrder": "sequence",
+			"dependsOn": [
+				"CMake: configure debug",
+				"CMake: build debug"
+			]
+		},
+		{
+			"type": "shell",
+			"label": "CMake: configure and build release",
+			"dependsOrder": "sequence",
+			"dependsOn": [
+				"CMake: configure release",
+				"CMake: build release"
+			]
+		},
+		{
+			"type": "shell",
+			"label": "CMake: clean, configure and build",
+			"dependsOrder": "sequence",
+			"dependsOn": [
+				"CMake: clean",
+				"CMake: make build directory",
+				"CMake: configure debug",
+				"CMake: build debug",
+				"CMake: configure release",
+				"CMake: build release"
+			],
+			"problemMatcher": []
+		}
+	]
+}
