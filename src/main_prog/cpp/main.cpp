@@ -48,21 +48,21 @@ int main(int argc, char *argv[])
 
     // 读取自定义类型标志
     LogLevel level = absl::GetFlag(FLAGS_log);
-    LOG_INFO("flag for log: %s", AbslUnparseFlag(level).c_str());
+    LOG_INFO("Get flag for log: %s", AbslUnparseFlag(level).c_str());
     set_log_level(level);
 
     // 读取未解析的参数，按位置打印
-    LOG_DEBUG("undefined flags: %s", absl::StrJoin(undefined_flags, " ").c_str());
+    LOG_DEBUG("Undefined flags: %s", absl::StrJoin(undefined_flags, " ").c_str());
 
     // 读取bool类型标志
-    LOG_INFO("flag for verbose: %s", absl::GetFlag(FLAGS_verbose) ? "true" : "false");
+    LOG_INFO("Get flag for verbose: %s", absl::GetFlag(FLAGS_verbose) ? "true" : "false");
 
     // 读取optional类型标志
     if (absl::GetFlag(FLAGS_F).has_value())
     {
         // flag was set on command line
         std::string config_file_name = absl::GetFlag(FLAGS_F).value();
-        LOG_INFO("flag for config_file: %s", config_file_name.c_str());
+        LOG_INFO("Get flag for config_file: %s", config_file_name.c_str());
 
         load_from_configure_file(config_file_name);
     }

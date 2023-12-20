@@ -34,7 +34,7 @@ namespace xuzy
         static void SetLevel(const Level newLevel)
         {
             m_LogLevel = newLevel;
-            LOG_INFO("set log level to: %s", to_string(m_LogLevel));
+            LOG_INFO("Set log level to: %s", to_string(m_LogLevel));
         }
 
         static const char *to_string(const Level &log_level)
