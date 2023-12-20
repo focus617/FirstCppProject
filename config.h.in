@@ -1,0 +1,3 @@
+// the configured options and settings for Tutorial
+#define PROJECT_VERSION_MAJOR @my_first_proj_VERSION_MAJOR@
+#define PROJECT_VERSION_MINOR @my_first_proj_VERSION_MINOR@

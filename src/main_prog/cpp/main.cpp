@@ -5,6 +5,7 @@
 #include "absl/flags/usage.h"
 #include "absl/strings/str_join.h"
 
+#include "config.h"
 #include "log.h"
 #include "xuzy_math.h"
 #include "singleton.h"

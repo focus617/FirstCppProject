@@ -1,19 +1,24 @@
 cmake_minimum_required(VERSION 3.16.0)
 
-project(my_first_prog VERSION 0.1.0 LANGUAGES C CXX)
+project(my_first_proj VERSION 0.1.0 LANGUAGES C CXX)
 
 # enable cache, extra warnings, docs generation, etc
-list(APPEND 
-    CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
+# set compile feature
+set(CMAKE_CXX_STANDARD_REQUIRED True)       # Make C++20 a hard requirement
+set(CMAKE_CXX_STANDARD 20)                  # Default C++ standard for targets
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -std=c++20")
-set(SOURCE_DIR "${PROJECT_SOURCE_DIR}/src/")
-set(CXX_STANDARD_REQUIRED ON)      # Make C++20 a hard requirement
-set(CMAKE_CXX_STANDARD 20)         # Default C++ standard for targets
 
+set(SOURCE_DIR "${PROJECT_SOURCE_DIR}/src/")
 set(EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin")   # Set executable output directory
 
-set(CMAKE_BUILD_TYPE Debug)
+configure_file (
+    "${PROJECT_SOURCE_DIR}/config.h.in"
+    "${PROJECT_BINARY_DIR}/src/config.h"
+)
+
+set(CMAKE_DEBUG_POSTFIX d)
 
 add_subdirectory(src)
 
