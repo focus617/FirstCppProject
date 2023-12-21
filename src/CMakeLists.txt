@@ -12,6 +12,7 @@ option(BUILD_MAIN "Build Main Program" ON)
 if (BUILD_MATH_LIB)
     message(STATUS "Building My Math Library...")
     add_subdirectory(math_lib)
+    target_compile_definitions(xuzymath PRIVATE "USE_MYMATH")
     set (EXTRA_LIBS ${EXTRA_LIBS} xuzymath)
 endif()
 

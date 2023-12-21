@@ -26,6 +26,7 @@ void set_log_level(const LogLevel &level);
 
 void test_logger();
 void test_singleton();
+extern void thread_trial();
 
 // 从配置文件读取配置参数
 void load_from_configure_file(const std::string &filename);
@@ -72,6 +73,8 @@ int main(int argc, char *argv[])
         // flag was not passed on command line
         // use default configuration
     }
+
+    thread_trial();
 
     /*
         test_logger();

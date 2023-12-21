@@ -126,6 +126,4 @@ namespace xuzy
         }
     };
 
-    Log::Level Log::m_LogLevel = Log::LevelInfo;
-    std::mutex Log::m_LogMutex;
 }

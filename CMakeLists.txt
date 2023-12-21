@@ -6,8 +6,8 @@ project(my_first_proj VERSION 0.1.0 LANGUAGES C CXX)
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 # set compile feature
-set(CMAKE_CXX_STANDARD_REQUIRED True)       # Make C++20 a hard requirement
 set(CMAKE_CXX_STANDARD 20)                  # Default C++ standard for targets
+set(CMAKE_CXX_STANDARD_REQUIRED True)       # Make C++20 a hard requirement
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -std=c++20")
 
 set(SOURCE_DIR "${PROJECT_SOURCE_DIR}/src/")
