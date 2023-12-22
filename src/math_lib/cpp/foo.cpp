@@ -1,13 +1,13 @@
 #include "foo.h"
 
-int Foo::foo_int(const std::string& str)
+int Foo::foo_int(const std::string& t_str)
 {
-    return str.size();
+    return t_str.size();
 }
 
-void Foo::foo_str(std::string& str)
+void Foo::foo_str(std::string& t_str)
 {
-    str = "ChangedString";
+    t_str = "ChangedString";
     return;
 }
 
@@ -16,7 +16,7 @@ void Foo::foo_throw()
     // throw runtime error
 }
 
-void Foo::foo_callback_method(std::function<void(void)>& callback)
+void Foo::foo_callback_method(std::function<void(void)>& t_callback)
 {
-    callback();
+    t_callback();
 }

@@ -12,33 +12,33 @@
 
 using xuzy::Log;
 
-enum LogLevel
+enum class LogLevel
 {
-    LevelCritical = 0,
-    LevelError,
-    LevelWarn,
-    LevelInfo,
-    LevelDebug,
-    LevelTrace
+    Critical = 0,
+    Error,
+    Warn,
+    Info,
+    Debug,
+    Trace
 };
 
-void set_log_level(const LogLevel &level);
+void set_log_level(const LogLevel &t_new_level);
 
 void test_logger();
 void test_singleton();
 extern void thread_trial();
 
 // 从配置文件读取配置参数
-void load_from_configure_file(const std::string &filename);
+void load_from_configure_file(const std::string &t_filename);
 
-bool AbslParseFlag(absl::string_view text, LogLevel *log_level, std::string *error);
-std::string AbslUnparseFlag(LogLevel log_level);
+bool AbslParseFlag(absl::string_view t_text, LogLevel *t_log_level, std::string *t_error);
+std::string AbslUnparseFlag(LogLevel t_log_level);
 
 // Define the flag 标志
 // 参数: 1.标志类型 2.标志名 3.默认值 4.标志描述
 ABSL_FLAG(bool, verbose, false, "Enable verbose mode");
 ABSL_FLAG(std::optional<std::string>, F, std::nullopt, "Settings from a file");
-ABSL_FLAG(LogLevel, log, LogLevel::LevelInfo, "Setting log level");
+ABSL_FLAG(LogLevel, log, LogLevel::Info, "Setting log level");
 
 int main(int argc, char *argv[])
 {
@@ -87,98 +87,98 @@ int main(int argc, char *argv[])
 // Parses an OutputMode from the command line flag value `text`.
 // Returns `true` and sets `*log_level` on success;
 // Returns `false` and sets `*error` on failure.
-bool AbslParseFlag(absl::string_view text,
-                   LogLevel *log_level,
-                   std::string *error)
+bool AbslParseFlag(absl::string_view t_text,
+                   LogLevel *t_log_level,
+                   std::string *t_error)
 {
-    if (text == "critical")
+    if (t_text == "critical")
     {
-        *log_level = LogLevel::LevelCritical;
+        *t_log_level = LogLevel::Critical;
         return true;
     }
-    if (text == "error")
+    if (t_text == "error")
     {
-        *log_level = LogLevel::LevelError;
+        *t_log_level = LogLevel::Error;
         return true;
     }
-    if (text == "warn")
+    if (t_text == "warn")
     {
-        *log_level = LogLevel::LevelWarn;
+        *t_log_level = LogLevel::Warn;
         return true;
     }
-    if (text == "info")
+    if (t_text == "info")
     {
-        *log_level = LogLevel::LevelInfo;
+        *t_log_level = LogLevel::Info;
         return true;
     }
-    if (text == "debug")
+    if (t_text == "debug")
     {
-        *log_level = LogLevel::LevelDebug;
+        *t_log_level = LogLevel::Debug;
         return true;
     }
-    if (text == "trace")
+    if (t_text == "trace")
     {
-        *log_level = LogLevel::LevelTrace;
+        *t_log_level = LogLevel::Trace;
         return true;
     }
-    *error = "unknown value for log level";
+    *t_error = "unknown value for log level";
     return false;
 }
 
 // AbslUnparseFlag converts from an xuzy::Log::Level to a string.
 // Returns a textual flag value corresponding to the xuzy::Log::Level `log_level`.
-std::string AbslUnparseFlag(LogLevel log_level)
+std::string AbslUnparseFlag(LogLevel t_log_level)
 {
-    switch (log_level)
+    switch (t_log_level)
     {
-    case LogLevel::LevelCritical:
+    case LogLevel::Critical:
         return "critical";
-    case LogLevel::LevelError:
+    case LogLevel::Error:
         return "error";
-    case LogLevel::LevelWarn:
+    case LogLevel::Warn:
         return "warn";
-    case LogLevel::LevelInfo:
+    case LogLevel::Info:
         return "info";
-    case LogLevel::LevelDebug:
+    case LogLevel::Debug:
         return "debug";
-    case LogLevel::LevelTrace:
+    case LogLevel::Trace:
         return "trace";
     default:
-        return std::to_string(static_cast<int>(log_level));
+        return std::to_string(static_cast<int>(t_log_level));
     }
 }
 
-void load_from_configure_file(const std::string &filename)
+void load_from_configure_file(const std::string &t_filename)
 {
-    LOG_INFO("%s(): Load configure from file: %s", __FUNCTION__, filename.c_str());
+    LOG_INFO("%s(): Load configure from file: %s", __FUNCTION__, t_filename.c_str());
 }
 
-void set_log_level(const LogLevel &new_level)
+void set_log_level(const LogLevel &t_new_level)
 {
     Log::Level log_level;
 
-    switch (new_level)
+    switch (t_new_level)
     {
-    case LogLevel::LevelCritical:
-        log_level = Log::LevelCritical;
+    case LogLevel::Critical:
+        log_level = Log::Level::Critical;
         break;
-    case LogLevel::LevelError:
-        log_level = Log::LevelError;
+    case LogLevel::Error:
+        log_level = Log::Level::Error;
         break;
-    case LogLevel::LevelWarn:
-        log_level = Log::LevelWarn;
+    case LogLevel::Warn:
+        log_level = Log::Level::Warn;
         break;
-    case LogLevel::LevelInfo:
-        log_level = Log::LevelInfo;
+    case LogLevel::Info:
+        log_level = Log::Level::Info;
         break;
-    case LogLevel::LevelDebug:
-        log_level = Log::LevelDebug;
+    case LogLevel::Debug:
+        log_level = Log::Level::Debug;
         break;
-    case LogLevel::LevelTrace:
-        log_level = Log::LevelTrace;
+    case LogLevel::Trace:
+        log_level = Log::Level::Trace;
         break;
     default:
-        log_level = Log::LevelTrace;
+        log_level = Log::Level::Trace;
     }
     Log::SetLevel(log_level);
     return;

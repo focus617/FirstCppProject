@@ -1,4 +1,6 @@
 #include "log.h"
 
-xuzy::Log::Level xuzy::Log::m_LogLevel = Log::LevelInfo;
-std::mutex xuzy::Log::m_LogMutex;
+using namespace xuzy;
+
+Log::Level Log::m_level {Log::Level::Info};
+std::mutex Log::m_mutex;

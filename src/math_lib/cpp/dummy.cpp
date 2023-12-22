@@ -1,6 +1,6 @@
 #include "dummy.h"
 
-Dummy::Dummy(FooIf& f):m_Foo(f)
+Dummy::Dummy(FooIf& f):m_foo(f)
 {
 }
 
@@ -8,23 +8,23 @@ Dummy::~Dummy()
 {
 }
 
-int Dummy::dummy_int(const std::string& str)
+int Dummy::dummy_int(const std::string& t_str)
 {
-    return m_Foo.foo_int(str);
+    return m_foo.foo_int(t_str);
 }
 
-void Dummy::dummy_str(std::string& str)
+void Dummy::dummy_str(std::string& t_str)
 {
-    m_Foo.foo_str(str);
+    m_foo.foo_str(t_str);
     return;
 }
 
 void Dummy::dummy_throw()
 {
-    m_Foo.foo_throw();
+    m_foo.foo_throw();
 }
 
-void Dummy::dummy_callback(std::function<void(void)> callback)
+void Dummy::dummy_callback(std::function<void(void)> t_callback)
 {
-    m_Foo.foo_callback_method(callback);
+    m_foo.foo_callback_method(t_callback);
 }

@@ -15,43 +15,43 @@ namespace xuzy
     class Log
     {
     public:
-        enum Level
+        enum class Level
         {
-            LevelCritical = 0,
-            LevelError,
-            LevelWarn,
-            LevelInfo,
-            LevelDebug,
-            LevelTrace,
-            LevelCount
+            Critical = 0,
+            Error,
+            Warn,
+            Info,
+            Debug,
+            Trace,
+            Count
         };
 
     private:
-        static Level m_LogLevel;
-        static std::mutex m_LogMutex;
+        static Level m_level;
+        static std::mutex m_mutex;
 
     public:
-        static void SetLevel(const Level newLevel)
+        static void SetLevel(const Level t_level)
         {
-            m_LogLevel = newLevel;
-            LOG_INFO("Set log level to: %s", to_string(m_LogLevel));
+            m_level = t_level;
+            LOG_INFO("Set log level to: %s", to_string(m_level));
         }
 
-        static const char *to_string(const Level &log_level)
+        static const char *to_string(const Level &t_log_level)
         {
-            switch (log_level)
+            switch (t_log_level)
             {
-            case Log::Level::LevelCritical:
+            case Log::Level::Critical:
                 return "critical";
-            case Log::Level::LevelError:
+            case Log::Level::Error:
                 return "error";
-            case Log::Level::LevelWarn:
+            case Log::Level::Warn:
                 return "warn";
-            case Log::Level::LevelInfo:
+            case Log::Level::Info:
                 return "info";
-            case Log::Level::LevelDebug:
+            case Log::Level::Debug:
                 return "debug";
-            case Log::Level::LevelTrace:
+            case Log::Level::Trace:
                 return "trace";
             default:
                 return "error log level";
@@ -59,58 +59,64 @@ namespace xuzy
         }
 
         template <typename... Args>
-        static void Trace(int line_number, const char *source_file_name, const char *message, Args... args)
+        static void Trace(
+            int t_line_number, const char *t_source_file_name, const char *t_message, Args... args)
         {
-            log(line_number, source_file_name, "[TRACE]", LevelTrace, message, args...);
+            log(t_line_number, t_source_file_name, "[TRACE]", Level::Trace, t_message, args...);
         }
 
         template <typename... Args>
-        static void Debug(int line_number, const char *source_file_name, const char *message, Args... args)
+        static void Debug(
+            int t_line_number, const char *t_source_file_name, const char *t_message, Args... args)
         {
-            log(line_number, source_file_name, "[DEBUG]", LevelDebug, message, args...);
+            log(t_line_number, t_source_file_name, "[DEBUG]", Level::Debug, t_message, args...);
         }
 
         template <typename... Args>
-        static void Info(int line_number, const char *source_file_name, const char *message, Args... args)
+        static void Info(
+            int t_line_number, const char *t_source_file_name, const char *t_message, Args... args)
         {
-            log(line_number, source_file_name, "[INFO]", LevelInfo, message, args...);
+            log(t_line_number, t_source_file_name, "[INFO]", Level::Info, t_message, args...);
         }
 
         template <typename... Args>
-        static void Warn(int line_number, const char *source_file_name, const char *message, Args... args)
+        static void Warn(
+            int t_line_number, const char *t_source_file_name, const char *t_message, Args... args)
         {
-            log(line_number, source_file_name, "[WARN]", LevelWarn, message, args...);
+            log(t_line_number, t_source_file_name, "[WARN]", Level::Warn, t_message, args...);
         }
 
         template <typename... Args>
-        static void Error(int line_number, const char *source_file_name, const char *message, Args... args)
+        static void Error(
+            int t_line_number, const char *t_source_file_name, const char *t_message, Args... args)
         {
-            log(line_number, source_file_name, "[ERROR]", LevelError, message, args...);
+            log(t_line_number, t_source_file_name, "[ERROR]", Level::Error, t_message, args...);
         }
 
         template <typename... Args>
-        static void Critical(int line_number, const char *source_file_name, const char *message, Args... args)
+        static void Critical(
+            int t_line_number, const char *t_source_file_name, const char *t_message, Args... args)
         {
-            log(line_number, source_file_name, "[CRITICAL]", LevelCritical, message, args...);
+            log(t_line_number, t_source_file_name, "[CRITICAL]", Level::Critical, t_message, args...);
         }
 
     private:
         template <typename... Args>
         static void log(
-            int line_number,
-            const char *source_file_name,
-            const char *message_level_str,
-            Level message_level,
-            const char *message,
+            int t_line_number,
+            const char *t_source_file_name,
+            const char *t_message_level_str,
+            Level t_message_level,
+            const char *t_message,
             Args... args)
         {
-            if (m_LogLevel >= message_level)
+            if (m_level >= t_message_level)
             {
-                std::scoped_lock lock(m_LogMutex);
+                std::scoped_lock lock(m_mutex);
                 print_timestamp();
-                printf("%11s: ", message_level_str);
-                printf(message, args...);
-                printf("\n\t\t\t\t     on line %d in %s", line_number, source_file_name);
+                printf("%11s: ", t_message_level_str);
+                printf(t_message, args...);
+                printf("\n\t\t\t\t     on line %d in %s", t_line_number, t_source_file_name);
                 printf("\n");
             }
         }
