@@ -10,16 +10,22 @@ static bool s_finished = false;
 void do_work()
 {
     using namespace std::literals::chrono_literals;
-    
-    std::cout << "Worker start with thread id: " << std::this_thread::get_id() << std::endl;
+
+    auto start = std::chrono::high_resolution_clock::now();
+    std::cout << "Worker thread [id: " << std::this_thread::get_id() << "] start." << std::endl;
 
     while (!s_finished)
     {
-        LOG_INFO("Worker thread [id: %d] is working ...", std::this_thread::get_id());
+        auto wakeup = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<float> duration = wakeup - start;
+        start = wakeup;
+
+        LOG_INFO("Worker thread [id: %d] wake up after %fs ...",
+                 std::this_thread::get_id(), duration.count());
+
         std::this_thread::sleep_for(1s);
     }
     LOG_INFO("Worker thread [id: %d] is finished.", std::this_thread::get_id());
-     
 }
 
 void thread_trial()

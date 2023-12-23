@@ -9,6 +9,7 @@
 #include "log.h"
 #include "xuzy_math.h"
 #include "singleton.h"
+#include "timer.h"
 
 using xuzy::Log;
 
@@ -74,6 +75,8 @@ int main(int argc, char *argv[])
         // use default configuration
     }
 
+    xuzy::Timer timer;
+    
     thread_trial();
 
     /*
