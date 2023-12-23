@@ -8,7 +8,9 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 # set compile feature
 set(CMAKE_CXX_STANDARD 20)                  # Default C++ standard for targets
 set(CMAKE_CXX_STANDARD_REQUIRED True)       # Make C++20 a hard requirement
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -std=c++20")
+set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS} -Wall -Werror -std=c++20")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -Wall -Werror -std=c++20")
+set(EXTRA_COMPILE_OPTIONS "-Wextra -Wshadow -Wnon-virtual-dtor -pedantic")
 
 set(SOURCE_DIR "${PROJECT_SOURCE_DIR}/src/")
 set(EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin")   # Set executable output directory

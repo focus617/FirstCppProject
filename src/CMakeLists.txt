@@ -6,14 +6,14 @@ add_subdirectory(core)
 set (EXTRA_LIBS ${EXTRA_LIBS} core)
 
 
-option(BUILD_MATH_LIB "Build Math Lib" ON)
+option(BUILD_MY_LIB "Build My Library" ON)
 option(BUILD_MAIN "Build Main Program" ON)
 
-if (BUILD_MATH_LIB)
-    message(STATUS "Building My Math Library...")
-    add_subdirectory(math_lib)
-    target_compile_definitions(xuzymath PRIVATE "USE_MYMATH")
-    set (EXTRA_LIBS ${EXTRA_LIBS} xuzymath)
+if (BUILD_MY_LIB)
+    message(STATUS "Building My Library...")
+    add_subdirectory(my_lib)
+    target_compile_definitions(my_lib PRIVATE "USE_MYLIB")
+    set (EXTRA_LIBS ${EXTRA_LIBS} my_lib)
 endif()
 
 if (BUILD_MAIN)

@@ -10,9 +10,9 @@ int xuzy::add(int a, int b)
 
 const char *xuzy::return_by_macro()
 {
-#ifdef USE_MYMATH
-    return "USE_MYMATH is defined";
+#ifdef USE_MYLIB
+    return "USE_MYLIB is defined";
 #else
-    return "USE_MYMATH is not defined";
+    return "USE_MYLIB is not defined";
 #endif
 }

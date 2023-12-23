@@ -32,8 +32,8 @@ enable_testing()
 # 查找当前目录下的所有源文件，并将名称保存到 _SOURCES 变量
 aux_source_directory(. _TEST_SOURCES)
 
-option(TEST_CORE_LIB "Test Core Lib" ON)
-option(TEST_MATH_LIB "Test Math Lib" ON)
+option(TEST_CORE_LIB "Test Core Library" ON)
+option(TEST_MY_LIB "Test My Library" ON)
 
 if (TEST_CORE_LIB)
     message(STATUS "Building test for Core Library...")
@@ -41,14 +41,21 @@ if (TEST_CORE_LIB)
     set (TEST_EXTRA_LIBS ${TEST_EXTRA_LIBS} core)
 endif()
 
-if (TEST_MATH_LIB)
-    message(STATUS "Building test for My Math Library...")
-    add_subdirectory(math_lib)
-    set (TEST_EXTRA_LIBS ${TEST_EXTRA_LIBS} xuzymath)
+if (TEST_MY_LIB)
+    message(STATUS "Building test for My Library...")
+    add_subdirectory(my_lib)
+    set (TEST_EXTRA_LIBS ${TEST_EXTRA_LIBS} my_lib)
 endif()
 
 # 生成可执行程序
 add_executable(testRunner ${_TEST_SOURCES})
+
+# 指定编译语言标准
+target_compile_features(testRunner PRIVATE cxx_std_20)
+
+# 添加编译选项
+set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG} ${EXTRA_COMPILE_OPTIONS}")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}  ${EXTRA_COMPILE_OPTIONS}")
 
 # 添加链接库
 target_link_libraries(testRunner
