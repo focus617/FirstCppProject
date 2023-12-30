@@ -9,7 +9,6 @@
 #include "log.h"
 #include "xuzy_math.h"
 #include "singleton.h"
-#include "timer.h"
 
 using xuzy::Log;
 
@@ -28,12 +27,15 @@ void set_log_level(const LogLevel &t_new_level);
 void test_logger();
 void test_singleton();
 extern void thread_trial();
+extern void thread_active_object();
 
 // 从配置文件读取配置参数
 void load_from_configure_file(const std::string &t_filename);
 
 bool AbslParseFlag(absl::string_view t_text, LogLevel *t_log_level, std::string *t_error);
 std::string AbslUnparseFlag(LogLevel t_log_level);
+
+int parse_commandline(int argc, char *argv[]);
 
 // Define the flag 标志
 // 参数: 1.标志类型 2.标志名 3.默认值 4.标志描述
@@ -42,6 +44,21 @@ ABSL_FLAG(std::optional<std::string>, F, std::nullopt, "Settings from a file");
 ABSL_FLAG(LogLevel, log, LogLevel::Info, "Setting log level");
 
 int main(int argc, char *argv[])
+{
+    parse_commandline(argc, argv);
+
+    // thread_trial();
+    thread_active_object();
+
+    /*
+        test_logger();
+        test_singleton();
+    */
+
+    return EXIT_SUCCESS;
+}
+
+int parse_commandline(int argc, char *argv[])
 {
     absl::SetProgramUsageMessage(
         absl::StrCat("This program does nothing.  Sample usage:\n",
@@ -74,15 +91,6 @@ int main(int argc, char *argv[])
         // flag was not passed on command line
         // use default configuration
     }
-
-    xuzy::Timer timer;
-    
-    thread_trial();
-
-    /*
-        test_logger();
-        test_singleton();
-    */
 
     return EXIT_SUCCESS;
 }

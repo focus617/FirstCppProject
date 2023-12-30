@@ -76,7 +76,8 @@ namespace xuzy
         static void Info(
             int t_line_number, const char *t_source_file_name, const char *t_message, Args... args)
         {
-            log(t_line_number, t_source_file_name, "[INFO]", Level::Info, t_message, args...);
+            // log(t_line_number, t_source_file_name, "[INFO]", Level::Info, t_message, args...);
+            log_no_line_filename("[INFO]", Level::Info, t_message, args...);
         }
 
         template <typename... Args>
@@ -117,6 +118,23 @@ namespace xuzy
                 printf("%11s: ", t_message_level_str);
                 printf(t_message, args...);
                 printf("\n\t\t\t\t     on line %d in %s", t_line_number, t_source_file_name);
+                printf("\n");
+            }
+        }
+
+        template <typename... Args>
+        static void log_no_line_filename(
+            const char *t_message_level_str,
+            Level t_message_level,
+            const char *t_message,
+            Args... args)
+        {
+            if (m_level >= t_message_level)
+            {
+                std::scoped_lock lock(m_mutex);
+                print_timestamp();
+                printf("%11s: ", t_message_level_str);
+                printf(t_message, args...);
                 printf("\n");
             }
         }

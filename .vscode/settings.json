@@ -75,6 +75,11 @@
         "future": "cpp",
         "scoped_allocator": "cpp",
         "typeindex": "cpp",
-        "valarray": "cpp"
+        "valarray": "cpp",
+        "executor": "cpp",
+        "io_context": "cpp",
+        "netfwd": "cpp",
+        "timer": "cpp",
+        "ranges": "cpp"
     }
 }
