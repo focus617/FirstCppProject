@@ -22,6 +22,9 @@ configure_file (
 
 set(CMAKE_DEBUG_POSTFIX d)
 
+# update all submodule
+include(cmake/gitsubmodule.cmake)
+
 add_subdirectory(src)
 
 add_subdirectory(extern)

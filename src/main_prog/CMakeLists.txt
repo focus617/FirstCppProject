@@ -24,7 +24,7 @@ target_link_libraries(my_app PRIVATE
      absl::flags_usage
 )
 
-target_include_directories(my_app PRIVATE
-     ${PROJECT_BINARY_DIR}/src
+target_include_directories(my_app 
+     PRIVATE ${PROJECT_BINARY_DIR}/src
 )
 
