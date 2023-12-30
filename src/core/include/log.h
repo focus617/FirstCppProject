@@ -7,9 +7,12 @@
 #define LOG_CRITICAL(Message, ...) (xuzy::Log::Critical(__LINE__, __FILE__, Message, __VA_ARGS__))
 #define LOG_ERROR(Message, ...) (xuzy::Log::Error(__LINE__, __FILE__, Message, __VA_ARGS__))
 #define LOG_WARN(Message, ...) (xuzy::Log::Warn(__LINE__, __FILE__, Message, __VA_ARGS__))
-#define LOG_INFO(Message, ...) (xuzy::Log::Info(__LINE__, __FILE__, Message, __VA_ARGS__))
+// #define LOG_INFO(Message, ...) (xuzy::Log::Info(__LINE__, __FILE__, Message, __VA_ARGS__))
 #define LOG_DEBUG(Message, ...) (xuzy::Log::Debug(__LINE__, __FILE__, Message, __VA_ARGS__))
 #define LOG_TRACE(Message, ...) (xuzy::Log::Trace(__LINE__, __FILE__, Message, __VA_ARGS__))
+
+#define LOG_INFO(Message, ...) (xuzy::Log::Info(Message, __VA_ARGS__))
+
 namespace xuzy
 {
     class Log
@@ -73,12 +76,19 @@ namespace xuzy
         }
 
         template <typename... Args>
+        static void Info(const char *t_message, Args... args)
+        {
+            log_no_line_filename("[INFO]", Level::Info, t_message, args...);
+        }
+
+        /*
+        template <typename... Args>
         static void Info(
             int t_line_number, const char *t_source_file_name, const char *t_message, Args... args)
         {
-            // log(t_line_number, t_source_file_name, "[INFO]", Level::Info, t_message, args...);
-            log_no_line_filename("[INFO]", Level::Info, t_message, args...);
+            log(t_line_number, t_source_file_name, "[INFO]", Level::Info, t_message, args...);
         }
+        */
 
         template <typename... Args>
         static void Warn(

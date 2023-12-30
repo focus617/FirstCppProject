@@ -71,6 +71,8 @@ namespace xuzy
 
     void Worker::process_dataset(std::span<int> t_input, int &t_output)
     {
+        t_output = t_input.size();
+        
         LOG_INFO("Worker [thread id: %d] process dataset", std::this_thread::get_id());
         std::this_thread::sleep_for(1s);
     }

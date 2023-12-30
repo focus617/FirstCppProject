@@ -17,7 +17,7 @@ void thread_active_object()
     std::array<int, 100> dataset;
     std::ranges::generate(dataset, rne);
 
-    int t_thread_num = std::thread::hardware_concurrency();
+    unsigned int t_thread_num = std::thread::hardware_concurrency();
     LOG_INFO("CPU core: %d", t_thread_num);
 
     xuzy::Master_Controller mctrl{t_thread_num};
@@ -34,7 +34,7 @@ void thread_active_object()
     xuzy::Timer timer;
     timer.mark();
 
-    for (size_t i=0; i<t_thread_num; i++)
+    for (size_t i = 0; i < t_thread_num; i++)
     {
         worker_ptrs[i]->set_job(dataset, &result[i]);
     }
@@ -43,10 +43,9 @@ void thread_active_object()
     timer.peek();
     LOG_INFO("Processing took %fms.", timer.count_in_ms());
 
-    for (auto& worker_ptr: worker_ptrs)
+    for (auto &worker_ptr : worker_ptrs)
     {
         worker_ptr->kill();
     }
     worker_ptrs.clear();
-
 }

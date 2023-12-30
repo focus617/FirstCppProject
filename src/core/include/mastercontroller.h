@@ -15,20 +15,21 @@ namespace xuzy
         std::condition_variable m_cv;
         std::mutex m_mtx;
         std::unique_lock<std::mutex> m_lk;
-        int m_worker_count;
+        unsigned int m_worker_count;
 
         // shared memory
-        int m_done_count = 0;
+        unsigned int m_done_count = 0;
 
     public:
-        Master_Controller(int t_worker_count);
+        Master_Controller(unsigned int t_worker_count);
         ~Master_Controller();
 
         void signal_done();
         void wait_for_all_done();
     };
 
-    Master_Controller::Master_Controller(int t_worker_count) : m_lk{m_mtx}, m_worker_count{t_worker_count}
+    Master_Controller::Master_Controller(unsigned int t_worker_count)
+        : m_lk{m_mtx}, m_worker_count{t_worker_count}
     {
     }
 

@@ -42,7 +42,7 @@ void do_work(int t_int)
 
 void thread_trial()
 {
-    int t_thread_num = std::thread::hardware_concurrency();
+    unsigned int t_thread_num = std::thread::hardware_concurrency();
     LOG_INFO("CPU core: %d", t_thread_num);
 
     std::vector<std::thread> threads;
