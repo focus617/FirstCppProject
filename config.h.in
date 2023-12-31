@@ -1,3 +1,9 @@
 // the configured options and settings for Tutorial
 #define PROJECT_VERSION_MAJOR @my_first_proj_VERSION_MAJOR@
 #define PROJECT_VERSION_MINOR @my_first_proj_VERSION_MINOR@
+#define PROJECT_VERSION_PATCH @my_first_proj_VERSION_PATCH@
+#define PROJECT_VERSION_TWEAK @my_first_proj_VERSION_TWEAK@
+#define PROJECT_VERSION "@my_first_proj_VERSION@"
+
+// the configured options for xuzy::LOG
+#define LOG_OPTION @CMAKE_BUILD_TYPE@

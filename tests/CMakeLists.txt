@@ -1,7 +1,3 @@
-# GoogleTest requires at least C++14
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
 option(FETCH_GOOGLE_TEST "Fetch GoogleTest" OFF)
 
 if(FETCH_GOOGLE_TEST)
@@ -23,11 +19,16 @@ if(FETCH_GOOGLE_TEST)
   endif()
 endif()
 
+### Check google test exist ###
+if(NOT EXISTS "${PROJECT_SOURCE_DIR}/extern/googletest/CMakeLists.txt")
+  message(FATAL_ERROR "The googletest submodule was not downloaded correctly. GIT_SUBMODULE maybe turned off or failed. Please check!")
+endif()
+
 enable_testing()
 
-# set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-# set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-# include(CPack)
+# GoogleTest requires at least C++14
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # 查找当前目录下的所有源文件，并将名称保存到 _SOURCES 变量
 aux_source_directory(. _TEST_SOURCES)
@@ -36,15 +37,17 @@ option(TEST_CORE_LIB "Test Core Library" ON)
 option(TEST_MY_LIB "Test My Library" ON)
 
 if (TEST_CORE_LIB)
-    message(STATUS "Building test for Core Library...")
-    add_subdirectory(core)
-    set (TEST_EXTRA_LIBS ${TEST_EXTRA_LIBS} core)
+  message(STATUS "Building test for Core Library...")
+  add_subdirectory(core)
+  list(APPEND TEST_EXTRA_LIBS core)
+  list(APPEND TEST_EXTRA_INCLUDES "${SOURCE_DIR}/core/include")
 endif()
 
 if (TEST_MY_LIB)
-    message(STATUS "Building test for My Library...")
-    add_subdirectory(my_lib)
-    set (TEST_EXTRA_LIBS ${TEST_EXTRA_LIBS} my_lib)
+  message(STATUS "Building test for My Library...")
+  add_subdirectory(my_lib)
+  list(APPEND TEST_EXTRA_LIBS my_lib)
+  list(APPEND TEST_EXTRA_INCLUDES "${SOURCE_DIR}/my_lib/include")
 endif()
 
 # 生成可执行程序
@@ -55,7 +58,13 @@ target_compile_features(testRunner PRIVATE cxx_std_20)
 
 # 添加编译选项
 set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG} ${EXTRA_COMPILE_OPTIONS}")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}  ${EXTRA_COMPILE_OPTIONS}")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${EXTRA_COMPILE_OPTIONS}")
+
+# 指定头文件路径
+target_include_directories(testRunner PUBLIC
+  ${TEST_EXTRA_INCLUDES} 
+  ${PROJECT_BINARY_DIR}/src
+)
 
 # 添加链接库
 target_link_libraries(testRunner

@@ -3,8 +3,8 @@ list(APPEND CMAKE_MODULE_PATH "${SOURCE_DIR}/cmake")
 
 message(STATUS "Building Core Library...")
 add_subdirectory(core)
-set (EXTRA_LIBS ${EXTRA_LIBS} core)
-
+list(APPEND EXTRA_LIBS core)
+list(APPEND EXTRA_INCLUDES "${SOURCE_DIR}/core/include")
 
 option(BUILD_MY_LIB "Build My Library" ON)
 option(BUILD_MAIN "Build Main Program" ON)
@@ -13,7 +13,8 @@ if (BUILD_MY_LIB)
     message(STATUS "Building My Library...")
     add_subdirectory(my_lib)
     target_compile_definitions(my_lib PRIVATE "USE_MYLIB")
-    set (EXTRA_LIBS ${EXTRA_LIBS} my_lib)
+    list(APPEND EXTRA_LIBS my_lib)
+    list(APPEND EXTRA_INCLUDES "${SOURCE_DIR}/my_lib/include")
 endif()
 
 if (BUILD_MAIN)

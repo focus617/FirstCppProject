@@ -16,7 +16,10 @@ set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG} ${EXTRA_COMPILE_OPTIONS}")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}  ${EXTRA_COMPILE_OPTIONS}")
 
 # 指定头文件路径
-target_include_directories(my_lib PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
+target_include_directories(my_lib 
+    PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include"
+    PRIVATE ${PROJECT_BINARY_DIR}/src
+)
 
 # 添加链接库
 target_link_libraries(my_lib PRIVATE core)

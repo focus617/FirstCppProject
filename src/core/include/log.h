@@ -4,6 +4,13 @@
 #include <mutex>
 #include <ctime>
 
+#include "config.h"
+
+#define LOG_OPTION_DEBUG debug
+#define LOG_OPTION_RELEASE release
+
+#if(LOG_OPTION == LOG_OPTION_DEBUG)
+
 #define LOG_CRITICAL(Message, ...) (xuzy::Log::Critical(__LINE__, __FILE__, Message, __VA_ARGS__))
 #define LOG_ERROR(Message, ...) (xuzy::Log::Error(__LINE__, __FILE__, Message, __VA_ARGS__))
 #define LOG_WARN(Message, ...) (xuzy::Log::Warn(__LINE__, __FILE__, Message, __VA_ARGS__))
@@ -12,6 +19,17 @@
 #define LOG_TRACE(Message, ...) (xuzy::Log::Trace(__LINE__, __FILE__, Message, __VA_ARGS__))
 
 #define LOG_INFO(Message, ...) (xuzy::Log::Info(Message, __VA_ARGS__))
+
+#elif(LOG_OPTION == LOG_OPTION_RELEASE)
+
+#define LOG_CRITICAL(Message, ...) 
+#define LOG_ERROR(Message, ...) 
+#define LOG_WARN(Message, ...) 
+#define LOG_INFO(Message, ...) 
+#define LOG_DEBUG(Message, ...) 
+#define LOG_TRACE(Message, ...)
+
+#endif
 
 namespace xuzy
 {

@@ -61,7 +61,8 @@ int main(int argc, char *argv[])
 int parse_commandline(int argc, char *argv[])
 {
     absl::SetProgramUsageMessage(
-        absl::StrCat("This program does nothing.  Sample usage:\n",
+        absl::StrCat("Version ", PROJECT_VERSION, "\n",
+                     "This program does nothing.\n\nSample usage:\n",
                      argv[0], " --verbose -F <configure_file> "));
     // Parsing flags during startup
     auto undefined_flags = absl::ParseCommandLine(argc, argv);
@@ -207,8 +208,7 @@ void test_logger()
 
     int a = 12;
     int b = 56;
-    int result = xuzy::add(a, b);
-    LOG_INFO("%d + %d = %d", a, b, result);
+    LOG_INFO("%d + %d = %d", a, b, xuzy::add(a, b));
 }
 
 void test_singleton()

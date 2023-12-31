@@ -1,3 +1,4 @@
 #! /bin/sh
 
-cd build/debug; make
+cmake --build build/debug
+# cmake --build build/release
