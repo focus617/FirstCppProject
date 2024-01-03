@@ -5,9 +5,6 @@ project(my_first_proj VERSION 0.1.0 LANGUAGES C CXX)
 # enable vcpkg
 set(CMAKE_TOOLCHAIN_FILE "${PROJECT_SOURCE_DIR}/extern/vcpkg/scripts/buildsystems/vcpkg.cmake")
 
-# enable cache, extra warnings, docs generation, etc
-list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
-
 # set compile feature
 set(CMAKE_CXX_STANDARD 20)                  # Default C++ standard for targets
 set(CMAKE_CXX_STANDARD_REQUIRED True)       # Make C++20 a hard requirement
@@ -26,8 +23,12 @@ configure_file (
 
 set(CMAKE_DEBUG_POSTFIX d)
 
+
+# enable cache, extra warnings, docs generation, etc
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+
 # update all submodule
-include(cmake/gitsubmodule.cmake)
+include(cmake/CheckGitSubmodule.cmake)
 
 add_subdirectory(src)
 
