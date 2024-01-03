@@ -1,3 +1,5 @@
+#pragma once
+
 #include <string>
 #include <unordered_set>
 #include <json.hpp>
@@ -6,13 +8,13 @@ using json = nlohmann::json;
 
 namespace http
 {
-    struct host
+    struct Host
     {
         std::string ip{};
         uint port;
         std::unordered_set<std::string> bannedips;
 
-        host(const std::string &ipaddr, const uint pt) : ip{ipaddr}, port{pt} {}
+        Host(const std::string &ipaddr, const uint pt) : ip{ipaddr}, port{pt} {}
 
         void setup(const json &config)
         {

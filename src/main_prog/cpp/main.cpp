@@ -1,5 +1,6 @@
 #include <string>
 #include <sstream>
+#include <thread>
 
 #include <glog/logging.h>
 #include <glog/stl_logging.h>
@@ -13,6 +14,7 @@
 #include "logger.h"
 #include "xuzy_math.h"
 #include "singleton.h"
+#include "http.h"
 
 using xuzy::Logger;
 
@@ -31,7 +33,6 @@ void set_log_level(const LogLevel &t_new_level);
 void test_logger();
 void test_singleton();
 extern int test_httplib_client();
-extern int test_httplib_server();
 extern void thread_trial();
 extern void thread_active_object();
 
@@ -58,7 +59,11 @@ int main(int argc, char *argv[])
 
     parse_commandline(argc, argv);
 
-    test_httplib_server();
+    http::Host host("0.0.0.0", 8080);
+    std::thread(&http::listener::run, std::move(host)).detach();
+
+    std::cin.get();
+    LOG(INFO) << "Main Thread Stopped.";
 
     /*
         test_logger();

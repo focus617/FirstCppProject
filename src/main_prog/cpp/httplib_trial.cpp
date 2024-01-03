@@ -32,7 +32,7 @@ int test_httplib_client()
     return 0;
 }
 
-int test_httplib_server()
+int test_httplib_server(http::Host host)
 {
     // HTTP
     Server svr;
@@ -54,8 +54,6 @@ int test_httplib_server()
                 LOG(INFO) << "Server Stopped.";
                 svr.stop(); 
                 res.set_redirect("/"); });
-
-    http::host host("0.0.0.0", 8080);
 
     // Listen server to port
     svr.listen(host.ip, host.port);
