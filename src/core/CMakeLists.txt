@@ -24,17 +24,19 @@ target_compile_definitions(core PUBLIC
 target_include_directories(core 
     PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include"
     PRIVATE ${PROJECT_BINARY_DIR}/src
-    PUBLIC ${PROJECT_SOURCE_DIR}/extern/cpp-httplib
+    PRIVATE ${PROJECT_SOURCE_DIR}/extern/cpp-httplib
+    PRIVATE ${PROJECT_SOURCE_DIR}/extern/nlohmann-json/include/nlohmann
 )
 
 # 添加链接库
 target_link_libraries(core PUBLIC
     $<$<BOOL:${HTTPLIB_IS_USING_OPENSSL}>:OpenSSL::SSL>
     $<$<BOOL:${HTTPLIB_IS_USING_OPENSSL}>:OpenSSL::Crypto>
+    nlohmann_json::nlohmann_json
 )
 
 set_target_properties(core PROPERTIES
-    PUBLIC_HEADER include/log.h
+    PUBLIC_HEADER include/logger.h
 )
 
 install(TARGETS core

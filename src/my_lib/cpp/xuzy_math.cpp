@@ -1,6 +1,6 @@
 #include <iostream>
 #include "xuzy_math.h"
-#include "log.h"
+#include "logger.h"
 
 int xuzy::add(int a, int b)
 {

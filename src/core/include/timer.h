@@ -4,7 +4,7 @@
 #include <iomanip>
 #include <chrono>
 
-#include "log.h"
+#include "logger.h"
 
 namespace xuzy
 {

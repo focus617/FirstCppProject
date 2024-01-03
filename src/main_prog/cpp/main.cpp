@@ -10,7 +10,7 @@
 #include "absl/strings/str_join.h"
 
 #include "config.h"
-#include "log.h"
+#include "logger.h"
 #include "xuzy_math.h"
 #include "singleton.h"
 
@@ -30,7 +30,8 @@ void set_log_level(const LogLevel &t_new_level);
 
 void test_logger();
 void test_singleton();
-extern int test_httplib();
+extern int test_httplib_client();
+extern int test_httplib_server();
 extern void thread_trial();
 extern void thread_active_object();
 
@@ -54,20 +55,17 @@ int main(int argc, char *argv[])
     google::InitGoogleLogging(argv[0]);
     // Log both to log file and stderr
     FLAGS_alsologtostderr = true;
-    
-    LOG(INFO) << "Found " << 1 << " cookies.\n" << std::endl;
 
     parse_commandline(argc, argv);
 
-    test_logger();
+    test_httplib_server();
 
     /*
-        thread_trial();
-        thread_active_object();
-
+        test_logger();
         test_singleton();
 
-        test_httplib();
+        thread_trial();
+        thread_active_object();
     */
 
     return EXIT_SUCCESS;
@@ -79,26 +77,27 @@ int parse_commandline(int argc, char *argv[])
         absl::StrCat("Version ", PROJECT_VERSION, "\n",
                      "This program does nothing.\n\nSample usage:\n",
                      argv[0], " --verbose -F <configure_file> --log==[fatal|error|warn|info|debug|trace]"));
+
     // Parsing flags during startup
     auto undefined_flags = absl::ParseCommandLine(argc, argv);
 
     // 读取自定义类型标志
     LogLevel level = absl::GetFlag(FLAGS_log);
-    LOG_INFO("Get flag for log: %s", AbslUnparseFlag(level).c_str());
+    LOG(INFO) << "Get flag for log: " << AbslUnparseFlag(level);
     set_log_level(level);
 
     // 读取未解析的参数，按位置打印
     LOG_DEBUG("Undefined flags: %s", absl::StrJoin(undefined_flags, " ").c_str());
 
     // 读取bool类型标志
-    LOG_INFO("Get flag for verbose: %s", absl::GetFlag(FLAGS_verbose) ? "true" : "false");
+    LOG(INFO) << "Get flag for verbose: " << (absl::GetFlag(FLAGS_verbose) ? "true" : "false");
 
     // 读取optional类型标志
     if (absl::GetFlag(FLAGS_F).has_value())
     {
         // flag was set on command line
         std::string config_file_name = absl::GetFlag(FLAGS_F).value();
-        LOG_INFO("Get flag for config_file: %s", config_file_name.c_str());
+        LOG(INFO) << "Get flag for config_file: " << config_file_name;
 
         load_from_configure_file(config_file_name);
     }

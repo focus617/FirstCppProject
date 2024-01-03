@@ -1,7 +1,7 @@
 #include <thread>
 #include <vector>
 
-#include "log.h"
+#include "logger.h"
 #include "timer.h"
 
 using xuzy::Logger;

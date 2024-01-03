@@ -12,14 +12,11 @@ add_subdirectory(cpp)
 add_executable(my_app ${_SOURCES})
 
 # 添加编译选项
-set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG} -Wextra -Wshadow")
+set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG} -Wextra -Wshadow -Wno-unused-parameter")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wextra -Wshadow -Wno-unused-parameter")
 
 # 给Debug版本的应用添加后缀
 set_target_properties(my_app PROPERTIES DEBUG_POSTFIX ${CMAKE_DEBUG_POSTFIX})
-
-# Abseil只提供静态库
-# set_property(TARGET absl_flags_parse PROPERTY IMPORTED_LOCATION "${CMAKE_INSTALL_PREFIX}/lib/libabsl_flags_parsed.a")
 
 # 添加链接库
 target_link_libraries(my_app PUBLIC 
@@ -27,12 +24,14 @@ target_link_libraries(my_app PUBLIC
      absl::flags_parse
      absl::flags_usage
      glog::glog
+     nlohmann_json::nlohmann_json
      ${EXTRA_LIBS}
 )
 
 target_include_directories(my_app
      PUBLIC ${EXTRA_INCLUDES}
      PRIVATE ${PROJECT_BINARY_DIR}/src
+     PRIVATE ${PROJECT_SOURCE_DIR}/extern/nlohmann-json/include/nlohmann
 )
 
 install (TARGETS my_app DESTINATION bin)

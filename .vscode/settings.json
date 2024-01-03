@@ -80,6 +80,8 @@
         "io_context": "cpp",
         "netfwd": "cpp",
         "timer": "cpp",
-        "ranges": "cpp"
+        "ranges": "cpp",
+        "csetjmp": "cpp",
+        "shared_mutex": "cpp"
     }
 }

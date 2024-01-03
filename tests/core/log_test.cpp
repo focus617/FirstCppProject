@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <iostream>
-#include "log.h"
+#include "logger.h"
 
 class Log_Test_Fixture : public testing::Test
 {

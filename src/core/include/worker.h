@@ -6,7 +6,7 @@
 #include <span>
 #include <chrono>
 
-#include "log.h"
+#include "logger.h"
 #include "mastercontroller.h"
 
 namespace xuzy
