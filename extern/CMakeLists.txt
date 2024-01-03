@@ -1,9 +1,13 @@
+message(STATUS "Build GoogleTest...")
 set(CMAKE_CXX_STANDARD 17)
-
 add_subdirectory(googletest)
+
+message(STATUS "Build Glog...")
+set(GTest_DIR "${PROJECT_SOURCE_DIR}/install/lib/cmake/GTest") 
 add_subdirectory(glog)
 
-option(ABSL_PROPAGATE_CXX_STD "" ON)
-# option(ABSL_BUILD_TESTING "" ON)
-# option(ABSL_USE_GOOGLETEST_HEAD "" ON)
-add_subdirectory(abseil)
+message(STATUS "Build Cpp-httplib...")
+add_subdirectory(cpp-httplib)
+
+message(STATUS "Build Abseil...")
+# add_subdirectory(abseil)

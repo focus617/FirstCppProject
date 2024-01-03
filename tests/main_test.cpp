@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
 // int main(int argc, char **argv){
 //   testing::InitGoogleTest(&argc, argv);
@@ -11,4 +12,11 @@ TEST(HelloTest, BasicAssertions) {
   EXPECT_STRNE("hello", "world");
   // Expect equality.
   EXPECT_EQ(7 * 6, 42);
+}
+
+using ::testing::Eq;
+
+TEST(HelloTest, TrailAssertThat) {
+  // ASSERT_THAT from gmock.
+  ASSERT_THAT(12+7, Eq(19));
 }

@@ -4,7 +4,7 @@
 #include "log.h"
 #include "timer.h"
 
-using xuzy::Log;
+using xuzy::Logger;
 
 static bool s_finished = false;
 

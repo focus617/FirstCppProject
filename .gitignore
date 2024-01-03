@@ -34,6 +34,7 @@
 
 ### CMake ###
 build/*
+install/*
 CMakeLists.txt.user
 CMakeCache.txt
 CMakeFiles

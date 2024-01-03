@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <iomanip>
 #include <chrono>
 
 #include "log.h"
@@ -43,6 +44,8 @@ namespace xuzy
         {
             return m_duration.count() * 1000.0f;
         }
+
+        static const std::string get_current_timestamp();
     };
 
     std::ostream &operator<<(std::ostream &stream, const Timer &timer);

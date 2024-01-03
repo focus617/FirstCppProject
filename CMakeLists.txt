@@ -14,7 +14,7 @@ set(EXTRA_COMPILE_OPTIONS "-Wextra -Wshadow -Wnon-virtual-dtor -pedantic")
 
 set(SOURCE_DIR "${PROJECT_SOURCE_DIR}/src/")
 set(EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin")        # Set executable output directory
-set(CMAKE_INSTALL_PREFIX "${PROJECT_SOURCE_DIR}/build/install")   # Set installation directory
+set(CMAKE_INSTALL_PREFIX "${PROJECT_SOURCE_DIR}/install")   # Set installation directory
 
 configure_file (
     "${PROJECT_SOURCE_DIR}/config.h.in"
@@ -29,10 +29,10 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 # update all submodule
 include(cmake/CheckGitSubmodule.cmake)
+# build all submodule
+add_subdirectory(extern)
 
 add_subdirectory(src)
-
-add_subdirectory(extern)
 
 include(CTest)
 if (BUILD_TESTING)

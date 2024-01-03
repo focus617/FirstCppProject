@@ -1,4 +1,4 @@
 #! /bin/sh
 
-cmake --build build/debug
-# cmake --build build/release
+cmake --build build/debug --target install
+# cmake --build build/release --target install

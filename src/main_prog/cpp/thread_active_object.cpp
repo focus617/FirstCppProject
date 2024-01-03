@@ -9,7 +9,7 @@
 #include "timer.h"
 #include "worker.h"
 
-using xuzy::Log;
+using xuzy::Logger;
 
 void thread_active_object()
 {
