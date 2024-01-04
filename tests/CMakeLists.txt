@@ -34,6 +34,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 aux_source_directory(. _TEST_SOURCES)
 
 option(TEST_CORE_LIB "Test Core Library" ON)
+option(TEST_RESTFUL_LIB "Test Restful Library" ON)
 option(TEST_MY_LIB "Test My Library" ON)
 
 if (TEST_CORE_LIB)
@@ -41,6 +42,16 @@ if (TEST_CORE_LIB)
   add_subdirectory(core)
   list(APPEND TEST_EXTRA_LIBS core)
   list(APPEND TEST_EXTRA_INCLUDES "${SOURCE_DIR}/core/include")
+endif()
+
+if (TEST_RESTFUL_LIB)
+  message(STATUS "Building test for Restful Library...")
+  add_subdirectory(restful)
+  list(APPEND TEST_EXTRA_LIBS restful)
+  list(APPEND TEST_EXTRA_INCLUDES 
+      "${SOURCE_DIR}/restful/api"
+      "${SOURCE_DIR}/restful/http"
+  )
 endif()
 
 if (TEST_MY_LIB)
@@ -60,16 +71,24 @@ target_compile_features(testRunner PRIVATE cxx_std_20)
 set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG} ${EXTRA_COMPILE_OPTIONS}")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${EXTRA_COMPILE_OPTIONS}")
 
+target_compile_definitions(restful PUBLIC
+    $<$<BOOL:${HTTPLIB_IS_USING_OPENSSL}>:CPPHTTPLIB_OPENSSL_SUPPORT>
+)
+
 # 指定头文件路径
 target_include_directories(testRunner PUBLIC
   ${TEST_EXTRA_INCLUDES} 
-  ${PROJECT_BINARY_DIR}/src
+  PRIVATE ${PROJECT_SOURCE_DIR}/extern/cpp-httplib
+  PRIVATE ${PROJECT_SOURCE_DIR}/extern/nlohmann-json/include/nlohmann
 )
 
 # 添加链接库
 target_link_libraries(testRunner
   GTest::gtest_main
   GTest::gmock_main
+  $<$<BOOL:${HTTPLIB_IS_USING_OPENSSL}>:OpenSSL::SSL>
+  $<$<BOOL:${HTTPLIB_IS_USING_OPENSSL}>:OpenSSL::Crypto>
+  nlohmann_json::nlohmann_json
   ${TEST_EXTRA_LIBS}
 )
 

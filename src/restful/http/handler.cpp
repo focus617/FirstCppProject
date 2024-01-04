@@ -1,4 +1,8 @@
-#include "restful.h"
+#include <glog/logging.h>
+
+#include "handler.h"
+#include "api.h"
+#include "response_codes.h"
 
 namespace http::handler
 {
@@ -23,6 +27,7 @@ namespace http::handler
                 if(host.isBanned(ipaddr))
                 {
                     res.status = Code::Unauthorized;
+                    LOG(WARNING) << "IP Blocked: " << ipaddr;
                     return httplib::Server::HandlerResponse::Handled;
                 }
                 return httplib::Server::HandlerResponse::Unhandled; });

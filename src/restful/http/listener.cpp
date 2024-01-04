@@ -1,25 +1,40 @@
-#include "restful.h"
+#include <glog/logging.h>
+
+#include "listener.h"
+#include "handler.h"
 
 namespace http::listener
 {
     void run(Host host)
     {
-        // Launch HTTP Server
-        httplib::Server svr;
-        LOG(INFO) << "Http Server Start...";
+        // HTTP Server
+        httplib::Server server;
+        p_server = &server;
 
         // Setup listening IP address and routing
-        handler::setup(svr, host);
+        handler::setup(server, host);
 
-        // Default Routing: Stop the sever when the user access /stop
-        svr.Get("/stop", [&](const httplib::Request &req, httplib::Response &res)
-                {                
-                svr.stop(); 
+        // Default Routing: Stop the server when the user access /stop
+        server.Get("/stop", [&](const httplib::Request &req, httplib::Response &res)
+                   {                
+                server.stop(); 
                 res.set_redirect("/"); });
 
+        LOG(INFO) << "Http Server Start at " << host.ip << ":" << host.port;
+
         // Listen server to port
-        svr.listen(host.ip, host.port);
+        server.listen(host.ip, host.port);
 
         LOG(INFO) << "Http Server Stopped.";
     }
+
+    void stop()
+    {
+        if ((p_server != nullptr) && (p_server->is_running()))
+        {
+            p_server->stop();
+            p_server = nullptr;
+        }
+    }
+
 } // namespace http::listener
