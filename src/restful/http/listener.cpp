@@ -5,6 +5,9 @@
 
 namespace http::listener
 {
+    // HTTP Server
+    httplib::Server *p_server = nullptr;
+
     void run(Host host)
     {
         // HTTP Server
@@ -18,6 +21,7 @@ namespace http::listener
         server.Get("/stop", [&](const httplib::Request &req, httplib::Response &res)
                    {                
                 server.stop(); 
+                p_server = nullptr;
                 res.set_redirect("/"); });
 
         LOG(INFO) << "Http Server Start at " << host.ip << ":" << host.port;
@@ -26,6 +30,15 @@ namespace http::listener
         server.listen(host.ip, host.port);
 
         LOG(INFO) << "Http Server Stopped.";
+    }
+
+
+    void wait_until_ready()
+    {
+        if ((p_server != nullptr) && (p_server->is_running()))
+        {
+            p_server->wait_until_ready();
+        }
     }
 
     void stop()

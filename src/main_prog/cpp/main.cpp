@@ -14,7 +14,7 @@
 #include "logger.h"
 #include "xuzy_math.h"
 #include "singleton.h"
-#include "listener.h"
+#include "restful.h"
 
 using xuzy::Logger;
 
@@ -59,8 +59,8 @@ int main(int argc, char *argv[])
 
     parse_commandline(argc, argv);
 
-    http::Host host("0.0.0.0", 8080);
-    std::thread(&http::listener::run, std::move(host)).detach();
+    xuzy::Restful svr("Restful-Server");
+    svr.run();
  
     std::cin.get();
     LOG(INFO) << "Main Thread Stopped.";

@@ -22,7 +22,8 @@ target_compile_definitions(restful PUBLIC
 )
 
 # 指定头文件路径
-target_include_directories(restful 
+target_include_directories(restful
+    PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}" 
     PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/api"
     PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/http"
     PRIVATE ${PROJECT_SOURCE_DIR}/extern/cpp-httplib
