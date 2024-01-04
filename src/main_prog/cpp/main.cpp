@@ -14,7 +14,7 @@
 #include "logger.h"
 #include "xuzy_math.h"
 #include "singleton.h"
-#include "http.h"
+#include "restful.h"
 
 using xuzy::Logger;
 

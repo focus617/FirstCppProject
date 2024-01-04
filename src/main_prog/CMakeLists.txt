@@ -18,6 +18,13 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wextra -Wshadow -Wno-un
 # 给Debug版本的应用添加后缀
 set_target_properties(my_app PROPERTIES DEBUG_POSTFIX ${CMAKE_DEBUG_POSTFIX})
 
+# 指定头文件路径
+target_include_directories(my_app
+     PUBLIC ${EXTRA_INCLUDES}
+     PRIVATE ${PROJECT_BINARY_DIR}/src
+     PRIVATE ${PROJECT_SOURCE_DIR}/extern/nlohmann-json/include/nlohmann
+)
+
 # 添加链接库
 target_link_libraries(my_app PUBLIC 
      absl::flags
@@ -26,12 +33,6 @@ target_link_libraries(my_app PUBLIC
      glog::glog
      nlohmann_json::nlohmann_json
      ${EXTRA_LIBS}
-)
-
-target_include_directories(my_app
-     PUBLIC ${EXTRA_INCLUDES}
-     PRIVATE ${PROJECT_BINARY_DIR}/src
-     PRIVATE ${PROJECT_SOURCE_DIR}/extern/nlohmann-json/include/nlohmann
 )
 
 install (TARGETS my_app DESTINATION bin)

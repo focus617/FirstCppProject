@@ -6,8 +6,16 @@ add_subdirectory(core)
 list(APPEND EXTRA_LIBS core)
 list(APPEND EXTRA_INCLUDES "${SOURCE_DIR}/core/include")
 
+option(BUILD_RESTFUL_LIB "Build Restful Library" ON)
 option(BUILD_MY_LIB "Build My Library" ON)
 option(BUILD_MAIN "Build Main Program" ON)
+
+if (BUILD_RESTFUL_LIB)
+    message(STATUS "Building Restful Library...")
+    add_subdirectory(restful)
+    list(APPEND EXTRA_LIBS restful)
+    list(APPEND EXTRA_INCLUDES "${SOURCE_DIR}/restful/http")
+endif()
 
 if (BUILD_MY_LIB)
     message(STATUS "Building My Library...")
