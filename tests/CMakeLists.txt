@@ -46,6 +46,13 @@ endif()
 
 if (TEST_RESTFUL_LIB)
   message(STATUS "Building test for Restful Library...")
+  
+  find_package(OpenSSL REQUIRED)
+  if(OPENSSL_FOUND)
+    set(HTTPLIB_IS_USING_OPENSSL TRUE)
+    message(STATUS "Set HTTPLIB_IS_USING_OPENSSL to ${HTTPLIB_IS_USING_OPENSSL}")
+  endif()
+
   add_subdirectory(restful)
   list(APPEND TEST_EXTRA_LIBS restful)
   list(APPEND TEST_EXTRA_INCLUDES 

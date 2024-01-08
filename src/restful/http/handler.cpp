@@ -15,8 +15,11 @@ namespace http::handler
                 { res.set_content("<html><body><h1>Hello World!</h1></body></html>", "text/html"); });
 
         // Match the request path against a regular expression and extract its captures
-        svr.Get(R"(/lists/(\d+))", [&](const Request &req, Response &res) -> void
-                { api::list(req, res); });
+        svr.Get(R"(/api/v1/lists/(\d+))", [&](const Request &req, Response &res) -> void
+                { api::lists_get(req, res); });
+
+        svr.Post(R"(/api/v1/lists)", [&](const Request &req, Response &res) -> void
+                { api::lists_post(req, res); });
 
         svr.Post("/empty",
                  [&](const Request &req, Response &res)
@@ -42,12 +45,12 @@ namespace http::handler
                   [&](const Request &req, Response &res)
                   {
                       res.set_content(req.body, "text/plain");
-                  })
-            .Put("/empty-no-content-type",
-                 [&](const Request &req, Response &res)
-                 {
-                     res.set_content("empty-no-content-type", "text/plain");
-                 });
+                  });
+        svr.Put("/empty-no-content-type",
+                [&](const Request &req, Response &res)
+                {
+                    res.set_content("empty-no-content-type", "text/plain");
+                });
     }
 
     void setup_security(httplib::Server &svr, Host &host)
@@ -76,17 +79,23 @@ namespace http::handler
             [](const auto &req, auto &res)
             {
                 auto ipAddr = "IP:" + req.get_header_value("REMOTE_ADDR") + " ";
-                auto methodAndPath = req.method + " " + req.path;
-                auto status = " " + std::to_string(res.status);
+                auto methodAndPath = "Request:" + req.method + " " + req.path + " ";
+                auto status = "Status:" + std::to_string(res.status);
                 auto logStr = ipAddr + methodAndPath + status;
 
-                LOG(WARNING) << logStr << std::endl;
+                LOG(WARNING) << "Error: " << logStr << std::endl;
                 LOG(WARNING) << "Body: " << req.body;
+
+                auto fmt = "<p>Error Status: <span style='color:red;'>%d</span></p>";
+                char buf[BUFSIZ];
+                snprintf(buf, sizeof(buf), fmt, res.status);
+                res.set_content(buf, "text/html");
             });
     }
 
     void setup(httplib::Server &svr, Host &host)
     {
+        LOG(INFO) << "Setup Http Server";
         setup_security(svr, host);
         setup_errors(svr);
         setup_routing(svr);

@@ -1,6 +1,7 @@
 find_package(OpenSSL REQUIRED)
 if(OPENSSL_FOUND)
     set(HTTPLIB_IS_USING_OPENSSL TRUE)
+    message(STATUS "Set HTTPLIB_IS_USING_OPENSSL to ${HTTPLIB_IS_USING_OPENSSL}")
 endif()
 
 # 查找当前目录下的所有源文件，并将名称保存到 _SOURCES 变量
@@ -36,9 +37,12 @@ target_link_libraries(restful PUBLIC
     $<$<BOOL:${HTTPLIB_IS_USING_OPENSSL}>:OpenSSL::SSL>
     $<$<BOOL:${HTTPLIB_IS_USING_OPENSSL}>:OpenSSL::Crypto>
     nlohmann_json::nlohmann_json
+    core
 )
 
 install(TARGETS restful
     LIBRARY DESTINATION lib
-    PUBLIC_HEADER DESTINATION include/xuzy
-)    
+)
+
+install(FILES host/cert.pem DESTINATION bin)
+install(FILES host/key.pem DESTINATION bin)    

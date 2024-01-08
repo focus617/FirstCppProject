@@ -2,9 +2,7 @@
 
 #include <iostream>
 #include <mutex>
-
-// #include "log.h"
-
+#include <glog/logging.h>
 class Singleton
 {
 private:
@@ -25,11 +23,11 @@ public:
 
         if (m_one_and_only_instance == nullptr)
         {
-            std::cout << "creating a new instance" << std::endl;
+            LOG(INFO) << "creating a new instance" << std::endl;
             // lazy initialization
             m_one_and_only_instance = new Singleton(t_num);
         }
-        std::cout << "returning instance with unique id: " << m_unique_id << std::endl;
+        LOG(INFO) << "returning instance with unique id: " << m_unique_id << std::endl;
         return m_one_and_only_instance;
     }
 
@@ -43,7 +41,7 @@ public:
 
     void print_unique_id()
     {
-        std::cout << "Instance's unique id: " << this->m_unique_id << std::endl;
+        LOG(INFO) << "Instance's unique id: " << this->m_unique_id << std::endl;
     }
 };
 

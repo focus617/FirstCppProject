@@ -2,15 +2,26 @@
 
 #include <string>
 
-namespace xuzy
+#include "app.h"
+
+#ifdef CPPHTTPLIB_OPENSSL_SUPPORT
+#define SERVER_CERT_FILE "./cert.pem"
+#define SERVER_PRIVATE_KEY_FILE "./key.pem"
+#endif
+
+namespace http
 {
-    class Restful
+    class Restful : public xuzy::App
     {
     private:
-        std::string m_app_name;
+        void start();
+        static void idle();
+
+        void setup(const json &configuration) override;
+
 
     public:
-        Restful(std::string appName);
+        Restful(std::string t_app_name);
         virtual ~Restful() final = default;
 
         Restful(const Restful &) = delete;
@@ -18,6 +29,6 @@ namespace xuzy
         Restful(Restful &&) = delete;
         Restful &operator=(Restful &&) = delete;
 
-        void run();
+        void run() override;
     };
 }

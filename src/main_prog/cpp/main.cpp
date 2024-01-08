@@ -14,6 +14,7 @@
 #include "logger.h"
 #include "xuzy_math.h"
 #include "singleton.h"
+#include "app.h"
 #include "restful.h"
 
 using xuzy::Logger;
@@ -50,6 +51,9 @@ ABSL_FLAG(bool, verbose, false, "Enable verbose mode");
 ABSL_FLAG(std::optional<std::string>, F, std::nullopt, "Settings from a file");
 ABSL_FLAG(LogLevel, log, LogLevel::Info, "Setting log level");
 
+const std::string VERSION{"0.0.1"};
+const std::string APP_NAME{"Restful"};
+
 int main(int argc, char *argv[])
 {
     // Initialize Google’s logging library.
@@ -59,10 +63,8 @@ int main(int argc, char *argv[])
 
     parse_commandline(argc, argv);
 
-    xuzy::Restful svr("Restful-Server");
-    svr.run();
- 
-    std::cin.get();
+    xuzy::App::main(argc, argv, VERSION, new http::Restful("Restful-Server"));
+
     LOG(INFO) << "Main Thread Stopped.";
 
     /*

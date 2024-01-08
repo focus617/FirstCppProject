@@ -1,38 +1,68 @@
 #pragma once
 
 #include <iostream>
+#include <fstream>
+#include <json.hpp>
+
+using json = nlohmann::json;
 
 namespace xuzy
 {
-    class configuration
+    class Configuration
     {
     private:
         std::string m_configuration_filename;
 
-        int open_file(const char *fileName);
-
     public:
-        configuration(/* args */);
-        ~configuration();
+        Configuration(std::string filename);
+        Configuration();
+        virtual ~Configuration();
+
+        json load_from_json_file();
     };
 
-    configuration::configuration(/* args */)
+    Configuration::Configuration(std::string filename)
+        : m_configuration_filename{filename}
     {
     }
 
-    configuration::~configuration()
+    Configuration::Configuration()
+        : m_configuration_filename{"configuration"}
     {
     }
 
-    int configuration::open_file(const char *t_filename)
+    Configuration::~Configuration()
     {
-        std::ifstream ifs(t_filename);
+    }
 
-        if (!ifs.is_open())
+    json Configuration::load_from_json_file()
+    {
+        json json_config;
+
+        try
         {
-            throw std::exception("Failed to open configuration file.");
+            std::ifstream config_file((m_configuration_filename + ".json").c_str());
+
+            if (config_file.std::ios::eof())
+            {
+                throw std::runtime_error("Config file is empty");
+            }
+            // Make sure the config is open
+            if (!config_file.is_open())
+            {
+                throw std::runtime_error("Can't open config");
+            }
+            config_file >> json_config;
         }
-        return 0;
+        catch (std::exception &e)
+        {
+            throw std::string(e.what());
+        }
+        catch (...)
+        {
+            throw "Can't open config";
+        }
+        return json_config;
     }
 
 }

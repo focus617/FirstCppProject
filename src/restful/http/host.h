@@ -8,8 +8,9 @@ using json = nlohmann::json;
 
 namespace http
 {
-    struct Host
+    class Host
     {
+    public:
         std::string ip{};
         uint port;
         std::unordered_set<std::string> bannedips;
@@ -29,6 +30,25 @@ namespace http
         bool isBanned(const std::string &ipaddr) const
         {
             return bannedips.find(ipaddr) != bannedips.end();
+        }
+
+        void from_json(const json &j, Host &h)
+        {
+            h.ip = j.value("ip", "localhost");
+            h.port = j.value("port", 8080);
+            h.bannedips = j.value("bannedIps", std::unordered_set<std::string>{});
+        }
+
+        void to_json(json &j, const Host &h)
+        {
+            j = json
+            {
+                {"ip", h.ip},
+                {"port", h.port},
+                {
+                    "bannedIps", {}
+                }
+            };
         }
     };
 }

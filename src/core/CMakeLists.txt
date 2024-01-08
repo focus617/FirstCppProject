@@ -30,6 +30,7 @@ target_include_directories(core
 
 # 添加链接库
 target_link_libraries(core PUBLIC
+    glog::glog
     $<$<BOOL:${HTTPLIB_IS_USING_OPENSSL}>:OpenSSL::SSL>
     $<$<BOOL:${HTTPLIB_IS_USING_OPENSSL}>:OpenSSL::Crypto>
     nlohmann_json::nlohmann_json

@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <glog/logging.h>
 #include <iostream>
 #include <memory>
 
@@ -56,7 +57,7 @@ TEST_F(Dummy_Test_Fixture, dummy_str)
 
 ACTION(throwError)
 {
-  std::cout << "Mock to throw exception" << std::endl;
+  LOG(INFO) << "Mock to throw exception" << std::endl;
   throw std::runtime_error("Throw Error Test");
 }
 

@@ -1,10 +1,12 @@
 #include <iostream>
+#include <glog/logging.h>
+
 #include "xuzy_math.h"
 #include "logger.h"
 
 int xuzy::add(int a, int b)
 {
-    LOG_INFO("%s", xuzy::return_by_macro());
+    LOG(INFO) << xuzy::return_by_macro();
     return a + b;
 }
 
