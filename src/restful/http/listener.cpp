@@ -16,11 +16,11 @@ namespace http::listener
         // HTTP Server
 #ifdef CPPHTTPLIB_OPENSSL_SUPPORT
         httplib::SSLServer server(SERVER_CERT_FILE, SERVER_PRIVATE_KEY_FILE);
+        LOG(INFO) << "Launching Https Server in thread...";
 #else
         httplib::Server server;
+        LOG(INFO) << "Launching Http Server in thread...";
 #endif
-
-        LOG(INFO) << "Launching Http Server in thread.";
 
         // Setup listening IP address and routing
         handler::setup(server, host);
@@ -29,7 +29,7 @@ namespace http::listener
         server.Get("/stop", [&](const httplib::Request &req, httplib::Response &res)
                    {                
                 server.stop(); 
-                LOG(INFO) << "Http Server Stopped.";
+                LOG(INFO) << "Http Server Stopped";
 
                 res.set_redirect("/"); });
 

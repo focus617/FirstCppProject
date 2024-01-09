@@ -20,6 +20,7 @@ set_target_properties(my_app PROPERTIES DEBUG_POSTFIX ${CMAKE_DEBUG_POSTFIX})
 
 # 指定头文件路径
 target_include_directories(my_app
+     PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include"
      PUBLIC ${EXTRA_INCLUDES}
      PRIVATE ${PROJECT_BINARY_DIR}/src
      PRIVATE ${PROJECT_SOURCE_DIR}/extern/nlohmann-json/include/nlohmann
