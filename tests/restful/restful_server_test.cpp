@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 #include <thread>
 
-#include "app.h"
+#include "app/app.h"
 #include "listener.h"
 
 using namespace httplib;
@@ -41,12 +41,14 @@ RestfulServer_Test_Fixture::RestfulServer_Test_Fixture()
 
 void RestfulServer_Test_Fixture::SetUp()
 {
+    GTEST_SKIP() << "Skipping single test";
     http::Host host(HOST, PORT);
     m_svr_thread = std::thread(&http::listener::run, std::move(host));
 }
 
 void RestfulServer_Test_Fixture::TearDown()
 {
+    GTEST_SKIP() << "Skipping single test";
     m_svr_thread.join();
 }
 

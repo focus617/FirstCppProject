@@ -8,9 +8,12 @@
 #include "args.h"
 #include "config.h"
 
+#include "logger.h"
+using xuzy::Logger;
+
 // 从配置文件读取配置参数
-// extern void load_from_configure_file(const std::string &t_filename);
-// extern void set_log_level(const LogLevel &t_new_level);
+void load_from_configure_file(const std::string &t_filename);
+void set_log_level(const LogLevel &t_new_level);
 
 // Define the flag 标志
 // 参数: 1.标志类型 2.标志名 3.默认值 4.标志描述
@@ -112,7 +115,7 @@ bool CLI_Parser::parse_commandline(int argc, char *argv[])
         std::string config_file_name = absl::GetFlag(FLAGS_F).value();
         LOG(INFO) << "Get flag for config_file: " << config_file_name;
 
-        // load_from_configure_file(config_file_name);
+        load_from_configure_file(config_file_name);
     }
     else
     {
@@ -121,4 +124,40 @@ bool CLI_Parser::parse_commandline(int argc, char *argv[])
     }
 
     return true;
+}
+
+void load_from_configure_file(const std::string &t_filename)
+{
+    LOG(INFO) << __FUNCTION__ << ": Load configure from file: " << t_filename;
+}
+
+void set_log_level(const LogLevel &t_new_level)
+{
+    Logger::Level log_level;
+
+    switch (t_new_level)
+    {
+    case LogLevel::Fatal:
+        log_level = Logger::Level::Fatal;
+        break;
+    case LogLevel::Error:
+        log_level = Logger::Level::Error;
+        break;
+    case LogLevel::Warn:
+        log_level = Logger::Level::Warn;
+        break;
+    case LogLevel::Info:
+        log_level = Logger::Level::Info;
+        break;
+    case LogLevel::Debug:
+        log_level = Logger::Level::Debug;
+        break;
+    case LogLevel::Trace:
+        log_level = Logger::Level::Trace;
+        break;
+    default:
+        log_level = Logger::Level::Trace;
+    }
+    Logger::get_logger().set_level(log_level);
+    return;
 }

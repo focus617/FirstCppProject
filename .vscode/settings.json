@@ -84,5 +84,8 @@
         "csetjmp": "cpp",
         "shared_mutex": "cpp",
         "*.inc": "cpp"
-    }
+    },
+    "editor.wordWrap": "wordWrapColumn",
+    "editor.wrappingIndent": "same",
+    "editor.wordWrapColumn": 80
 }

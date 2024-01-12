@@ -13,7 +13,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -Wall -Werror -std=c++20")
 set(EXTRA_COMPILE_OPTIONS "-Wextra -Wshadow -Wnon-virtual-dtor -pedantic")
 
 set(SOURCE_DIR "${PROJECT_SOURCE_DIR}/src/")
-set(EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin")        # Set executable output directory
+set(EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin")       # Set executable output directory
 set(CMAKE_INSTALL_PREFIX "${PROJECT_SOURCE_DIR}/install")   # Set installation directory
 
 configure_file (

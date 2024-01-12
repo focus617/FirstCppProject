@@ -5,36 +5,31 @@
 #include <glog/logging.h>
 
 #include "config.h"
-#include "logger.h"
 #include "xuzy_math.h"
 #include "singleton.h"
-#include "app.h"
+#include "app/app.h"
 #include "args.h"
 #include "restful.h"
 
+#include "logger.h"
 using xuzy::Logger;
 
 void test_logger();
 void test_singleton();
-extern int test_httplib_client();
-extern void thread_trial();
-extern void thread_active_object();
+// extern int test_httplib_client();
+// extern void thread_trial();
+// extern void thread_active_object();
 
 const std::string VERSION{"0.0.1"};
 const std::string APP_NAME{"Restful-Server"};
 
 int main(int argc, char *argv[])
 {
-    // parse_commandline(argc, argv);
-
     xuzy::App *app = new http::Restful(APP_NAME);
     
-    CLI_Parser *p_cli_parser = new CLI_Parser();
-    app-> set_cli_parser(p_cli_parser);
+    app-> set_cli_parser(new CLI_Parser());
 
     xuzy::App::main(argc, argv, VERSION, app);
-
-    LOG(INFO) << "Main Thread Stopped.";
 
     /*
         test_logger();
@@ -45,42 +40,6 @@ int main(int argc, char *argv[])
     */
 
     return EXIT_SUCCESS;
-}
-
-void load_from_configure_file(const std::string &t_filename)
-{
-    LOG_INFO("%s(): Load configure from file: %s", __FUNCTION__, t_filename.c_str());
-}
-
-void set_log_level(const LogLevel &t_new_level)
-{
-    Logger::Level log_level;
-
-    switch (t_new_level)
-    {
-    case LogLevel::Fatal:
-        log_level = Logger::Level::Fatal;
-        break;
-    case LogLevel::Error:
-        log_level = Logger::Level::Error;
-        break;
-    case LogLevel::Warn:
-        log_level = Logger::Level::Warn;
-        break;
-    case LogLevel::Info:
-        log_level = Logger::Level::Info;
-        break;
-    case LogLevel::Debug:
-        log_level = Logger::Level::Debug;
-        break;
-    case LogLevel::Trace:
-        log_level = Logger::Level::Trace;
-        break;
-    default:
-        log_level = Logger::Level::Trace;
-    }
-    Logger::get_logger().set_level(log_level);
-    return;
 }
 
 void test_logger()

@@ -40,8 +40,10 @@ option(TEST_MY_LIB "Test My Library" ON)
 if (TEST_CORE_LIB)
   message(STATUS "Building test for Core Library...")
   add_subdirectory(core)
+  add_subdirectory(sample_lib)
   list(APPEND TEST_EXTRA_LIBS core)
   list(APPEND TEST_EXTRA_INCLUDES "${SOURCE_DIR}/core/include")
+  list(APPEND TEST_EXTRA_INCLUDES "${CMAKE_CURRENT_SOURCE_DIR}/sample_lib")
 endif()
 
 if (TEST_RESTFUL_LIB)
@@ -58,6 +60,9 @@ if (TEST_RESTFUL_LIB)
   list(APPEND TEST_EXTRA_INCLUDES 
       "${SOURCE_DIR}/restful/api"
       "${SOURCE_DIR}/restful/http"
+  )
+  target_compile_definitions(restful PUBLIC
+    $<$<BOOL:${HTTPLIB_IS_USING_OPENSSL}>:CPPHTTPLIB_OPENSSL_SUPPORT>
   )
 endif()
 
@@ -78,8 +83,8 @@ target_compile_features(testRunner PRIVATE cxx_std_20)
 set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG} ${EXTRA_COMPILE_OPTIONS}")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${EXTRA_COMPILE_OPTIONS}")
 
-target_compile_definitions(restful PUBLIC
-    $<$<BOOL:${HTTPLIB_IS_USING_OPENSSL}>:CPPHTTPLIB_OPENSSL_SUPPORT>
+target_compile_definitions(testRunner PUBLIC
+  RUNTIME_LIB_DIR="${CMAKE_INSTALL_PREFIX}/lib"
 )
 
 # 指定头文件路径
@@ -97,6 +102,7 @@ target_link_libraries(testRunner
   $<$<BOOL:${HTTPLIB_IS_USING_OPENSSL}>:OpenSSL::Crypto>
   nlohmann_json::nlohmann_json
   ${TEST_EXTRA_LIBS}
+  ${CMAKE_DL_LIBS}
 )
 
 include(GoogleTest)

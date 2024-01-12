@@ -1,13 +1,9 @@
-find_package(OpenSSL REQUIRED)
-if(OPENSSL_FOUND)
-    set(HTTPLIB_IS_USING_OPENSSL TRUE)
-endif()
-
 # 查找当前目录下的所有源文件，并将名称保存到 _SOURCES 变量
 aux_source_directory(. _SOURCES)
 
 # 添加子目录
 add_subdirectory(cpp)
+add_subdirectory(./include/classloader)
 
 # 生成静态链接库
 add_library(core SHARED ${_SOURCES})
