@@ -5,12 +5,12 @@
 #include <glog/logging.h>
 
 #include "config.h"
+#include "app/app.hpp"
+
 #include "xuzy_math.h"
 #include "singleton.h"
-#include "app/app.h"
-#include "args.h"
-#include "restful.h"
-
+#include "args.hpp"
+#include "restful.hpp"
 #include "logger.h"
 using xuzy::Logger;
 

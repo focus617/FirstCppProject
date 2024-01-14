@@ -6,7 +6,7 @@
 ///
 /// \brief TODO
 ///
-class Square : public Shape
+class XUZY_API Square : public Shape
 {
 public:
   Square(float a);

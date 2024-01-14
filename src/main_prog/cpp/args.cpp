@@ -5,7 +5,7 @@
 #include "absl/flags/usage.h"
 #include "absl/strings/str_join.h"
 
-#include "args.h"
+#include "args.hpp"
 #include "config.h"
 
 #include "logger.h"

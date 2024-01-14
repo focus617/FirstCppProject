@@ -1,8 +1,8 @@
 #include <glog/logging.h>
 
-#include "classloader/shared_library.h"
+#include "classloader/shared_library.hpp"
 
-using namespace dynamicclassloader;
+using namespace class_loader;
 
 SharedLibrary::SharedLibrary()
 {
@@ -10,6 +10,10 @@ SharedLibrary::SharedLibrary()
 
 SharedLibrary::SharedLibrary(const std::string &path)
 {
+	LOG(INFO)
+		<< "class_loader::SharedLibrary: Constructing new SharedLibrary("
+		<< this << ") bound to library " << path << ".";
+
 	loadImpl(path, 0);
 }
 
@@ -20,6 +24,7 @@ SharedLibrary::SharedLibrary(const std::string &path, int flags)
 
 SharedLibrary::~SharedLibrary()
 {
+	LOG(INFO) << "class_loader::SharedLibrary: Destroying SharedLibrary, the actual library remains loaded....";
 }
 
 void SharedLibrary::load(const std::string &path)
@@ -47,11 +52,6 @@ const std::string &SharedLibrary::getPath() const
 	return getPathImpl();
 }
 
-std::string SharedLibrary::suffix()
-{
-	return suffixImpl();
-}
-
 bool SharedLibrary::setSearchPath(const std::string &path)
 {
 	return setSearchPathImpl(path);
@@ -60,4 +60,20 @@ bool SharedLibrary::setSearchPath(const std::string &path)
 bool SharedLibrary::hasSymbol(const std::string &name)
 {
 	return hasSymbolImpl(name);
+}
+
+std::string SharedLibrary::systemLibraryPrefix()
+{
+	return prefixImpl();
+}
+
+std::string SharedLibrary::systemLibrarySuffix()
+{
+	return suffixImpl();
+}
+
+std::string SharedLibrary::systemLibraryFormat(
+	const std::string &library_name)
+{
+	return systemLibraryPrefix() + library_name + systemLibrarySuffix();
 }

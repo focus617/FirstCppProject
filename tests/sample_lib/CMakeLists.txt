@@ -1,5 +1,11 @@
+message(STATUS "Building Library sample_lib...")
+
 add_library(sample_lib SHARED
    square.cpp rectangle.cpp dynamicclassregistry.cpp symbol_test.cpp)
+
+target_compile_definitions(sample_lib 
+   PRIVATE XUZY_DLL XUZY_DLL_EXPORTS
+)
    
 set_target_properties(sample_lib PROPERTIES
    PUBLIC_HEADER dynamicclassregistry.hpp

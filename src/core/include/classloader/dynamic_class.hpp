@@ -1,6 +1,8 @@
 #pragma once
 
-namespace dynamicclassloader
+#include "visibility_control.hpp"
+
+namespace class_loader
 {
 
     ///
@@ -41,9 +43,9 @@ namespace dynamicclassloader
 ///
 #define REGISTER_DYNAMIC_CLASS_CREATE(type, base_type, ...)               \
     static constexpr char k##type##Create[] = "Create" #type;             \
-    using Create##type##Symbol = dynamicclassloader::FactoryFunctionType< \
+    using Create##type##Symbol = class_loader::FactoryFunctionType< \
         base_type>::ParameterizredCreate<__VA_ARGS__>;                    \
-    extern "C" base_type *Create##type(__VA_ARGS__);
+    extern "C" XUZY_API base_type *Create##type(__VA_ARGS__);
 
 ///
 /// \brief A macro to start a create function implementation
@@ -55,7 +57,7 @@ namespace dynamicclassloader
 #define DYNAMIC_CLASS_CREATE(type, base_type, ...)                         \
     static_assert(std::is_base_of<base_type, type>{},                      \
                   "Provided types do not satisfy the is base of assert."); \
-    extern "C" base_type *Create##type(__VA_ARGS__)
+    extern "C" XUZY_API base_type *Create##type(__VA_ARGS__)
 
 ///
 /// \brief A macro to generate a parameterless create function implementation.
@@ -65,7 +67,7 @@ namespace dynamicclassloader
 #define DYNAMIC_CLASS_DEFAULT_CREATE(type, base_type)                      \
     static_assert(std::is_base_of<base_type, type>{},                      \
                   "Provided types do not satisfy the is base of assert."); \
-    extern "C" base_type *Create##type() { return new type{}; }
+    extern "C" XUZY_API base_type *Create##type() { return new type{}; }
 
 ///
 /// \brief A macro to register a dynamic class destroy function
@@ -80,8 +82,8 @@ namespace dynamicclassloader
 #define REGISTER_DYNAMIC_CLASS_DESTROY(type, base_type)                     \
     static constexpr char k##type##Destroy[] = "Destroy" #type;             \
     using Destroy##type##Symbol =                                           \
-        dynamicclassloader::FactoryFunctionType<base_type>::DefaultDestroy; \
-    extern "C" void Destroy##type(base_type *p);
+        class_loader::FactoryFunctionType<base_type>::DefaultDestroy; \
+    extern "C" XUZY_API void Destroy##type(base_type *p);
 
 ///
 /// \brief A macro to start a destroy function implementation
@@ -91,7 +93,7 @@ namespace dynamicclassloader
 #define DYNAMIC_CLASS_DESTROY(type, base_type)                             \
     static_assert(std::is_base_of<base_type, type>{},                      \
                   "Provided types do not satisfy the is base of assert."); \
-    extern "C" void Destroy##type(base_type *p)
+    extern "C" XUZY_API void Destroy##type(base_type *p)
 
 ///
 /// \brief A macro to generate the default destroy implementation
@@ -102,6 +104,6 @@ namespace dynamicclassloader
 #define DYNAMIC_CLASS_DEFAULT_DESTROY(type, base_type)                     \
     static_assert(std::is_base_of<base_type, type>{},                      \
                   "Provided types do not satisfy the is base of assert."); \
-    extern "C" void Destroy##type(base_type *p) { delete p; }
+    extern "C" XUZY_API void Destroy##type(base_type *p) { delete p; }
 
-} // namespace dynamicclassloader
+} // namespace class_loader

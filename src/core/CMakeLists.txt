@@ -10,10 +10,12 @@ add_library(core SHARED ${_SOURCES})
 
 # 添加编译选项
 set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG} ${EXTRA_COMPILE_OPTIONS}")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}  ${EXTRA_COMPILE_OPTIONS}")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${EXTRA_COMPILE_OPTIONS}")
+set(CMAKE_CXX_VISIBILITY_PRESET hidden)
+set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 
-target_compile_definitions(core PUBLIC
-    $<$<BOOL:${HTTPLIB_IS_USING_OPENSSL}>:CPPHTTPLIB_OPENSSL_SUPPORT>
+target_compile_definitions(core 
+    PRIVATE XUZY_DLL XUZY_DLL_EXPORTS _DEBUG
 )
 
 # 指定头文件路径
@@ -32,8 +34,11 @@ target_link_libraries(core PUBLIC
     nlohmann_json::nlohmann_json
 )
 
+# generate_export_header(core) 
+
 set_target_properties(core PROPERTIES
     PUBLIC_HEADER include/logger.h
+    # PUBLIC_HEADER ${PROJECT_BINARY_DIR}/core_export.h
 )
 
 install(TARGETS core

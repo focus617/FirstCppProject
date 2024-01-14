@@ -6,7 +6,7 @@
 ///
 /// \brief TODO
 ///
-class Rectangle : public Shape
+class XUZY_API Rectangle : public Shape
 {
 public:
   Rectangle(float a, float b);

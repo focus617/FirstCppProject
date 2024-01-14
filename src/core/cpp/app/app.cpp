@@ -3,7 +3,7 @@
 #include <fstream>
 #include <glog/logging.h>
 
-#include "app/app.h"
+#include "app/app.hpp"
 
 using namespace xuzy;
 

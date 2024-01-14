@@ -3,14 +3,15 @@
 #include <string>
 #include <json.hpp>
 
-#include "argsparser.h"
+#include "visibility_control.hpp"
+#include "argsparser.hpp"
 
 using json = nlohmann::json;
 
 namespace xuzy
 {
 
-    class App
+    class XUZY_API App
     {
     private:
         std::string m_app_name;

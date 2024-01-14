@@ -2,7 +2,8 @@
 
 #include <string>
 
-#include "app/app.h"
+#include "visibility_control.hpp"
+#include "app/app.hpp"
 
 #ifdef CPPHTTPLIB_OPENSSL_SUPPORT
 #define SERVER_CERT_FILE "./cert.pem"
@@ -11,7 +12,7 @@
 
 namespace http
 {
-    class Restful : public xuzy::App
+    class XUZY_API Restful : public xuzy::App
     {
     private:
         void start();
@@ -21,7 +22,10 @@ namespace http
 
 
     public:
+        XUZY_API 
         Restful(std::string t_app_name);
+
+        XUZY_API 
         virtual ~Restful() final = default;
 
         Restful(const Restful &) = delete;
@@ -29,6 +33,7 @@ namespace http
         Restful(Restful &&) = delete;
         Restful &operator=(Restful &&) = delete;
 
+        XUZY_API 
         void run() override;
     };
 }

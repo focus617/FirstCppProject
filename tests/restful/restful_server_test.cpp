@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 #include <thread>
 
-#include "app/app.h"
+#include "app/app.hpp"
 #include "listener.h"
 
 using namespace httplib;

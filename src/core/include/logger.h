@@ -5,6 +5,7 @@
 #include <ctime>
 
 #include "config.h"
+#include "visibility_control.hpp"
 
 #define LOG_OPTION_DEBUG debug
 #define LOG_OPTION_RELEASE release
@@ -33,7 +34,7 @@
 
 namespace xuzy
 {
-    class Logger final
+    class XUZY_API Logger final
     {
     public:
         enum class Level

@@ -3,7 +3,9 @@
 
 #include <string>
 
-class Shape {
+#include "visibility_control.hpp"
+
+class XUZY_API Shape {
 public:
   virtual ~Shape() {}
   virtual float Area() const =0;

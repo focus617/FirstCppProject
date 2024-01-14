@@ -3,13 +3,15 @@
 #include <dlfcn.h>
 #include <mutex>
 
-namespace dynamicclassloader
+#include "visibility_control.hpp"
+
+namespace class_loader
 {
     ///
     /// \brief The SharedLibrary class dynamically loads shared libraries
     /// at run-time.
     ///
-    class SharedLibraryImpl
+    class XUZY_API SharedLibraryImpl
     {
     protected:
         enum Flags
@@ -31,7 +33,9 @@ namespace dynamicclassloader
         template <typename SymbolType>
         SymbolType *findSymbolImpl(const std::string &name);
 
+        static std::string prefixImpl();
         static std::string suffixImpl();
+
         static bool setSearchPathImpl(const std::string &path);
 
     private:
@@ -61,4 +65,4 @@ namespace dynamicclassloader
         return symbol;
     }
 
-} // namespace dynamicclassloader
+} // namespace class_loader

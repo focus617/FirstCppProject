@@ -1,7 +1,7 @@
 #ifndef DYNAMICCLASSREGISTRY_H
 #define DYNAMICCLASSREGISTRY_H
 
-#include "classloader/dynamic_class.h"
+#include "classloader/dynamic_class.hpp"
 #include "shape.hpp"
 
 REGISTER_DYNAMIC_CLASS_CREATE(Rectangle, Shape, float, float);

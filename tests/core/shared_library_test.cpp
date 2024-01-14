@@ -1,12 +1,18 @@
 #include <gtest/gtest.h>
 #include <iostream>
 
-#include "classloader/shared_library.h"
+#include "classloader/shared_library.hpp"
 
 #include "dynamicclassregistry.hpp"
 #include "shape.hpp"
 
-using namespace dynamicclassloader;
+using namespace class_loader;
+
+
+TEST(SharedLibraryTest, basicLoad)
+{
+    EXPECT_EQ("libtestd.so", SharedLibrary::systemLibraryFormat("test"));
+}
 
 class SharedLibrary_Test_Fixture : public testing::Test
 {
@@ -20,7 +26,7 @@ public:
     {
         std::stringstream ss{};
         ss << RUNTIME_LIB_DIR << "/";
-        ss << "libsample_libd" << SharedLibrary::suffix();
+        ss << SharedLibrary::systemLibraryFormat("sample_lib");
         return ss.str();
     }
 
@@ -53,6 +59,8 @@ TEST_F(SharedLibrary_Test_Fixture, library_loaded_unload_correctly)
 
     library_.unload();
     ASSERT_FALSE(library_.isLoaded());
+
+    std::cout << SharedLibrary::systemLibraryFormat("sample_lib") << std::endl;
 }
 
 TEST_F(SharedLibrary_Test_Fixture, library_loaded_from_constructor)
@@ -135,13 +143,12 @@ TEST_F(SharedLibrary_Test_Fixture, get_noexist_symbol)
     library_.unload();
 }
 
-
 TEST_F(SharedLibrary_Test_Fixture, get_exist_symbol)
 {
     std::string symbolName = "gimmeFive";
     SharedLibrary library_(GetLib());
 
-    typedef int(*FunctionPointer)();
+    typedef int (*FunctionPointer)();
     FunctionPointer *p_fun;
 
     ASSERT_NO_THROW(p_fun = library_.getSymbol<FunctionPointer>(symbolName));

@@ -2,16 +2,17 @@
 
 #include <dlfcn.h>
 
-#include "exception.h"
-#include "shared_library_unix.h"
+#include "visibility_control.hpp"
+#include "exception.hpp"
+#include "shared_library_unix.hpp"
 
-namespace dynamicclassloader
+namespace class_loader
 {
     ///
     /// \brief The SharedLibrary class dynamically loads shared libraries
     /// at run-time.
     ///
-    class SharedLibrary : private SharedLibraryImpl
+    class XUZY_API SharedLibrary : private SharedLibraryImpl
     {
     public:
         enum Flags
@@ -37,12 +38,14 @@ namespace dynamicclassloader
         ///
         /// \brief Create a new SharedLibrary object.
         ///
+        XUZY_API
         SharedLibrary();
 
         ///
         /// \brief Creates a SharedLibrary object and loads a library
         /// from the given path.
         ///
+        XUZY_API
         SharedLibrary(const std::string &path);
 
         ///
@@ -50,12 +53,14 @@ namespace dynamicclassloader
         /// from the given path, using the given flags.
         /// See the Flags enumeration for valid values.
         ///
+        XUZY_API
         SharedLibrary(const std::string &path, int flags);
 
         ///
         /// \brief Destroys the SharedLibrary. The actual library
         /// remains loaded.
         ///
+        XUZY_API
         virtual ~SharedLibrary();
 
         ///
@@ -113,6 +118,13 @@ namespace dynamicclassloader
 
         ///
         /// \brief
+        /// \return the platform-specific filename prefix for
+        /// shared libraries (including the period).
+        ///
+        static std::string systemLibraryPrefix();
+
+        ///
+        /// \brief
         /// \return the platform-specific filename suffix for
         /// shared libraries (including the period).
         /// In debug mode, the suffix also includes a "d" to specify
@@ -120,7 +132,16 @@ namespace dynamicclassloader
         /// unless the library has been compiled with
         /// -DPOCO_NO_SHARED_LIBRARY_DEBUG_SUFFIX.
         ///
-        static std::string suffix();
+        static std::string systemLibrarySuffix();
+
+        /**
+         * @brief
+         * @returns a platform specific version of a basic library name
+         *
+         * On *nix platforms the library name is prefixed with `lib`.
+         * On all platforms the output of class_loader::systemLibrarySuffix() is appended.
+         */
+        static std::string systemLibraryFormat(const std::string &library_name);
 
         ///
         /// \brief Adds the given path to the list of paths shared libraries
@@ -181,4 +202,4 @@ namespace dynamicclassloader
         return std::shared_ptr<ClassType>(create(args...), destroy);
     }
 
-} // namespace dynamicclassloader
+} // namespace class_loader

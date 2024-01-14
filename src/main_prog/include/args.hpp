@@ -1,6 +1,6 @@
 #pragma once
 
-#include "app/argsparser.h"
+#include "app/argsparser.hpp"
 
 enum LogLevel
 {
