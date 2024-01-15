@@ -220,8 +220,7 @@ namespace class_loader
                 has_unmananged_instance_been_created_ = true;
             }
 
-            if (
-                managed &&
+            if (managed &&
                 ClassLoader::hasUnmanagedInstanceBeenCreated() &&
                 isOnDemandLoadUnloadEnabled())
             {

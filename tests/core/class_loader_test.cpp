@@ -9,14 +9,14 @@
 
 using namespace class_loader;
 
-const std::string LIBRARY_1 = SharedLibrary::systemLibraryFormat("class_loader_TestPlugins1"); // NOLINT
-const std::string LIBRARY_2 = SharedLibrary::systemLibraryFormat("class_loader_TestPlugins2"); // NOLINT
+const std::string LIBRARY = SharedLibrary::systemLibraryFormat("class_loader_TestPlugins1"); // NOLINT
+
 
 TEST(ClassLoaderTest, correct_load_existent_library)
 {
     try
     {
-        EXPECT_NO_THROW(class_loader::ClassLoader loader(LIBRARY_1, false));
+        EXPECT_NO_THROW(class_loader::ClassLoader loader(LIBRARY, false));
     }
     catch (xuzy::Exception &e)
     {
@@ -52,15 +52,15 @@ TEST(ClassLoaderTest, correct_nonlazy_load_unload)
 {
     try
     {
-        EXPECT_FALSE(class_loader::impl::isLibraryLoadedByAnybody(LIBRARY_1));
+        EXPECT_FALSE(class_loader::impl::isLibraryLoadedByAnybody(LIBRARY));
 
-        class_loader::ClassLoader loader1(LIBRARY_1, false);
-        EXPECT_TRUE(class_loader::impl::isLibraryLoadedByAnybody(LIBRARY_1));
-        EXPECT_TRUE(loader1.isLibraryLoaded());
+        class_loader::ClassLoader loader(LIBRARY, false);
+        EXPECT_TRUE(class_loader::impl::isLibraryLoadedByAnybody(LIBRARY));
+        EXPECT_TRUE(loader.isLibraryLoaded());
 
-        EXPECT_NO_THROW(loader1.unloadLibrary());
-        EXPECT_FALSE(class_loader::impl::isLibraryLoadedByAnybody(LIBRARY_1));
-        EXPECT_FALSE(loader1.isLibraryLoaded());
+        EXPECT_NO_THROW(loader.unloadLibrary());
+        EXPECT_FALSE(class_loader::impl::isLibraryLoadedByAnybody(LIBRARY));
+        EXPECT_FALSE(loader.isLibraryLoaded());
         return;
     }
     catch (xuzy::Exception &e)
@@ -78,20 +78,21 @@ TEST(ClassLoaderTest, correct_lazy_load_unload)
 {
     try
     {
-        EXPECT_FALSE(class_loader::impl::isLibraryLoadedByAnybody(LIBRARY_1));
+        EXPECT_FALSE(class_loader::impl::isLibraryLoadedByAnybody(LIBRARY));
 
-        class_loader::ClassLoader loader1(LIBRARY_1, true);
-        EXPECT_FALSE(class_loader::impl::isLibraryLoadedByAnybody(LIBRARY_1));
-        EXPECT_FALSE(loader1.isLibraryLoaded());
-
+        class_loader::ClassLoader loader(LIBRARY, true);
+        EXPECT_FALSE(class_loader::impl::isLibraryLoadedByAnybody(LIBRARY));
+        EXPECT_FALSE(loader.isLibraryLoaded());
+        
         {
-            std::shared_ptr<Base> obj = loader1.createInstance<Base>("Cat");
-            EXPECT_TRUE(class_loader::impl::isLibraryLoadedByAnybody(LIBRARY_1));
-            EXPECT_TRUE(loader1.isLibraryLoaded());
+            // See if lazy load works
+            std::shared_ptr<Base> obj = loader.createInstance<Base>("Cat");
+            EXPECT_TRUE(class_loader::impl::isLibraryLoadedByAnybody(LIBRARY));
+            EXPECT_TRUE(loader.isLibraryLoaded());
         }
 
         // The library will unload automatically when the only plugin object left is destroyed
-        EXPECT_FALSE(class_loader::impl::isLibraryLoadedByAnybody(LIBRARY_1));
+        EXPECT_FALSE(class_loader::impl::isLibraryLoadedByAnybody(LIBRARY));
         return;
     }
     catch (xuzy::Exception &e)
@@ -109,9 +110,30 @@ TEST(ClassLoaderTest, correct_load_existent_class)
 {
     try
     {
-        class_loader::ClassLoader loader(LIBRARY_1, false);
-        // See if lazy load works
+        class_loader::ClassLoader loader(LIBRARY, false);
+
         EXPECT_NO_THROW(loader.createInstance<Base>("Cat")->saySomething());
+    }
+    catch (xuzy::Exception &e)
+    {
+        FAIL() << "ClassLoaderException: " << e.what() << "\nMessage: "
+               << e.message() << std::endl;
+    }
+    catch (...)
+    {
+        FAIL() << "Unhandled exception";
+    }
+
+    SUCCEED();
+}
+
+TEST(ClassLoaderTest, correct_load_existent_class_with_unique_ptr)
+{
+    try
+    {
+        class_loader::ClassLoader loader(LIBRARY, false);
+
+        EXPECT_NO_THROW(loader.createUniqueInstance<Base>("Cat")->saySomething());
     }
     catch (xuzy::Exception &e)
     {
@@ -130,7 +152,7 @@ TEST(ClassLoaderTest, load_nonexistent_class_throw_ClassLoaderException)
 {
     try
     {
-        class_loader::ClassLoader loader(LIBRARY_1, false);
+        class_loader::ClassLoader loader(LIBRARY, false);
         // See if lazy load works
         EXPECT_THROW(
             loader.createInstance<Base>("NonExistentClass"), xuzy::CreateClassException);
@@ -152,12 +174,12 @@ TEST(ClassLoaderTest, invalid_base_class)
 {
     try
     {
-        class_loader::ClassLoader loader1(LIBRARY_1, false);
-        if (loader1.isClassAvailable<InvalidBase>("Cat"))
+        class_loader::ClassLoader loader(LIBRARY, false);
+        if (loader.isClassAvailable<InvalidBase>("Cat"))
         {
             FAIL() << "Cat should not be available for InvalidBase";
         }
-        else if (loader1.isClassAvailable<Base>("Cat"))
+        else if (loader.isClassAvailable<Base>("Cat"))
         {
             SUCCEED();
             return;
@@ -193,8 +215,8 @@ void run(class_loader::ClassLoader *loader)
 
 TEST(ClassLoaderTest, thread_safety)
 {
-    class_loader::ClassLoader loader1(LIBRARY_1);
-    ASSERT_TRUE(loader1.isLibraryLoaded());
+    class_loader::ClassLoader loader(LIBRARY);
+    ASSERT_TRUE(loader.isLibraryLoaded());
 
     // Note: Hard to test thread safety to make sure memory isn't corrupted.
     // The hope is this test is hard enough that once in a while it'll segfault
@@ -206,7 +228,7 @@ TEST(ClassLoaderTest, thread_safety)
         for (size_t c = 0; c < 1000; c++)
         {
             client_threads.push_back(
-                new std::thread(std::bind(&run, &loader1)));
+                new std::thread(std::bind(&run, &loader)));
         }
 
         for (auto &client_thread : client_threads)
@@ -219,8 +241,8 @@ TEST(ClassLoaderTest, thread_safety)
             delete (client_thread);
         }
 
-        loader1.unloadLibrary();
-        ASSERT_FALSE(loader1.isLibraryLoaded());
+        loader.unloadLibrary();
+        ASSERT_FALSE(loader.isLibraryLoaded());
     }
     catch (const xuzy::Exception &)
     {
@@ -236,27 +258,27 @@ TEST(ClassLoaderTest, loadRefCountingNonLazy)
 {
     try
     {
-        class_loader::ClassLoader loader1(LIBRARY_1, false);
-        ASSERT_TRUE(loader1.isLibraryLoaded());
+        class_loader::ClassLoader loader(LIBRARY, false);
+        ASSERT_TRUE(loader.isLibraryLoaded());
 
-        loader1.loadLibrary();
-        loader1.loadLibrary();
-        ASSERT_TRUE(loader1.isLibraryLoaded());
+        loader.loadLibrary();
+        loader.loadLibrary();
+        ASSERT_TRUE(loader.isLibraryLoaded());
 
-        loader1.unloadLibrary();
-        ASSERT_TRUE(loader1.isLibraryLoaded());
+        loader.unloadLibrary();
+        ASSERT_TRUE(loader.isLibraryLoaded());
 
-        loader1.unloadLibrary();
-        ASSERT_TRUE(loader1.isLibraryLoaded());
+        loader.unloadLibrary();
+        ASSERT_TRUE(loader.isLibraryLoaded());
 
-        loader1.unloadLibrary();
-        ASSERT_FALSE(loader1.isLibraryLoaded());
+        loader.unloadLibrary();
+        ASSERT_FALSE(loader.isLibraryLoaded());
 
-        loader1.unloadLibrary();
-        ASSERT_FALSE(loader1.isLibraryLoaded());
+        loader.unloadLibrary();
+        ASSERT_FALSE(loader.isLibraryLoaded());
 
-        loader1.loadLibrary();
-        ASSERT_TRUE(loader1.isLibraryLoaded());
+        loader.loadLibrary();
+        ASSERT_TRUE(loader.isLibraryLoaded());
 
         return;
     }
@@ -276,33 +298,33 @@ TEST(ClassLoaderTest, loadRefCountingLazy)
 {
     try
     {
-        class_loader::ClassLoader loader1(LIBRARY_1, true);
-        ASSERT_FALSE(loader1.isLibraryLoaded());
+        class_loader::ClassLoader loader(LIBRARY, true);
+        ASSERT_FALSE(loader.isLibraryLoaded());
 
         {
-            std::shared_ptr<Base> obj = loader1.createInstance<Base>("Dog");
-            ASSERT_TRUE(loader1.isLibraryLoaded());
+            std::shared_ptr<Base> obj = loader.createInstance<Base>("Dog");
+            ASSERT_TRUE(loader.isLibraryLoaded());
         }
 
-        ASSERT_FALSE(loader1.isLibraryLoaded());
+        ASSERT_FALSE(loader.isLibraryLoaded());
 
-        loader1.loadLibrary();
-        ASSERT_TRUE(loader1.isLibraryLoaded());
+        loader.loadLibrary();
+        ASSERT_TRUE(loader.isLibraryLoaded());
 
-        loader1.loadLibrary();
-        ASSERT_TRUE(loader1.isLibraryLoaded());
+        loader.loadLibrary();
+        ASSERT_TRUE(loader.isLibraryLoaded());
 
-        loader1.unloadLibrary();
-        ASSERT_TRUE(loader1.isLibraryLoaded());
+        loader.unloadLibrary();
+        ASSERT_TRUE(loader.isLibraryLoaded());
 
-        loader1.unloadLibrary();
-        ASSERT_FALSE(loader1.isLibraryLoaded());
+        loader.unloadLibrary();
+        ASSERT_FALSE(loader.isLibraryLoaded());
 
-        loader1.unloadLibrary();
-        ASSERT_FALSE(loader1.isLibraryLoaded());
+        loader.unloadLibrary();
+        ASSERT_FALSE(loader.isLibraryLoaded());
 
-        loader1.loadLibrary();
-        ASSERT_TRUE(loader1.isLibraryLoaded());
+        loader.loadLibrary();
+        ASSERT_TRUE(loader.isLibraryLoaded());
 
         return;
     }
@@ -317,64 +339,3 @@ TEST(ClassLoaderTest, loadRefCountingLazy)
 
     FAIL() << "Did not throw exception as expected.\n";
 }
-
-// void testMultiClassLoader(bool lazy)
-// {
-//     try
-//     {
-//         class_loader::MultiLibraryClassLoader loader(lazy);
-//         loader.loadLibrary(LIBRARY_1);
-//         loader.loadLibrary(LIBRARY_2);
-//         for (int i = 0; i < 2; ++i)
-//         {
-//             loader.createInstance<Base>("Cat")->saySomething();
-//             loader.createInstance<Base>("Dog")->saySomething();
-//             loader.createInstance<Base>("Robot")->saySomething();
-//         }
-//     }
-//     catch (xuzy::Exception &e)
-//     {
-//         FAIL() << "ClassLoaderException: " << e.what() << "\n";
-//     }
-
-//     SUCCEED();
-// }
-
-// TEST(MultiClassLoaderTest, lazyLoad)
-// {
-//     testMultiClassLoader(true);
-// }
-// TEST(MultiClassLoaderTest, lazyLoadSecondTime)
-// {
-//     testMultiClassLoader(true);
-// }
-// TEST(MultiClassLoaderTest, nonLazyLoad)
-// {
-//     testMultiClassLoader(false);
-// }
-// TEST(MultiClassLoaderTest, noWarningOnLazyLoad)
-// {
-//     try
-//     {
-//         boost::shared_ptr<Base> cat, dog, rob;
-//         {
-//             class_loader::MultiLibraryClassLoader loader(true);
-//             loader.loadLibrary(LIBRARY_1);
-//             loader.loadLibrary(LIBRARY_2);
-
-//             cat = loader.createInstance<Base>("Cat");
-//             dog = loader.createInstance<Base>("Dog");
-//             rob = loader.createInstance<Base>("Robot");
-//         }
-//         cat->saySomething();
-//         dog->saySomething();
-//         rob->saySomething();
-//     }
-//     catch (xuzy::Exception &e)
-//     {
-//         FAIL() << "ClassLoaderException: " << e.what() << "\n";
-//     }
-
-//     SUCCEED();
-// }
-
