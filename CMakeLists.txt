@@ -35,9 +35,16 @@ add_subdirectory(extern)
 
 # Indicate the code style format as an option
 option(FORMAT_CODE "Clang-format code" ON)
-if (FORMAT_CODE)
+if(FORMAT_CODE)
     message(STATUS "Clang-format Code...")
     include(cmake/clang-format.cmake)
+endif()
+
+# Indicate the code style format as an option
+option(STATIC_ANALYSIZE_CODE "Static Analysize code" ON)
+if (STATIC_ANALYSIZE_CODE)
+    message(STATUS "Cpp-Check Code...")
+    include(cmake/cppcheck.cmake)
 endif()
 
 # build my module
@@ -45,14 +52,14 @@ add_subdirectory(src)
 
 # build my test
 include(CTest)
-if (BUILD_TESTING)
+if(BUILD_TESTING)
     message(STATUS "Building Testing...")
     add_subdirectory(tests)
 endif()
 
 # Indicate the documentation build as an option
 option(BUILD_DOC "Build documentation" ON)
-if (BUILD_DOC)
+if(BUILD_DOC)
     message(STATUS "Building Document...")
     include(cmake/Doxygen.cmake)
 endif()

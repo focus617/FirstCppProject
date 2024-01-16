@@ -33,7 +33,7 @@ class XUZY_API App {
   static void main(int argc, char* argv[], const std::string& version,
                    App* app);
 
-  void version_check(int argc, char* argv[], const std::string version);
+  void version_check(int argc, char* argv[], const std::string& version);
   void dumpError(std::string error);
 };
 

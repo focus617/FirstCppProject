@@ -180,7 +180,7 @@ void destroyMetaObjectsForLibrary(const std::string& library_path,
       meta_obj->removeOwningClassLoader(loader);
       if (!meta_obj->isOwnedByAnybody()) {
         FactoryMap::iterator factory_itr_copy = factory_itr;
-        factory_itr++;
+        ++factory_itr;
         // TODO(mikaelarguedas) fix this when branching out for
         // melodic
         // Note: map::erase does not return iterator like
@@ -351,7 +351,7 @@ void purgeGraveyardOfMetaobjects(const std::string& library_path,
         }
       }
     } else {
-      itr++;
+      ++itr;
     }
   }
 }

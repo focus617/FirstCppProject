@@ -13,7 +13,7 @@ int test_httplib_client() {
   httplib::SSLClient cli("jsonplaceholder.typicode.com");
   cli.enable_server_certificate_verification(true);
 #else
-        Client cli(http://jsonplaceholder.typicode.com);
+        Client cli("http://jsonplaceholder.typicode.com");
 #endif
 
   if (auto res = cli.Get("/todos/1")) {

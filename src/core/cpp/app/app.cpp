@@ -25,7 +25,7 @@ void App::run() {
   setup(configuration);
 }
 
-void App::version_check(int argc, char* argv[], const std::string version) {
+void App::version_check(int argc, char* argv[], const std::string& version) {
   LOG(INFO) << m_app_name << " version: " << version << std::endl;
 }
 

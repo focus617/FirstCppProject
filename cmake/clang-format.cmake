@@ -17,7 +17,7 @@ file(GLOB_RECURSE FORMAT_SOURCES
 # endforeach()
 
 add_custom_target(code_clangformat 
-    COMMAND ${CLANG-FORMAT} -i ${FORMAT_SOURCES}
+    COMMAND ${CLANG-FORMAT} -i -style=file ${FORMAT_SOURCES}
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     COMMENT "Running clang-format source on ${SOURCE_DIR}"
 )
