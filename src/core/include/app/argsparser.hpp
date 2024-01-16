@@ -1,17 +1,18 @@
 #pragma once
 
-namespace xuzy
-{
-    class ArgsParser
-    {
-    private:
-    public:
-        ArgsParser() = default;
-        virtual ~ArgsParser() = default;
+#include <string>
 
-        virtual bool parse_commandline(int argc, char *argv[]) = 0;
+namespace xuzy {
 
-        static bool GetEnvVar(const char *var_name, std::string &var_value);
-    };
+class ArgsParser {
+ private:
+ public:
+  ArgsParser() = default;
+  virtual ~ArgsParser() = default;
 
-} // namespace xuzy
+  virtual bool parse_commandline(int argc, char* argv[]) = 0;
+
+  static bool GetEnvVar(const char* var_name, std::string& var_value);
+};
+
+}  // namespace xuzy

@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <iostream>
 
+#include "config.h"
 #include "classloader/shared_library.hpp"
 
 #include "dynamicclassregistry.hpp"
@@ -25,8 +26,11 @@ public:
     static std::string GetLib()
     {
         std::stringstream ss{};
-        ss << RUNTIME_LIB_DIR << "/";
+        ss << CMAKE_RUNTIME_OUTPUT_DIRECTORY << "/";
         ss << SharedLibrary::systemLibraryFormat("sample_lib");
+
+        std::cout << ss.str() << std::endl;
+
         return ss.str();
     }
 
@@ -51,12 +55,15 @@ void SharedLibrary_Test_Fixture::TearDown()
 
 TEST_F(SharedLibrary_Test_Fixture, library_loaded_unload_correctly)
 {
+    std::cout << "Step 1" << std::endl;
     SharedLibrary library_;
     ASSERT_FALSE(library_.isLoaded());
 
+    std::cout << "Step 2" << std::endl;
     library_.load(GetLib());
     ASSERT_TRUE(library_.isLoaded());
 
+    std::cout << "Step 3" << std::endl;
     library_.unload();
     ASSERT_FALSE(library_.isLoaded());
 

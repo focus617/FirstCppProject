@@ -18,6 +18,6 @@ target_include_directories(sample_lib
 )
 
 install(TARGETS sample_lib
-   LIBRARY DESTINATION lib
-   PUBLIC_HEADER DESTINATION include/xuzy
+   LIBRARY DESTINATION "${CMAKE_BINARY_DIR}/bin"
+   PUBLIC_HEADER DESTINATION "${CMAKE_BINARY_DIR}/bin"
 )

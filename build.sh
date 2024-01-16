@@ -2,4 +2,7 @@
 
 cmake --build build/debug --target install
 # cmake --build build/release --target install
-cmake --build build/debug -t doc_doxygen
+
+# Other command:
+# cmake --build build/debug -t code_clangformat
+# cmake --build build/debug -t doc_doxygen

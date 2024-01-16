@@ -84,13 +84,10 @@ target_compile_features(testRunner PRIVATE cxx_std_20)
 set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG} ${EXTRA_COMPILE_OPTIONS}")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${EXTRA_COMPILE_OPTIONS}")
 
-target_compile_definitions(testRunner PUBLIC
-  RUNTIME_LIB_DIR="${CMAKE_INSTALL_PREFIX}/lib"
-)
-
 # 指定头文件路径
 target_include_directories(testRunner PUBLIC
-  ${TEST_EXTRA_INCLUDES} 
+  ${TEST_EXTRA_INCLUDES}
+  ${PROJECT_BINARY_DIR}/src
   PRIVATE ${PROJECT_SOURCE_DIR}/extern/cpp-httplib
   PRIVATE ${PROJECT_SOURCE_DIR}/extern/nlohmann-json/include/nlohmann
 )
@@ -104,6 +101,10 @@ target_link_libraries(testRunner
   nlohmann_json::nlohmann_json
   ${TEST_EXTRA_LIBS}
   ${CMAKE_DL_LIBS}
+)
+
+install(TARGETS testRunner
+  DESTINATION "${CMAKE_BINARY_DIR}/bin"
 )
 
 include(GoogleTest)

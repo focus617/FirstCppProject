@@ -83,7 +83,8 @@
         "ranges": "cpp",
         "csetjmp": "cpp",
         "shared_mutex": "cpp",
-        "*.inc": "cpp"
+        "*.inc": "cpp",
+        "*.in": "cpp"
     },
     "editor.wordWrap": "wordWrapColumn",
     "editor.wrappingIndent": "same",

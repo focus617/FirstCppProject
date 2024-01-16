@@ -1,7 +1,7 @@
 #ifndef THAT_THIS_VERSION_HEADER_FILE_IS_ALREADY_INCLUDED
 #define THAT_THIS_VERSION_HEADER_FILE_IS_ALREADY_INCLUDED
 
-// the configured options and settings for Tutorial
+// the configured options and settings
 #define PROJECT_VERSION_MAJOR @my_first_proj_VERSION_MAJOR@
 #define PROJECT_VERSION_MINOR @my_first_proj_VERSION_MINOR@
 #define PROJECT_VERSION_PATCH @my_first_proj_VERSION_PATCH@
@@ -9,6 +9,9 @@
 #define PROJECT_VERSION "@my_first_proj_VERSION@"
 
 // the configured options for xuzy::LOG
-#define LOG_OPTION @CMAKE_BUILD_TYPE@
+#cmakedefine CMAKE_BUILD_TYPE @CMAKE_BUILD_TYPE@
+
+// the run-time library dir
+#cmakedefine CMAKE_RUNTIME_OUTPUT_DIRECTORY "@CMAKE_RUNTIME_OUTPUT_DIRECTORY@"
 
 #endif  // THAT_THIS_VERSION_HEADER_FILE_IS_ALREADY_INCLUDED
