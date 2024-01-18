@@ -1,7 +1,7 @@
 #pragma once
 
-#include <json.hpp>
 #include <string>
+#include <nlohmann/json.hpp>
 
 #include "argsparser.hpp"
 #include "visibility_control.hpp"

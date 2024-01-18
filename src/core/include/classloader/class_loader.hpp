@@ -7,6 +7,7 @@
 #include "classloader/class_loader_core.hpp"
 #include "classloader/register_macro.hpp"
 #include "exception.hpp"
+#include "visibility_control.hpp"
 
 namespace class_loader {
 /**
@@ -28,7 +29,9 @@ class XUZY_API ClassLoader {
    * @brief  Constructor for ClassLoader
    * @param library_path - The path of the runtime library to load
    * @param ondemand_load_unload - Indicates if on-demand (lazy)
-   * unloading/loading of libraries occurs as plugins are created/destroyed
+   * If it's true, unloading/loading of libraries occurs as plugins are
+   * created/destroyed; If it's false, libraries will be loaded immediately and
+   * won't be unloaded until class loader is destroyed or force unload.
    */
   XUZY_API
   explicit ClassLoader(const std::string& library_path,
@@ -81,11 +84,11 @@ class XUZY_API ClassLoader {
   bool isLibraryLoadedByAnyClassloader();
 
   /**
-   * @brief  Attempts to load a library on behalf of the ClassLoader. If the
-   * library is already opened, this method has no effect. If the library has
-   * been already opened by some other entity (i.e. another ClassLoader or
-   * global interface), this object is given permissions to access any plugin
-   * classes loaded by that other entity. This is
+   * @brief  Attempts to load a library on behalf of the ClassLoader.
+   * If the library is already opened, this method has no effect.
+   * If the library has been already opened by some other entity (i.e. another
+   * ClassLoader or global interface), this object is given permissions to
+   * access any plugin classes loaded by that other entity.
    * @param  library_path The path to the library to load
    */
   XUZY_API
@@ -93,17 +96,18 @@ class XUZY_API ClassLoader {
 
   /**
    * @brief  Attempts to unload a library loaded within scope of the
-   * ClassLoader. If the library is not opened, this method has no effect. If
-   * the library is opened by other another ClassLoader, the library will NOT be
-   * unloaded internally -- however this ClassLoader will no longer be able to
-   * instantiate class_loader bound to that library. If there are plugin objects
-   * that exist in memory created by this classloader, a warning message will
-   * appear and the library will not be unloaded. If loadLibrary() was called
-   * multiple times (e.g. in the case of multiple threads or purposefully in a
-   * single thread), the user is responsible for calling unloadLibrary() the
-   * same number of times. The library will not be unloaded within the context
-   * of this classloader until the number of unload calls matches the number of
-   * loads.
+   * ClassLoader.
+   * If the library is not opened, this method has no effect.
+   * If the library is opened by other another ClassLoader, the library will NOT
+   * be unloaded internally -- however this ClassLoader will no longer be able
+   * to instantiate class_loader bound to that library. If there are plugin
+   * objects that exist in memory created by this classloader, a warning message
+   * will appear and the library will not be unloaded. If loadLibrary() was
+   * called multiple times (e.g. in the case of multiple threads or purposefully
+   * in a single thread), the user is responsible for calling unloadLibrary()
+   * the same number of times. The library will not be unloaded within the
+   * context of this classloader until the number of unload calls matches the
+   * number of loads.
    * @return The number of times more unloadLibrary() has to be called for it to
    * be unbound from this ClassLoader
    */
@@ -119,8 +123,8 @@ class XUZY_API ClassLoader {
    * invoked automatically if the library is not yet loaded (which typically
    * happens when in "On Demand Load/Unload" mode).
    *
-   * @param  derived_class_name The name of the class we want to create (@see
-   * getAvailableClasses())
+   * @param  derived_class_name The name of the class we want to create, @see
+   * getAvailableClasses()
    * @return A std::shared_ptr<Base> to newly created plugin object
    */
   template <class Base>

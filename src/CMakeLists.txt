@@ -3,8 +3,6 @@ list(APPEND CMAKE_MODULE_PATH "${SOURCE_DIR}/cmake")
 
 message(STATUS "Building Core Library...")
 add_subdirectory(core)
-list(APPEND EXTRA_LIBS core)
-list(APPEND EXTRA_INCLUDES "${SOURCE_DIR}/core/include")
 
 option(BUILD_RESTFUL_LIB "Build Restful Library" ON)
 option(BUILD_MY_LIB "Build My Library" ON)

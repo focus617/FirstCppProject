@@ -1,3 +1,6 @@
+set(CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/install")
+find_package (core REQUIRED)
+
 find_package(OpenSSL REQUIRED)
 if(OPENSSL_FOUND)
     set(HTTPLIB_IS_USING_OPENSSL TRUE)
@@ -34,16 +37,19 @@ target_include_directories(restful
 
 # 添加链接库
 target_link_libraries(restful PUBLIC
+    # xuzy::core
+    core
     glog::glog
     $<$<BOOL:${HTTPLIB_IS_USING_OPENSSL}>:OpenSSL::SSL>
     $<$<BOOL:${HTTPLIB_IS_USING_OPENSSL}>:OpenSSL::Crypto>
-    nlohmann_json::nlohmann_json
-    core
 )
 
 install(TARGETS restful
     LIBRARY DESTINATION lib
 )
 
-install(FILES host/cert.pem DESTINATION bin)
-install(FILES host/key.pem DESTINATION bin)    
+install(FILES
+         host/cert.pem
+         host/key.pem
+        DESTINATION bin
+)

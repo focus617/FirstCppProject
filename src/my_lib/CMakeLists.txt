@@ -1,3 +1,5 @@
+set(CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/install")
+find_package (core REQUIRED)
 
 # 查找当前目录下的所有源文件，并将名称保存到 _SOURCES 变量
 aux_source_directory(. _SOURCES)
@@ -23,3 +25,4 @@ target_include_directories(my_lib
 
 # 添加链接库
 target_link_libraries(my_lib PRIVATE core)
+# target_link_libraries(my_lib PRIVATE xuzy::core)

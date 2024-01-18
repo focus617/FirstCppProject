@@ -1,5 +1,22 @@
 #pragma once
 
+#if defined(__GNUC__)
+#  define XUZY_DEPRECATED __attribute__((deprecated))
+#  define XUZY_FORCE_INLINE __attribute__((always_inline))
+#elif defined(_MSC_VER)
+#  define XUZY_DEPRECATED
+#  define XUZY_FORCE_INLINE __forceinline
+#else
+#  define XUZY_DEPRECATED
+#  define XUZY_FORCE_INLINE inline
+#endif
+
+// Ignore warnings about import/exports when deriving from std classes.
+#ifdef _MSC_VER
+#  pragma warning(disable : 4251)
+#  pragma warning(disable : 4275)
+#endif
+
 // This logic was borrowed (then namespaced) from the examples on the
 // gcc wiki:  https://gcc.gnu.org/wiki/Visibility
 

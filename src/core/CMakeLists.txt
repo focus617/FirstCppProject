@@ -1,47 +1,69 @@
+# Import nlohmann_json
+set(CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/install")
+find_package(nlohmann_json 3.11.3 REQUIRED)
+if(nlohmann_json_FOUND)
+  message(STATUS "nlohmann_json 3.11.3 Found")
+endif()
+
 # 查找当前目录下的所有源文件，并将名称保存到 _SOURCES 变量
 aux_source_directory(. _SOURCES)
 
 # 添加子目录
 add_subdirectory(cpp)
-add_subdirectory(./include/classloader)
 
 # 生成静态链接库
 add_library(core SHARED ${_SOURCES})
 
 # 添加编译选项
-set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG} ${EXTRA_COMPILE_OPTIONS}")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${EXTRA_COMPILE_OPTIONS}")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${EXTRA_COMPILE_OPTIONS}")
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 
-target_compile_definitions(core 
-    PRIVATE XUZY_DLL XUZY_DLL_EXPORTS _DEBUG
+target_compile_definitions(core PRIVATE XUZY_DLL XUZY_DLL_EXPORTS _DEBUG)
+
+set(NLOHMANN_JSON_INCLUDE_DIR
+  ${PROJECT_SOURCE_DIR}/extern/nlohmann-json/include
+  CACHE PATH "nlohmann/json include directory"
 )
 
 # 指定头文件路径
-target_include_directories(core 
-    PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include"
-    PRIVATE ${PROJECT_BINARY_DIR}/src
-    PRIVATE ${PROJECT_SOURCE_DIR}/extern/cpp-httplib
-    PRIVATE ${PROJECT_SOURCE_DIR}/extern/nlohmann-json/include/nlohmann
+target_include_directories(core
+  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  PUBLIC $<INSTALL_INTERFACE:include/core>
+  PRIVATE ${PROJECT_BINARY_DIR}/src
+  PRIVATE ${NLOHMANN_JSON_INCLUDE_DIR}
 )
 
 # 添加链接库
-target_link_libraries(core PUBLIC
-    glog::glog
-    $<$<BOOL:${HTTPLIB_IS_USING_OPENSSL}>:OpenSSL::SSL>
-    $<$<BOOL:${HTTPLIB_IS_USING_OPENSSL}>:OpenSSL::Crypto>
-    nlohmann_json::nlohmann_json
-)
-
-# generate_export_header(core) 
-
-set_target_properties(core PROPERTIES
-    PUBLIC_HEADER include/logger.h
-    # PUBLIC_HEADER ${PROJECT_BINARY_DIR}/core_export.h
+target_link_libraries(core
+  PUBLIC glog::glog
+  PUBLIC nlohmann_json::nlohmann_json
 )
 
 install(TARGETS core
-    LIBRARY DESTINATION lib
-    PUBLIC_HEADER DESTINATION include/xuzy
-)    
+  EXPORT coreTargets
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  RUNTIME DESTINATION bin
+  INCLUDES DESTINATION include/core
+)
+
+install(EXPORT coreTargets
+  FILE coreTargets.cmake
+  NAMESPACE xuzy::
+  DESTINATION share/cmake/core
+)
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+  "coreConfigVersion.cmake"
+  VERSION ${my_first_proj_VERSION}
+  COMPATIBILITY AnyNewerVersion
+)
+
+install(FILES
+    "coreConfig.cmake" 
+    "${CMAKE_CURRENT_BINARY_DIR}/coreConfigVersion.cmake" 
+    DESTINATION share/cmake/core
+)
