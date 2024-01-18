@@ -281,6 +281,7 @@ class XUZY_API ClassLoader {
                    "demand (lazy) loading/unloading mode is used.";
     }
     if (!isLibraryLoaded()) {
+      LOG(INFO) << "class_loader::ClassLoader: lazy load library.";
       loadLibrary();
     }
 

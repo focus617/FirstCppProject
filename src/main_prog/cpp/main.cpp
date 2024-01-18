@@ -14,7 +14,6 @@
 using xuzy::Logger;
 
 void test_logger();
-void test_singleton();
 // extern int test_httplib_client();
 // extern void thread_trial();
 // extern void thread_active_object();
@@ -31,7 +30,6 @@ int main(int argc, char* argv[]) {
 
   /*
       test_logger();
-      test_singleton();
 
       thread_trial();
       thread_active_object();
@@ -67,14 +65,4 @@ void test_logger() {
   logger.INFO(message2.str());
   logger.DEBUG(message1.str(), __LINE__, __FILE__);
   logger.TRACE(message1.str(), __LINE__, __FILE__);
-}
-
-void test_singleton() {
-  Singleton* s1 = Singleton::get_instance(10);
-  s1->print_unique_id();
-  std::cout << "S1 memory location: " << s1 << std::endl;
-
-  Singleton* s2 = Singleton::get_instance(5);
-  s2->print_unique_id();
-  std::cout << "S2 memory location: " << s2 << std::endl;
 }

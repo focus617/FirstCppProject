@@ -93,6 +93,8 @@ XUZY_IMPLEMENT_EXCEPTION(TimeoutException, RuntimeException, "Timeout")
 XUZY_IMPLEMENT_EXCEPTION(SystemException, RuntimeException, "System exception")
 XUZY_IMPLEMENT_EXCEPTION(RegularExpressionException, RuntimeException,
                          "Error in regular expression")
+XUZY_IMPLEMENT_EXCEPTION(LibraryNotFoundException, RuntimeException,
+                         "Cannot find library in path")
 XUZY_IMPLEMENT_EXCEPTION(LibraryLoadException, RuntimeException,
                          "Cannot load library")
 XUZY_IMPLEMENT_EXCEPTION(LibraryUnLoadException, RuntimeException,

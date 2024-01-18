@@ -95,7 +95,7 @@ TEST_F(SharedLibrary_Test_Fixture, library_loaded_nonexist_library)
     std::string libraryPath = "NonExistentLibrary";
     SharedLibrary library_;
 
-    ASSERT_THROW(library_.load(libraryPath), xuzy::LibraryLoadException);
+    ASSERT_THROW(library_.load(libraryPath), xuzy::LibraryNotFoundException);
 
     ASSERT_FALSE(library_.isLoaded());
 }

@@ -3,6 +3,8 @@
 #include <dlfcn.h>
 #include <glog/logging.h>
 
+#include <filesystem>
+
 #include "exception.hpp"
 
 using namespace class_loader;
@@ -16,7 +18,11 @@ SharedLibraryImpl::~SharedLibraryImpl() {}
 void SharedLibraryImpl::loadImpl(const std::string& path, int flags) {
   std::scoped_lock lock(_mutex);
 
-  if (_handle) throw xuzy::LibraryAlreadyLoadedException(path);
+  if (_handle) {
+    std::string msg = "Library " + path + " already loaded.";
+    LOG(ERROR) << "SharedLibrary: " << msg;
+    throw xuzy::LibraryAlreadyLoadedException(msg);
+  }
 
   int realFlags = RTLD_LAZY;
   if (flags & SHLIB_LOCAL_IMPL)
@@ -24,10 +30,19 @@ void SharedLibraryImpl::loadImpl(const std::string& path, int flags) {
   else
     realFlags |= RTLD_GLOBAL;
 
+  if (!std::filesystem::exists(path)) {
+    std::string msg = "Library " + path + " not exist.";
+    LOG(ERROR) << "SharedLibrary: " << msg;
+    throw xuzy::LibraryNotFoundException(msg);
+  }
+
   _handle = dlopen(path.c_str(), realFlags);
   if (!_handle) {
     const char* err = dlerror();
-    throw xuzy::LibraryLoadException(err ? std::string(err) : path);
+    std::string msg = "Library " + path + " load error(" +
+                      (err ? std::string(err) : "") + ").";
+    LOG(ERROR) << "SharedLibrary: Library " << msg;
+    throw xuzy::LibraryLoadException(msg);
   }
   _path = path;
 }

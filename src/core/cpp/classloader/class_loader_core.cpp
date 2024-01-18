@@ -424,22 +424,36 @@ void loadLibrary(const std::string& library_path, ClassLoader* loader) {
       setCurrentlyActiveClassLoader(loader);
       setCurrentlyLoadingLibraryName(library_path);
       library_handle = new SharedLibrary(library_path);
-    } catch (const xuzy::LibraryLoadException& e) {
-      setCurrentlyLoadingLibraryName("");
-      setCurrentlyActiveClassLoader(nullptr);
-      throw xuzy::LibraryLoadException("Could not load library: " +
-                                       std::string(e.message()));
     } catch (const xuzy::LibraryAlreadyLoadedException& e) {
       setCurrentlyLoadingLibraryName("");
       setCurrentlyActiveClassLoader(nullptr);
-      throw xuzy::LibraryAlreadyLoadedException("Library " + library_path +
-                                                " already loaded (" +
-                                                std::string(e.message()) + ")");
-    } catch (const xuzy::NotFoundException& e) {
+
+      std::string msg = "Library " + library_path + " already loaded (" +
+                        std::string(e.message()) + ")";
+      LOG(ERROR) << "class_loader.impl: " << msg;
+      throw xuzy::LibraryAlreadyLoadedException(msg);
+
+    } catch (const xuzy::LibraryNotFoundException& e) {
       setCurrentlyLoadingLibraryName("");
       setCurrentlyActiveClassLoader(nullptr);
-      throw xuzy::NotFoundException("Library not found (" +
-                                    std::string(e.message()) + ")");
+
+      std::string msg = "Library " + library_path + " not found (" +
+                        std::string(e.message()) + ")";
+      LOG(ERROR) << "class_loader.impl: " << msg;
+      throw xuzy::LibraryNotFoundException(msg);
+
+    } catch (const xuzy::LibraryLoadException& e) {
+      setCurrentlyLoadingLibraryName("");
+      setCurrentlyActiveClassLoader(nullptr);
+
+      std::string msg = "Could not load library " + library_path + "(" +
+                        std::string(e.message()) + ")";
+      LOG(ERROR) << "class_loader.impl: " << msg;
+      throw xuzy::LibraryLoadException(msg);
+
+    } catch (xuzy::Exception& e) {
+      LOG(ERROR) << "class_loader.impl: Exception " << e.what()
+                 << "\nMessage: " << e.message() << std::endl;
     }
 
     setCurrentlyLoadingLibraryName("");
@@ -498,9 +512,11 @@ void unloadLibrary(const std::string& library_path, ClassLoader* loader) {
     std::scoped_lock lock(getLoadedLibraryVectorMutex());
     LibraryVector& open_libraries = getLoadedLibraryVector();
     LibraryVector::iterator itr = findLoadedLibrary(library_path);
+
     if (itr != open_libraries.end()) {
       SharedLibrary* library = itr->second;
       std::string lib_path = itr->first;
+
       try {
         destroyMetaObjectsForLibrary(lib_path, loader);
 

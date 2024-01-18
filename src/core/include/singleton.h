@@ -6,37 +6,33 @@
 #include <mutex>
 class Singleton {
  private:
-  static Singleton* m_one_and_only_instance;
-  static int m_unique_id;
-  static std::mutex m_mutex;
-
-  Singleton(const int t_num) { m_unique_id = t_num; }
+  static std::mutex m_mutex_;
+  static int m_unique_id_;
 
  public:
-  static Singleton* get_instance(const int t_num) {
-    // thread safe
-    std::scoped_lock lock(m_mutex);
-
-    if (m_one_and_only_instance == nullptr) {
-      LOG(INFO) << "creating a new instance" << std::endl;
-      // lazy initialization
-      m_one_and_only_instance = new Singleton(t_num);
-    }
-    LOG(INFO) << "returning instance with unique id: " << m_unique_id
-              << std::endl;
-    return m_one_and_only_instance;
+  // call this to get access to the public functions
+  static Singleton& Instance() {
+    static Singleton* instance = new Singleton();  // inits once (lazy)
+    return *instance;
   }
 
-  Singleton(Singleton& t_other) = delete;
+  Singleton() { LOG(INFO) << "creating a new singleton instance" << std::endl; }
+
+  ~Singleton() { LOG(INFO) << "singleton instance destroyed" << std::endl; };
+
   void operator=(const Singleton&) = delete;
 
-  int get_unique_id() { return this->m_unique_id; }
+  int get_unique_id() { return this->m_unique_id_; }
+
+  void set_unique_id(int id) {
+    std::scoped_lock lk(m_mutex_);
+    this->m_unique_id_ = id;
+  }
 
   void print_unique_id() {
-    LOG(INFO) << "Instance's unique id: " << this->m_unique_id << std::endl;
+    LOG(INFO) << "Instance's unique id: " << this->m_unique_id_ << std::endl;
   }
 };
 
-Singleton* Singleton::m_one_and_only_instance = nullptr;
-int Singleton::m_unique_id = 0;
-std::mutex Singleton::m_mutex;
+int Singleton::m_unique_id_ = 0;
+std::mutex Singleton::m_mutex_;

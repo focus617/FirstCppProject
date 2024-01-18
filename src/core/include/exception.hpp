@@ -211,6 +211,7 @@ XUZY_DECLARE_EXCEPTION(XUZY_API, ExistsException, RuntimeException)
 XUZY_DECLARE_EXCEPTION(XUZY_API, TimeoutException, RuntimeException)
 XUZY_DECLARE_EXCEPTION(XUZY_API, SystemException, RuntimeException)
 XUZY_DECLARE_EXCEPTION(XUZY_API, RegularExpressionException, RuntimeException)
+XUZY_DECLARE_EXCEPTION(XUZY_API, LibraryNotFoundException, RuntimeException)
 XUZY_DECLARE_EXCEPTION(XUZY_API, LibraryLoadException, RuntimeException)
 XUZY_DECLARE_EXCEPTION(XUZY_API, LibraryUnLoadException, RuntimeException)
 XUZY_DECLARE_EXCEPTION(XUZY_API, LibraryAlreadyLoadedException,

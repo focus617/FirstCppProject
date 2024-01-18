@@ -30,8 +30,9 @@ ClassLoader::ClassLoader(const std::string& library_path,
 ClassLoader::~ClassLoader() {
   LOG(INFO) << "class_loader::ClassLoader: Destroying class loader, unloading "
                "associated library...";
-
-  unloadLibrary();
+  if (isLibraryLoaded()) {
+    unloadLibrary();
+  }
 }
 
 bool ClassLoader::isLibraryLoaded() {

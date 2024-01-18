@@ -147,21 +147,21 @@ void setANonPurePluginLibraryBeenOpened(bool hasIt);
  * will cause this function to be invoked when the library is loaded. The
  * function will create a MetaObject (i.e. factory) for the corresponding
  * Derived class and insert it into the appropriate FactoryMap in the global
- * Base-to-FactoryMap map. Note that the passed class_name is the literal class
+ * Base-to-FactoryMap map. Note that the passed derived_class_name is the literal class
  * name and not the mangled version.
- * @param Derived - parameteric type indicating concrete type of plugin
- * @param Base - parameteric type indicating base type of plugin
- * @param class_name - the literal name of the class being registered (NOT
- * MANGLED)
+ * @tparam Derived - parameteric type indicating concrete type of plugin
+ * @tparam Base - parameteric type indicating base type of plugin
+ * @param derived_class_name - the literal name of the class being registered (NOT MANGLED)
+ * @param base_class_name - the literal name of the base class (NOT MANGLED)
  */
 template <typename Derived, typename Base>
-void registerPlugin(const std::string& class_name,
+void registerPlugin(const std::string& derived_class_name,
                     const std::string& base_class_name) {
   // Note: This function will be automatically invoked when a
   // dlopen() call opens a library. Normally it will happen within
   // the scope of loadLibrary(), but that may not be guaranteed.
   LOG(INFO) << "class_loader.impl: Registering plugin factory for class = "
-            << class_name.c_str()
+            << derived_class_name.c_str()
             << ", ClassLoader* = " << getCurrentlyActiveClassLoader()
             << " and library name " << getCurrentlyLoadingLibraryName();
 
@@ -191,18 +191,18 @@ void registerPlugin(const std::string& class_name,
 
   // Create factory
   impl::AbstractMetaObject<Base>* new_factory =
-      new impl::MetaObject<Derived, Base>(class_name, base_class_name);
+      new impl::MetaObject<Derived, Base>(derived_class_name, base_class_name);
   new_factory->addOwningClassLoader(getCurrentlyActiveClassLoader());
   new_factory->setAssociatedLibraryPath(getCurrentlyLoadingLibraryName());
 
   // Add it to global factory map map
   getPluginBaseToFactoryMapMapMutex().lock();
   FactoryMap& factoryMap = getFactoryMapForBaseClass<Base>();
-  if (factoryMap.find(class_name) != factoryMap.end()) {
+  if (factoryMap.find(derived_class_name) != factoryMap.end()) {
     LOG(WARNING)
         << "class_loader.impl: SEVERE WARNING!!! "
         << "A namespace collision has occurred with plugin factory for class "
-        << class_name << ". "
+        << derived_class_name << ". "
         << "New factory will OVERWRITE existing one. "
         << "This situation occurs when libraries containing plugins are "
            "directly linked against an executable (the one running right now "
@@ -211,10 +211,10 @@ void registerPlugin(const std::string& class_name,
            "link against the library and use either "
            "class_loader::ClassLoader/MultiLibraryClassLoader to open.";
   }
-  factoryMap[class_name] = new_factory;
+  factoryMap[derived_class_name] = new_factory;
   getPluginBaseToFactoryMapMapMutex().unlock();
 
-  LOG(INFO) << "class_loader.impl: Registering of " << class_name
+  LOG(INFO) << "class_loader.impl: Registering of " << derived_class_name
             << " complete, (Metaobject Address = "
             << reinterpret_cast<void*>(new_factory) << ")";
 }
