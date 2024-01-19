@@ -1,42 +1,29 @@
-#include "singleton.h"
-
 #include <gtest/gtest.h>
 
 #include <iostream>
 
-class Singleton_Test_Fixture : public testing::Test {
- private:
-  /* data */
- public:
-  Singleton_Test_Fixture(/* args */) {}
-  ~Singleton_Test_Fixture() {}
+#include "resource/singleton.hpp"
 
-  void SetUp();
-  void TearDown();
-};
+TEST(Singleton_Test, same_operation_result_on_two_instances) {
+  std::string empty("");
+  std::string one("one");
+  std::string change("change");
 
-void Singleton_Test_Fixture::SetUp(/* args */) {}
-
-void Singleton_Test_Fixture::TearDown() {}
-
-TEST_F(Singleton_Test_Fixture, same_operation_result_on_two_instances) {
-  const int value = 5;
-
-  Singleton one = Singleton::Instance();
+  Singleton thisone = Singleton::Instance();
   // Expect equality.
-  EXPECT_EQ(0, one.get_unique_id());
+  EXPECT_EQ(empty, thisone.get_unique_name());
 
-  one.set_unique_id(value);
+  thisone.set_unique_name(one);
   // Expect equality.
-  EXPECT_EQ(value, one.get_unique_id());
+  EXPECT_EQ(one, thisone.get_unique_name());
 
   Singleton another = Singleton::Instance();
   // Expect equality.
-  EXPECT_EQ(value, another.get_unique_id());
-  EXPECT_EQ(one.get_unique_id(), another.get_unique_id());
+  EXPECT_EQ(one, another.get_unique_name());
+  EXPECT_EQ(thisone.get_unique_name(), another.get_unique_name());
 
-  another.set_unique_id(value+55);
+  another.set_unique_name(change);
   // Expect equality.
-  EXPECT_EQ(value+55, one.get_unique_id());
-  EXPECT_EQ(one.get_unique_id(), another.get_unique_id());
+  EXPECT_EQ(change, thisone.get_unique_name());
+  EXPECT_EQ(thisone.get_unique_name(), another.get_unique_name());
 }

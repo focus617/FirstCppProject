@@ -17,6 +17,8 @@ target_compile_features(my_lib PRIVATE cxx_std_20)
 set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG} ${EXTRA_COMPILE_OPTIONS} -Wnon-virtual-dtor")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}  ${EXTRA_COMPILE_OPTIONS} -Wnon-virtual-dtor")
 
+target_compile_definitions(my_lib PRIVATE "USE_MYLIB")
+
 # 指定头文件路径
 target_include_directories(my_lib 
     PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include"

@@ -10,6 +10,7 @@ aux_source_directory(. _SOURCES)
 
 # 添加子目录
 add_subdirectory(cpp)
+add_subdirectory(include/resource)
 
 # 生成静态链接库
 add_library(core SHARED ${_SOURCES})
@@ -39,20 +40,17 @@ target_include_directories(core
 target_link_libraries(core
   PUBLIC glog::glog
   PUBLIC nlohmann_json::nlohmann_json
+  PUBLIC resource
 )
 
+# 安装库
 install(TARGETS core
   EXPORT coreTargets
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib
-  RUNTIME DESTINATION bin
-  INCLUDES DESTINATION include/core
-)
-
-install(EXPORT coreTargets
-  FILE coreTargets.cmake
-  NAMESPACE xuzy::
-  DESTINATION share/cmake/core
+  LIBRARY DESTINATION lib COMPONENT Runtime
+  ARCHIVE DESTINATION lib COMPONENT Development
+  RUNTIME DESTINATION bin COMPONENT Runtime
+  PUBLIC_HEADER DESTINATION include/core COMPONENT Development
+  BUNDLE DESTINATION bin COMPONENT Runtime
 )
 
 include(CMakePackageConfigHelpers)
@@ -62,6 +60,12 @@ write_basic_package_version_file(
   COMPATIBILITY AnyNewerVersion
 )
 
+
+install(EXPORT coreTargets
+  FILE coreTargets.cmake
+  NAMESPACE xuzy::
+  DESTINATION share/cmake/core
+)
 install(FILES
     "coreConfig.cmake" 
     "${CMAKE_CURRENT_BINARY_DIR}/coreConfigVersion.cmake" 

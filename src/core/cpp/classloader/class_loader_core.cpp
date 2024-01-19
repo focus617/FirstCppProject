@@ -421,10 +421,13 @@ void loadLibrary(const std::string& library_path, ClassLoader* loader) {
 
   {
     try {
+
       setCurrentlyActiveClassLoader(loader);
       setCurrentlyLoadingLibraryName(library_path);
       library_handle = new SharedLibrary(library_path);
+
     } catch (const xuzy::LibraryAlreadyLoadedException& e) {
+
       setCurrentlyLoadingLibraryName("");
       setCurrentlyActiveClassLoader(nullptr);
 
@@ -434,6 +437,7 @@ void loadLibrary(const std::string& library_path, ClassLoader* loader) {
       throw xuzy::LibraryAlreadyLoadedException(msg);
 
     } catch (const xuzy::LibraryNotFoundException& e) {
+
       setCurrentlyLoadingLibraryName("");
       setCurrentlyActiveClassLoader(nullptr);
 
@@ -443,6 +447,7 @@ void loadLibrary(const std::string& library_path, ClassLoader* loader) {
       throw xuzy::LibraryNotFoundException(msg);
 
     } catch (const xuzy::LibraryLoadException& e) {
+
       setCurrentlyLoadingLibraryName("");
       setCurrentlyActiveClassLoader(nullptr);
 
@@ -452,6 +457,7 @@ void loadLibrary(const std::string& library_path, ClassLoader* loader) {
       throw xuzy::LibraryLoadException(msg);
 
     } catch (xuzy::Exception& e) {
+      
       LOG(ERROR) << "class_loader.impl: Exception " << e.what()
                  << "\nMessage: " << e.message() << std::endl;
     }
@@ -513,40 +519,41 @@ void unloadLibrary(const std::string& library_path, ClassLoader* loader) {
     LibraryVector& open_libraries = getLoadedLibraryVector();
     LibraryVector::iterator itr = findLoadedLibrary(library_path);
 
-    if (itr != open_libraries.end()) {
-      SharedLibrary* library = itr->second;
-      std::string lib_path = itr->first;
-
-      try {
-        destroyMetaObjectsForLibrary(lib_path, loader);
-
-        // Remove from loaded library list as well if no more factories
-        // associated with said library
-        if (!areThereAnyExistingMetaObjectsForLibrary(lib_path)) {
-          LOG(INFO) << "class_loader.impl: "
-                    << "There are no more MetaObjects left for " << lib_path
-                    << " so unloading library and removing from loaded library "
-                       "vector.\n";
-
-          library->unload();
-          assert(library->isLoaded() == false);
-          delete (library);
-          itr = open_libraries.erase(itr);
-        } else {
-          LOG(INFO) << "class_loader.impl: "
-                    << "MetaObjects still remain in memory meaning other "
-                       "ClassLoaders are still using library, keeping library "
-                    << lib_path << " open.";
-        }
-        return;
-      } catch (const xuzy::RuntimeException& e) {
-        delete (library);
-        throw xuzy::LibraryUnLoadException("Could not unload library (" +
-                                           std::string(e.message()) + ")");
-      }
+    if (itr == open_libraries.end()) {
+      throw xuzy::LibraryUnLoadException(
+          "Attempt to unload library that class_loader is unaware of.");
     }
-    throw xuzy::LibraryUnLoadException(
-        "Attempt to unload library that class_loader is unaware of.");
+    
+    SharedLibrary* library = itr->second;
+    std::string lib_path = itr->first;
+
+    try {
+      destroyMetaObjectsForLibrary(lib_path, loader);
+
+      // Remove from loaded library list as well if no more factories
+      // associated with said library
+      if (!areThereAnyExistingMetaObjectsForLibrary(lib_path)) {
+        LOG(INFO) << "class_loader.impl: "
+                  << "There are no more MetaObjects left for " << lib_path
+                  << " so unloading library and removing from loaded library "
+                     "vector.\n";
+
+        library->unload();
+        assert(library->isLoaded() == false);
+        delete (library);
+        itr = open_libraries.erase(itr);
+      } else {
+        LOG(INFO) << "class_loader.impl: "
+                  << "MetaObjects still remain in memory meaning other "
+                     "ClassLoaders are still using library, keeping library "
+                  << lib_path << " open.";
+      }
+      return;
+    } catch (const xuzy::RuntimeException& e) {
+      delete (library);
+      throw xuzy::LibraryUnLoadException("Could not unload library (" +
+                                         std::string(e.message()) + ")");
+    }
   }
 }
 

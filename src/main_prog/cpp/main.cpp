@@ -1,5 +1,5 @@
 #include <glog/logging.h>
-
+#include <iostream>
 #include <sstream>
 #include <string>
 #include <thread>
@@ -9,8 +9,8 @@
 #include "config.h"
 #include "logger.h"
 #include "restful.hpp"
-#include "singleton.h"
 #include "xuzy_math.h"
+
 using xuzy::Logger;
 
 void test_logger();
