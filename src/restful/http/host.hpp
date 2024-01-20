@@ -7,13 +7,16 @@
 using json = nlohmann::json;
 
 namespace http {
+
 class Host {
  public:
-  std::string ip{};
-  uint port;
+  std::string ip{"localhost"};
+  uint port{8080};
   std::unordered_set<std::string> bannedips;
 
-  Host(const std::string& ipaddr, const uint pt) : ip{ipaddr}, port{pt} {}
+  Host(const std::string& ipaddr, const uint pt) : ip{ipaddr}, port{pt} {
+    bannedips = std::unordered_set<std::string>{};
+  }
 
   void setup(const json& config) {
     ip = config.at("ip");
@@ -37,4 +40,5 @@ class Host {
     j = json{{"ip", h.ip}, {"port", h.port}, {"bannedIps", {}}};
   }
 };
+
 }  // namespace http

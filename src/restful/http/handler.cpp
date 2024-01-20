@@ -8,6 +8,7 @@
 using namespace httplib;
 
 namespace http::handler {
+
 void setup_routing(Server& svr) {
   // Index page
   svr.Get("/", [](const Request&, Response& res) {
@@ -15,17 +16,10 @@ void setup_routing(Server& svr) {
                     "text/html");
   });
 
+  api::list::setup_routing(svr);
+
   // Match the request path against a regular expression and extract its
   // captures
-  svr.Get(R"(/api/v1/lists/(\d+))",
-          [&](const Request& req, Response& res) -> void {
-            api::lists_get(req, res);
-          });
-
-  svr.Post(R"(/api/v1/lists)", [&](const Request& req, Response& res) -> void {
-    api::lists_post(req, res);
-  });
-
   svr.Post("/empty",
            [&](const Request& req, Response& res) {
              res.set_content("empty", "text/plain");
@@ -45,7 +39,7 @@ void setup_routing(Server& svr) {
       .Post("/post-large", [&](const Request& req, Response& res) {
         res.set_content(req.body, "text/plain");
       });
-      
+
   svr.Put("/empty-no-content-type", [&](const Request& req, Response& res) {
     res.set_content("empty-no-content-type", "text/plain");
   });
@@ -95,4 +89,5 @@ void setup(httplib::Server& svr, Host& host) {
   setup_errors(svr);
   setup_routing(svr);
 }
+
 }  // namespace http::handler

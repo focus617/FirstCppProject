@@ -7,7 +7,7 @@
 #include "config.h"
 #include "app/app.hpp"
 #include "args.hpp"
-#include "restful/restful_server.hpp"
+#include "restful/http/restful_server.hpp"
 
 #include "logger.h"
 #include "xuzy_math.h"

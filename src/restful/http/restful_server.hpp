@@ -5,7 +5,7 @@
 #include <string>
 
 #include "app/app.hpp"
-#include "http/host.h"
+#include "host.hpp"
 #include "visibility_control.hpp"
 
 #ifdef CPPHTTPLIB_OPENSSL_SUPPORT
@@ -54,6 +54,11 @@ class XUZY_API RestfulServer : public xuzy::App {
    * @brief Port at which HTTP Server is listening
    */
   http::Host* m_host_ptr_;
+
+  /**
+   * @brief Setup host& http(s)-server based on json configuration
+   */
+  void setup_based_on_conf();
 
   static void idle();
 };

@@ -1,6 +1,7 @@
 #pragma once
 
 namespace http {
+
 enum Code {
   OK = 200,
   BadRequest = 400,

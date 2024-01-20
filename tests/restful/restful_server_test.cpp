@@ -57,11 +57,6 @@ void RestfulServer_Test_Fixture::SetUp() {
   cli.set_connection_timeout(std::chrono::seconds(5));
 
   server.wait_until_ready();
-#ifdef CPPHTTPLIB_OPENSSL_SUPPORT
-  LOG(INFO) << "Https Server is ready.";
-#else
-  LOG(INFO) << "Http Server is ready.";
-#endif
 }
 
 void RestfulServer_Test_Fixture::TearDown() {

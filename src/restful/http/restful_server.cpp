@@ -3,8 +3,10 @@
 #include <glog/logging.h>
 
 #include <chrono>
+#include <filesystem>
 #include <thread>
 
+#include "exception.hpp"
 #include "http/handler.h"
 
 using namespace http;
@@ -25,32 +27,35 @@ RestfulServer::~RestfulServer() {
   if (nullptr != m_host_ptr_) delete m_host_ptr_;
 }
 
-void RestfulServer::setup() {
-  App::setup();
+void RestfulServer::setup_based_on_conf() {
+  LOG(INFO) << "JSON Configuration:\n" << std::setw(4) << m_conf_;
 
-  LOG(INFO) << m_conf_;
-
-  m_host_ptr_ =
-      new http::Host(m_conf_["server"]["ip"], m_conf_["server"]["webPort"]);
+  std::string& ip = m_conf_["server"]["ip"].get_ref<std::string&>();
+  uint port = m_conf_["server"]["webPort"].get<uint>();
+  m_host_ptr_ = new http::Host(ip, port);
 
 #ifdef CPPHTTPLIB_OPENSSL_SUPPORT
-  // m_server_ptr_ =
-  //     new httplib::SSLServer(SERVER_CERT_FILE, SERVER_PRIVATE_KEY_FILE);
-  
-  m_server_ptr_ = new httplib::SSLServer(
-      m_conf_["ssl-cert"].get_ref<const std::string&>().c_str(),
-      m_conf_["ssl-key"].get_ref<const std::string&>().c_str());
+  const std::string& sslcert =
+      m_conf_["ssl-cert"].get_ref<const std::string&>();
+  if (!std::filesystem::exists(sslcert)) {
+    throw xuzy::FileNotFoundException(sslcert + " not exist.");
+  }
+  const std::string& sslkey = m_conf_["ssl-key"].get_ref<const std::string&>();
+  if (!std::filesystem::exists(sslkey)) {
+    throw xuzy::FileNotFoundException(sslkey + " not exist.");
+  }
+
+  m_server_ptr_ = new httplib::SSLServer(sslcert.c_str(), sslkey.c_str());
 #else
   m_server_ptr_ = new httplib::Server();
 #endif
 }
 
-void RestfulServer::run() {
-  start();
-  idle();
-}
+void RestfulServer::setup() {
+  App::setup();
 
-void RestfulServer::start() {
+  setup_based_on_conf();
+
   // Setup listening IP address and routing
   handler::setup(*m_server_ptr_, *m_host_ptr_);
 
@@ -60,7 +65,14 @@ void RestfulServer::start() {
                        stop();
                        res.set_redirect("/");
                      });
+}
 
+void RestfulServer::run() {
+  start();
+  idle();
+}
+
+void RestfulServer::start() {
 #ifdef CPPHTTPLIB_OPENSSL_SUPPORT
   LOG(INFO) << "Https Server Start at " << m_host_ptr_->ip << ":"
             << m_host_ptr_->port;
@@ -92,4 +104,11 @@ void RestfulServer::idle() {
   }
 }
 
-void RestfulServer::wait_until_ready() { m_server_ptr_->wait_until_ready(); }
+void RestfulServer::wait_until_ready() {
+  m_server_ptr_->wait_until_ready();
+#ifdef CPPHTTPLIB_OPENSSL_SUPPORT
+  LOG(INFO) << "Https Server is ready to work...";
+#else
+  LOG(INFO) << "Http Server is ready to work...";
+#endif
+}
