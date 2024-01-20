@@ -3,8 +3,11 @@
 
 #include <glog/logging.h>
 
+#include <filesystem>
 #include <fstream>
 #include <iostream>
+
+#include "exception.hpp"
 
 using namespace xuzy;
 
@@ -17,44 +20,42 @@ App::~App() {
   }
 }
 
-void App::run() {
-  // Setup configuration
-  json configuration = load_configuration_from_file();
-
-  // Call the subclass with the configuration
-  setup(configuration);
-}
-
 void App::version_check(int argc, char* argv[], const std::string& version) {
   LOG(INFO) << m_app_name << " version: " << version << std::endl;
 }
 
 void App::dumpError(std::string error) {
-  LOG(INFO) << m_app_name << " error: " << error << std::endl;
+  LOG(ERROR) << m_app_name << " error: " << error << std::endl;
 }
 
-json App::load_configuration_from_file() {
-  json configuration;
-
-  LOG(INFO) << m_app_name << ": Load configuration" << std::endl;
-
-  try {
-    std::ifstream config_file((m_app_name + ".json").c_str());
-
-    if (config_file.std::ios::eof()) {
-      throw std::runtime_error("Config file is empty");
-    }
-    // Make sure the config is open
-    if (!config_file.is_open()) {
-      throw std::runtime_error("Can't open config");
-    }
-    config_file >> configuration;
-  } catch (std::exception& e) {
-    throw std::string(e.what());
-  } catch (...) {
-    throw "Can't open config";
+void App::load_configuration_from_file(const std::string& filename) {
+  if (!std::filesystem::exists(filename)) {
+    throw xuzy::FileNotFoundException(filename + " not exist.");
   }
-  return configuration;
+
+  LOG(INFO) << m_app_name << ": Load configuration from " << filename;
+  std::ifstream config_file(filename.c_str());
+
+  // Make sure the config is open
+  if (!config_file.is_open()) {
+    throw xuzy::OpenFileException("Failed to open " + filename);
+  }
+  if (config_file.std::ios::eof()) {
+    throw xuzy::FileNotReadyException(filename + " is empty");
+  }
+
+  config_file >> m_conf_;
+}
+
+void App::setup() {
+  // Setup configuration
+  std::string config_filename = m_app_name + ".json";
+  load_configuration_from_file(config_filename);
+
+  if (m_conf_.empty()) {
+    LOG(WARNING) << "Failure during config: empty configuration file."
+                 << std::endl;
+  }
 }
 
 void App::init_logger(const char* app) {
@@ -84,14 +85,19 @@ void App::main(int argc, char* argv[], const std::string& version,
         app->p_cli_parser->parse_commandline(argc, argv);
       }
 
+      // Call the subclass with the configuration
+      app->setup();
+
       // Run forever
       app->run();
+    } catch (xuzy::Exception& e) {
+      app->dumpError(e.displayText());
+    } catch (std::exception& e) {
+      app->dumpError(e.what());
     } catch (std::string s) {
       app->dumpError(s);
     } catch (const char* s) {
       app->dumpError(s);
-    } catch (std::exception& e) {
-      app->dumpError(e.what());
     } catch (...) {
       app->dumpError("Unknown");
     }

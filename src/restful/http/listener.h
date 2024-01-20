@@ -3,9 +3,10 @@
 #include <httplib.h>
 
 #include "host.h"
+#include "visibility_control.hpp"
 
 namespace http::listener {
 
-void run(Host host);
+XUZY_API void run(Host host);
 
 }  // namespace http::listener

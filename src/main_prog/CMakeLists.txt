@@ -19,18 +19,25 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${EXTRA_COMPILE_OPTIONS}
 # 给Debug版本的应用添加后缀
 set_target_properties(my_app PROPERTIES DEBUG_POSTFIX ${CMAKE_DEBUG_POSTFIX})
 
+set(NLOHMANN_JSON_INCLUDE_DIR
+  ${PROJECT_SOURCE_DIR}/extern/nlohmann-json/include
+  CACHE PATH "nlohmann/json include directory"
+)
+
 # 指定头文件路径
 target_include_directories(my_app
-     PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include"
-     PUBLIC ${EXTRA_INCLUDES}
+     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+     PUBLIC $<INSTALL_INTERFACE:include/xuzy>
+     PRIVATE ${PROJECT_SOURCE_DIR}/src
      PRIVATE ${PROJECT_BINARY_DIR}/src
-     PRIVATE ${PROJECT_SOURCE_DIR}/extern/nlohmann-json/include/nlohmann
+     PRIVATE ${NLOHMANN_JSON_INCLUDE_DIR}
 )
 
 # 添加链接库
 target_link_libraries(my_app PUBLIC
      # xuzy::core
      core
+     restful
      absl::flags
      absl::flags_parse
      absl::flags_usage

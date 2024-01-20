@@ -2,8 +2,6 @@
 
 #include <gtest/gtest.h>
 
-#include <iostream>
-
 class ObjectPool_Test_Fixture : public testing::Test {
  private:
   /* data */

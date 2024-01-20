@@ -12,14 +12,12 @@ aux_source_directory(. _SOURCES)
 add_subdirectory(cpp)
 add_subdirectory(include/resource)
 
-# 生成静态链接库
+# 生成动态链接库
 add_library(core SHARED ${_SOURCES})
 
 # 添加编译选项
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${EXTRA_COMPILE_OPTIONS}")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${EXTRA_COMPILE_OPTIONS}")
-set(CMAKE_CXX_VISIBILITY_PRESET hidden)
-set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 
 target_compile_definitions(core PRIVATE XUZY_DLL XUZY_DLL_EXPORTS _DEBUG)
 

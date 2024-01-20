@@ -3,22 +3,21 @@
  * https://sourcemaking.com/design_patterns/object_pool/cpp/1
  */
 
-#include <iostream>
 #include <list>
 #include <string>
-
+#include <glog/logging.h>
 /**
  * @brief Reusable Resource
  */
 class Resource {
  private:
-  int value;
+  int value_;
 
  public:
-  Resource() { value = 0; }
-  void reset() { value = 0; }
-  int getValue() { return value; }
-  void setValue(int number) { value = number; }
+  Resource() { value_ = 0; }
+  void reset() { value_ = 0; }
+  int getValue() { return value_; }
+  void setValue(int number) { value_ = number; }
 };
 
 /**
@@ -52,10 +51,10 @@ class ObjectPool {
    */
   Resource* getResource() {
     if (resources.empty()) {
-      std::cout << "Creating new resource." << std::endl;
+      LOG(INFO) << "Creating new resource." << std::endl;
       return new Resource;
     } else {
-      std::cout << "Reusing existing resource." << std::endl;
+      LOG(INFO) << "Reusing existing resource." << std::endl;
       Resource* resource = resources.front();
       resources.pop_front();
       return resource;

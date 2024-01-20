@@ -4,17 +4,17 @@
 #include <string>
 #include <thread>
 
+#include "config.h"
 #include "app/app.hpp"
 #include "args.hpp"
-#include "config.h"
+#include "restful/restful_server.hpp"
+
 #include "logger.h"
-#include "restful.hpp"
 #include "xuzy_math.h"
 
 using xuzy::Logger;
 
 void test_logger();
-// extern int test_httplib_client();
 // extern void thread_trial();
 // extern void thread_active_object();
 
@@ -22,7 +22,8 @@ const std::string VERSION{"0.0.1"};
 const std::string APP_NAME{"Restful-Server"};
 
 int main(int argc, char* argv[]) {
-  xuzy::App* app = new http::Restful(APP_NAME);
+  // xuzy::App* app = new http::Restful(APP_NAME);
+  xuzy::App* app = new http::RestfulServer(APP_NAME);
 
   app->set_cli_parser(new CLI_Parser());
 
@@ -30,7 +31,6 @@ int main(int argc, char* argv[]) {
 
   /*
       test_logger();
-
       thread_trial();
       thread_active_object();
   */

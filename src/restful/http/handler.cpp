@@ -2,7 +2,7 @@
 
 #include <glog/logging.h>
 
-#include "api.h"
+#include "api/api.h"
 #include "response_codes.h"
 
 using namespace httplib;
@@ -45,6 +45,7 @@ void setup_routing(Server& svr) {
       .Post("/post-large", [&](const Request& req, Response& res) {
         res.set_content(req.body, "text/plain");
       });
+      
   svr.Put("/empty-no-content-type", [&](const Request& req, Response& res) {
     res.set_content("empty-no-content-type", "text/plain");
   });
@@ -84,7 +85,12 @@ void setup_errors(httplib::Server& svr) {
 }
 
 void setup(httplib::Server& svr, Host& host) {
+#ifdef CPPHTTPLIB_OPENSSL_SUPPORT
+  LOG(INFO) << "Setup Https Server";
+#else
   LOG(INFO) << "Setup Http Server";
+#endif
+
   setup_security(svr, host);
   setup_errors(svr);
   setup_routing(svr);
