@@ -1,11 +1,16 @@
+#pragma once
+
+#include "visibility_control.hpp"
+
 /**
  * @brief Object Pool example derived from
  * https://sourcemaking.com/design_patterns/object_pool/cpp/1
  */
 
+#include <glog/logging.h>
+
 #include <list>
 #include <string>
-#include <glog/logging.h>
 /**
  * @brief Reusable Resource
  */
@@ -24,7 +29,7 @@ class Resource {
  * @brief Resource Pool Manager
  * Note, that this class is a singleton.
  */
-class ObjectPool {
+class XUZY_API ObjectPool {
  private:
   std::list<Resource*> resources;
 
@@ -49,6 +54,7 @@ class ObjectPool {
    *
    * @return Resource instance.
    */
+  XUZY_API
   Resource* getResource() {
     if (resources.empty()) {
       LOG(INFO) << "Creating new resource." << std::endl;
@@ -69,6 +75,7 @@ class ObjectPool {
    * @param object Resource instance.
    * @return void
    */
+  XUZY_API
   void returnResource(Resource* object) {
     object->reset();
     resources.push_back(object);

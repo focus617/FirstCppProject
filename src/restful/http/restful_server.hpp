@@ -31,6 +31,7 @@ class XUZY_API RestfulServer : public xuzy::App {
   XUZY_API void start();
   XUZY_API void stop();
   XUZY_API void wait_until_ready();
+  XUZY_API bool is_running();
 
   // Move to public for testing
   XUZY_API void setup() override;
@@ -59,6 +60,11 @@ class XUZY_API RestfulServer : public xuzy::App {
    * @brief Setup host& http(s)-server based on json configuration
    */
   void setup_based_on_conf();
+
+  /**
+   * @brief Setup default routing related to http server management
+   */
+  void setup_default_routing();
 
   static void idle();
 };

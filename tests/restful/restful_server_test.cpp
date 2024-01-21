@@ -20,6 +20,8 @@
 
 using namespace httplib;
 
+const std::string JSON_DATA = "{\"hello\":\"world\"}";
+
 const std::string LARGE_DATA = std::string(1024 * 1024 * 100, '@');  // 100MB
 
 class RestfulServer_Test_Fixture : public testing::Test {
@@ -75,8 +77,13 @@ TEST_F(RestfulServer_Test_Fixture, GetMethod404) {
   EXPECT_EQ(StatusCode::NotFound_404, res->status);
 }
 
+TEST_F(RestfulServer_Test_Fixture, GetServerStop) {
+  auto res = cli.Get("/stop");
+  EXPECT_FALSE(server.is_running());
+}
+
 TEST_F(RestfulServer_Test_Fixture, lists_GetMethod200) {
-  auto res = cli.Get("/api/v1/lists/1");
+  auto res = cli.Get("/api/v1/lists");
   ASSERT_TRUE(res);
   EXPECT_EQ("HTTP/1.1", res->version);
   EXPECT_EQ(StatusCode::OK_200, res->status);
@@ -95,8 +102,23 @@ TEST_F(RestfulServer_Test_Fixture, lists_GetMethod200_return_correct_value) {
   });
 
   ASSERT_TRUE(res);
+  EXPECT_EQ("HTTP/1.1", res->version);
   EXPECT_EQ(StatusCode::OK_200, res->status);
+  EXPECT_EQ("OK", res->reason);
+  EXPECT_EQ("text/plain", res->get_header_value("Content-Type"));
+  EXPECT_EQ(1U, res->get_header_value_count("Content-Type"));
   EXPECT_EQ("2", body);
+}
+
+TEST_F(RestfulServer_Test_Fixture, lists_PostEncodedJson) {
+  Params params;
+  params.emplace("json", JSON_DATA);
+
+  auto res = cli.Post("/api/v1/lists", params);
+
+  ASSERT_TRUE(res);
+  ASSERT_EQ(StatusCode::OK_200, res->status);
+  ASSERT_EQ(JSON_DATA, res->body);
 }
 
 TEST_F(RestfulServer_Test_Fixture, PostEmptyContent) {

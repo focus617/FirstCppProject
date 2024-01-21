@@ -51,20 +51,23 @@ void RestfulServer::setup_based_on_conf() {
 #endif
 }
 
-void RestfulServer::setup() {
-  App::setup();
-
-  setup_based_on_conf();
-
-  // Setup listening IP address and routing
-  handler::setup(*m_server_ptr_, *m_host_ptr_);
-
+void RestfulServer::setup_default_routing() {
   // Default Routing: Stop the server when the user access /stop
   m_server_ptr_->Get("/stop",
                      [&](const httplib::Request& req, httplib::Response& res) {
                        stop();
                        res.set_redirect("/");
                      });
+}
+
+void RestfulServer::setup() {
+  App::setup();
+
+  setup_based_on_conf();
+  setup_default_routing();
+
+  // Setup security, routing and error handler
+  handler::setup(*m_server_ptr_, *m_host_ptr_);
 }
 
 void RestfulServer::run() {
@@ -111,4 +114,8 @@ void RestfulServer::wait_until_ready() {
 #else
   LOG(INFO) << "Http Server is ready to work...";
 #endif
+}
+
+bool RestfulServer::is_running() {
+  return ((nullptr != m_server_ptr_) && (m_server_ptr_->is_running()));
 }

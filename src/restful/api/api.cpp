@@ -14,25 +14,35 @@ namespace api::list {
 void setup_routing(httplib::Server& svr) {
   // Match the request path against a regular expression and extract its
   // captures
-  svr.Get(R"(/api/v1/lists/(\d+))",
+  svr.Get(R"(/api/v1/lists)",
           [&](const httplib::Request& req, httplib::Response& res) -> void {
-            api::list::get(req, res);
-          });
+            api::list::get_all(req, res);
+          })
 
-  svr.Put(R"(/api/v1/lists/(\d+))",
-          [&](const httplib::Request& req, httplib::Response& res) {
-            api::list::put(req, res);
-          });
+      .Get(R"(/api/v1/lists/(\d+))",
+           [&](const httplib::Request& req, httplib::Response& res) -> void {
+             api::list::get(req, res);
+           })
 
-  svr.Post(R"(/api/v1/lists)",
+      .Put(R"(/api/v1/lists/(\d+))",
            [&](const httplib::Request& req, httplib::Response& res) {
-             api::list::post(req, res);
-           });
+             api::list::put(req, res);
+           })
 
-  svr.Delete(R"(/api/v1/lists/(\d+))",
-             [&](const httplib::Request& req, httplib::Response& res) {
-               api::list::remove(req, res);
-             });
+      .Post(R"(/api/v1/lists)",
+            [&](const httplib::Request& req, httplib::Response& res) {
+              api::list::post(req, res);
+            })
+
+      .Delete(R"(/api/v1/lists/(\d+))",
+              [&](const httplib::Request& req, httplib::Response& res) {
+                api::list::remove(req, res);
+              });
+}
+
+void get_all(const httplib::Request& req, httplib::Response& res) {
+  res.status = http::Code::OK;
+  res.set_content("Empty", "text/plain");
 }
 
 void get(const httplib::Request& req, httplib::Response& res) {
@@ -44,12 +54,15 @@ void get(const httplib::Request& req, httplib::Response& res) {
 void put(const httplib::Request& req, httplib::Response& res) {}
 
 void post(const httplib::Request& req, httplib::Response& res) {
-  auto ci = json::parse(req.body);
-  LOG(INFO) << std::setw(4) << ci;
+  if (req.has_param("json")) {
+    auto json = req.get_param_value("json");
+    LOG(INFO) << json;
 
-  res.status = http::Code::OK;
-  json result{ci};
-  res.set_content(result.dump(), "application/json");
+    res.status = http::Code::OK;
+    res.set_content(json, "application/json");
+  } else {
+    res.status = http::Code::BadRequest;
+  }
 }
 
 void remove(const httplib::Request& req, httplib::Response& res) {}

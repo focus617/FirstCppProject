@@ -2,6 +2,11 @@
 
 namespace http {
 
+/**
+ * @brief status code
+ * Below is partial code list from StatusCode in httplib.h
+ * Target is reduce compile time for api
+*/
 enum Code {
   OK = 200,
   BadRequest = 400,
