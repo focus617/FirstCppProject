@@ -19,6 +19,8 @@
                         : 0))
 #endif
 
+namespace xuzy {
+
 /**
  * @brief TaskQueue derived from cpp-httplib
  * This is an interface class for ThreadPool
@@ -57,12 +59,12 @@ class XUZY_API ThreadPool : public TaskQueue {
   /**
    * @brief Constructor for ThreadPool
    * @param n Maxium number of Worker in ThreadPool
-   * @param mqr Maxium size of Job queue
+   * @param mqr Maxium size of Job queue, no limitation when mqr equals to zero
    */
   XUZY_API
   explicit ThreadPool(size_t n, size_t mqr = 0)
       : shutdown_(false), max_queued_requests_(mqr) {
-    // Create workers    
+    // Create workers
     while (n) {
       threads_.emplace_back(worker(*this));
       n--;
@@ -70,12 +72,15 @@ class XUZY_API ThreadPool : public TaskQueue {
   }
 
   ThreadPool(const ThreadPool&) = delete;
-  ~ThreadPool() override = default;
+
+  ~ThreadPool() override {
+    if (!shutdown_) shutdown();
+  };
 
   /**
    * @brief Put new coming job into queue
    * @param fn New job
-   * @return true if job is loaded into queue, otherwise false
+   * @return true if job was loaded into queue, otherwise false
    */
   XUZY_API
   bool enqueue(std::function<void()> fn) override {
@@ -147,3 +152,5 @@ class XUZY_API ThreadPool : public TaskQueue {
   std::condition_variable cond_;
   std::mutex mutex_;
 };
+
+}  // namespace xuzy

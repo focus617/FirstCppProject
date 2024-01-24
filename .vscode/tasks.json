@@ -8,7 +8,7 @@
 			"type": "shell",
 			"label": "CMake: clean",
 			"options": {
-				"cwd": "${workspaceFolder}/build"
+				"cwd": "${workspaceFolder}/build/debug"
 			},
 			"command": "rm",
 			"args": [
@@ -32,36 +32,38 @@
 			"type": "shell",
 			"label": "CMake: configure debug",
 			"options": {
-				"cwd": "${workspaceFolder}/build/debug"
+				"cwd": "${workspaceFolder}"
 			},
 			"command": "cmake",
 			"args": [
 				"-DCMAKE_BUILD_TYPE=debug",
-				"-S ../.."
+				"-S .",
+				"-B build/debug"
 			]
 		},
 		{
 			"type": "shell",
 			"label": "CMake: configure release",
 			"options": {
-				"cwd": "${workspaceFolder}/build/release"
+				"cwd": "${workspaceFolder}"
 			},
 			"command": "cmake",
 			"args": [
 				"-DCMAKE_BUILD_TYPE=release",
-				"-S ../.."
+				"-S .",
+				"-B build/release"
 			]
 		},
 		{
 			"type": "shell",
 			"label": "CMake: build debug",
 			"options": {
-				"cwd": "${workspaceFolder}/build/debug"
+				"cwd": "${workspaceFolder}"
 			},
 			"command": "cmake",
 			"args": [
-				"--build",
-				"."
+				"--build build/debug",
+				"--target install"
 			],
 			"group": {
 				"kind": "build",
@@ -72,12 +74,12 @@
 			"type": "shell",
 			"label": "CMake: build release",
 			"options": {
-				"cwd": "${workspaceFolder}/build/release"
+				"cwd": "${workspaceFolder}"
 			},
 			"command": "cmake",
 			"args": [
-				"--build",
-				"."
+				"--build build/release",
+				"--target install"
 			],
 			"group": {
 				"kind": "build",

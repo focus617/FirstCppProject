@@ -1,14 +1,22 @@
 #pragma once
 
+/**
+ * @brief Multi-Thread Pattern
+ * This Master_Controller works with Worker(in worker.hpp)
+ */
+
+#include <glog/logging.h>
+
 #include <chrono>
 #include <mutex>
 #include <thread>
 
-#include "logger.h"
+#include "visibility_control.hpp"
+
 namespace xuzy {
 using namespace std::chrono_literals;
 
-class Master_Controller {
+class XUZY_API Master_Controller {
  private:
   std::condition_variable m_cv;
   std::mutex m_mtx;
@@ -38,8 +46,8 @@ void Master_Controller::signal_done() {
   }
   if (m_done_count == m_worker_count) {
     m_cv.notify_one();  // notify master that all work done
-    LOG_INFO("Master Controller [thread id: %d]: receive signal_done.",
-             std::this_thread::get_id());
+    LOG(INFO) << "Master Controller [thread id: " << std::this_thread::get_id()
+              << "]: receive signal_done.";
   }
 }
 

@@ -12,7 +12,7 @@
 #endif
 
 // Ignore warnings about import/exports when deriving from std classes.
-#ifdef _MSC_VER
+#if defined(_MSC_VER)
 #  pragma warning(disable : 4251)
 #  pragma warning(disable : 4275)
 #endif
@@ -21,7 +21,7 @@
 // gcc wiki:  https://gcc.gnu.org/wiki/Visibility
 
 // Generic helper definitions for shared library support
-#if defined _WIN32 || defined __CYGWIN__
+#if defined(_WIN32) || defined(__CYGWIN__)
 #  define XUZY_HELPER_DLL_IMPORT __declspec(dllimport)
 #  define XUZY_HELPER_DLL_EXPORT __declspec(dllexport)
 #  define XUZY_HELPER_DLL_LOCAL

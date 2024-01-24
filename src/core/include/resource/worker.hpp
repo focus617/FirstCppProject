@@ -1,17 +1,26 @@
 #pragma once
 
+/**
+ * @brief Multi-Thread Pattern
+ * Master_Controller(in mastercontroller.hpp) works with Worker
+ */
+
+#include <glog/logging.h>
+
 #include <chrono>
 #include <condition_variable>
 #include <mutex>
 #include <span>
 #include <thread>
 
-#include "logger.h"
-#include "mastercontroller.h"
+#include "mastercontroller.hpp"
+#include "visibility_control.hpp"
 
 namespace xuzy {
+
 using namespace std::chrono_literals;
-class Worker {
+
+class XUZY_API Worker {
  private:
   Master_Controller* p_master;
   std::jthread m_thread;
@@ -36,11 +45,11 @@ class Worker {
 
 Worker::Worker(Master_Controller* t_master)
     : p_master{t_master}, m_thread{&Worker::Run_, this} {
-  LOG_INFO("Worker [thread id: %d] is created.", m_thread.get_id());
+  LOG(INFO) << "Worker [thread id: " << m_thread.get_id() << "] is created.";
 }
 
 Worker::~Worker() {
-  LOG_INFO("Worker [thread id: %d] died.", m_thread.get_id());
+  LOG(INFO) << "Worker [thread id: " << m_thread.get_id() << "] died.";
 }
 
 void Worker::Run_() {
@@ -49,7 +58,7 @@ void Worker::Run_() {
   while (true) {
     m_cv.wait(locker, [this]() { return p_output != nullptr || m_dying; });
 
-    LOG_INFO("Worker [thread id: %d] wake up...", std::this_thread::get_id());
+    LOG(INFO) << "Worker [thread id: " << m_thread.get_id() << "] wake up...";
 
     if (m_dying) {
       break;
@@ -65,8 +74,9 @@ void Worker::Run_() {
 void Worker::process_dataset(std::span<int> t_input, int& t_output) {
   t_output = t_input.size();
 
-  LOG_INFO("Worker [thread id: %d] process dataset",
-           std::this_thread::get_id());
+  LOG(INFO) << "Worker [thread id: " << m_thread.get_id()
+            << "] process dataset";
+
   std::this_thread::sleep_for(1s);
 }
 

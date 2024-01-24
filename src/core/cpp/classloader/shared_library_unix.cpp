@@ -6,6 +6,7 @@
 #include <filesystem>
 
 #include "exception.hpp"
+#include "platform.hpp"
 
 using namespace class_loader;
 
@@ -76,7 +77,7 @@ bool SharedLibraryImpl::hasSymbolImpl(const std::string& name) {
 }
 
 std::string SharedLibraryImpl::prefixImpl() {
-#if defined(__CYGWIN__) || defined(_WIN32)
+#if defined(XUZY_OS_CYGWIN) || defined(XUZY_OS_WINDOWS)
   return "";
 #else
   return "lib";
@@ -84,29 +85,31 @@ std::string SharedLibraryImpl::prefixImpl() {
 }
 
 std::string SharedLibraryImpl::suffixImpl() {
-#if defined(__APPLE__)
+#if defined(XUZY_OS_MACOSX)
 #  if defined(_DEBUG) && !defined(NO_SHARED_LIBRARY_DEBUG_SUFFIX)
   return "d.dylib";
 #  else
   return ".dylib";
 #  endif
-#elif defined(hpux) || defined(_hpux)
+#elif defined(XUZY_OS_HP)
 #  if defined(_DEBUG) && !defined(NO_SHARED_LIBRARY_DEBUG_SUFFIX)
   return "d.sl";
 #  else
   return ".sl";
 #  endif
-#elif defined(__CYGWIN__) || defined(_WIN32)
+#elif defined(XUZY_OS_CYGWIN) || defined(XUZY_OS_WINDOWS)
 #  if defined(_DEBUG) && !defined(NO_SHARED_LIBRARY_DEBUG_SUFFIX)
   return "d.dll";
 #  else
   return ".dll";
 #  endif
-#else
+#elif defined(XUZY_OS_LINUX)
 #  if defined(_DEBUG) && !defined(NO_SHARED_LIBRARY_DEBUG_SUFFIX)
   return "d.so";
 #  else
   return ".so";
 #  endif
+#else
+#  error Platform not supported so far.
 #endif
 }

@@ -1,16 +1,18 @@
 #pragma once
 
-#include "visibility_control.hpp"
-
 /**
  * @brief Object Pool example derived from
  * https://sourcemaking.com/design_patterns/object_pool/cpp/1
  */
 
 #include <glog/logging.h>
-
 #include <list>
 #include <string>
+
+#include "visibility_control.hpp"
+
+namespace xuzy {
+
 /**
  * @brief Reusable Resource
  */
@@ -81,3 +83,5 @@ class XUZY_API ObjectPool {
     resources.push_back(object);
   }
 };
+
+}  // namespace xuzy

@@ -12,12 +12,30 @@ add_subdirectory(cpp)
 # 生成可执行程序
 add_executable(my_app ${_SOURCES})
 
-# 添加编译选项
-set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG} ${EXTRA_COMPILE_OPTIONS} -Wno-unused-parameter")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${EXTRA_COMPILE_OPTIONS} -Wno-unused-parameter")
+target_compile_features(my_app PUBLIC cxx_std_20)
+set_target_properties(my_app PROPERTIES CXX_EXTENSIONS OFF)
 
 # 给Debug版本的应用添加后缀
 set_target_properties(my_app PROPERTIES DEBUG_POSTFIX ${CMAKE_DEBUG_POSTFIX})
+
+# 添加编译选项
+if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
+  set(MY_DEBUG_OPTIONS -Wall -Werror -Wextra -Wshadow -pedantic -Wfloat-equal -Wno-unused-parameter -Wnon-virtual-dtor -Wmain -fstack-usage -g3)
+  set(MY_RELEASE_OPTIONS -O2)
+
+elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
+  set(MY_DEBUG_OPTIONS -Wall -Wconversion -Wdouble-promotion -Weffc++ -Wextra -Wfloat-equal -Wmain -Wshadow -pedantic -g3)
+  set(MY_RELEASE_OPTIONS -O2)
+
+elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
+  set(MY_DEBUG_OPTIONS /Wall /RTC)
+  set(MY_RELEASE_OPTIONS /w3 /O2)
+endif()
+
+target_compile_options(my_app PRIVATE "$<$<CONFIG:DEBUG>:${MY_DEBUG_OPTIONS}>")
+target_compile_options(my_app PRIVATE 
+                                   "$<$<CONFIG:RELEASE>:{MY_RELEASE_OPTIONS>")
+
 
 set(NLOHMANN_JSON_INCLUDE_DIR
   ${PROJECT_SOURCE_DIR}/extern/nlohmann-json/include

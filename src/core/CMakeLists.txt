@@ -1,5 +1,5 @@
-# Import nlohmann_json
 set(CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/install")
+# Import nlohmann_json
 find_package(nlohmann_json 3.11.3 REQUIRED)
 if(nlohmann_json_FOUND)
   message(STATUS "nlohmann_json 3.11.3 Found")
@@ -15,11 +15,27 @@ add_subdirectory(include/resource)
 # 生成动态链接库
 add_library(core SHARED ${_SOURCES})
 
-# 添加编译选项
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${EXTRA_COMPILE_OPTIONS}")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${EXTRA_COMPILE_OPTIONS}")
-
+target_compile_features(core PUBLIC cxx_std_20)
+set_target_properties(core PROPERTIES CXX_EXTENSIONS OFF)
 target_compile_definitions(core PRIVATE XUZY_DLL XUZY_DLL_EXPORTS _DEBUG)
+
+# 添加编译选项
+if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
+  set(MY_DEBUG_OPTIONS -Wall -Werror -Wextra -Wshadow -pedantic -Wfloat-equal -Wno-unused-parameter -Wmain -fstack-usage -g3)
+  set(MY_RELEASE_OPTIONS -O2)
+
+elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
+  set(MY_DEBUG_OPTIONS -Wall -Wconversion -Wdouble-promotion -Weffc++ -Wextra -Wfloat-equal -Wmain -Wshadow -pedantic -g3)
+  set(MY_RELEASE_OPTIONS -O2)
+
+elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
+  set(MY_DEBUG_OPTIONS /Wall /RTC)
+  set(MY_RELEASE_OPTIONS /w3 /O2)
+endif()
+
+target_compile_options(core PRIVATE "$<$<CONFIG:DEBUG>:${MY_DEBUG_OPTIONS}>")
+target_compile_options(core PRIVATE 
+                                   "$<$<CONFIG:RELEASE>:{MY_RELEASE_OPTIONS>")
 
 set(NLOHMANN_JSON_INCLUDE_DIR
   ${PROJECT_SOURCE_DIR}/extern/nlohmann-json/include

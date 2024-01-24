@@ -2,6 +2,8 @@
 
 #include <gtest/gtest.h>
 
+using namespace xuzy;
+
 TEST(TaskQueueTest, IncreaseAtomicInteger) {
   static constexpr unsigned int number_of_tasks{1000000};
   std::atomic_uint count{0};

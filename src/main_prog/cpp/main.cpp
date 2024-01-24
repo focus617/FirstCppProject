@@ -18,11 +18,11 @@ void test_logger();
 // extern void thread_trial();
 // extern void thread_active_object();
 
-const std::string VERSION{"0.0.1"};
 const std::string APP_NAME{"Restful-Server"};
+const std::string VERSION{"0.0.1"};
 
 int main(int argc, char* argv[]) {
-  // xuzy::App* app = new http::Restful(APP_NAME);
+  
   xuzy::App* app = new http::RestfulServer(APP_NAME);
 
   app->set_cli_parser(new CLI_Parser());

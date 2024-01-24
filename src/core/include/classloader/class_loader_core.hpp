@@ -21,14 +21,14 @@ class ClassLoader;
 namespace impl {
 
 // Typedefs
-typedef std::string LibraryPath;
-typedef std::string ClassName;
-typedef std::string BaseClassName;
-typedef std::map<ClassName, impl::AbstractMetaObjectBase*> FactoryMap;
-typedef std::map<BaseClassName, FactoryMap> BaseToFactoryMapMap;
-typedef std::pair<LibraryPath, SharedLibrary*> LibraryPair;
-typedef std::vector<LibraryPair> LibraryVector;
-typedef std::vector<AbstractMetaObjectBase*> MetaObjectVector;
+using LibraryPath = std::string;
+using ClassName = std::string;
+using BaseClassName = std::string;
+using FactoryMap = std::map<ClassName, impl::AbstractMetaObjectBase*>;
+using BaseToFactoryMapMap = std::map<BaseClassName, FactoryMap>;
+using LibraryPair = std::pair<LibraryPath, SharedLibrary*>;
+using LibraryVector = std::vector<LibraryPair>;
+using MetaObjectVector = std::vector<AbstractMetaObjectBase*>;
 
 // Global storage
 

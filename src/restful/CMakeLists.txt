@@ -17,9 +17,26 @@ add_subdirectory(http)
 # 生成动态链接库
 add_library(restful SHARED ${_SOURCES})
 
+target_compile_features(restful PUBLIC cxx_std_20)
+set_target_properties(restful PROPERTIES CXX_EXTENSIONS OFF)
+
 # 添加编译选项
-set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG} ${EXTRA_COMPILE_OPTIONS} -Wnon-virtual-dtor")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}  ${EXTRA_COMPILE_OPTIONS} -Wnon-virtual-dtor")
+if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
+  set(MY_DEBUG_OPTIONS -Wall -Werror -Wextra -Wshadow -pedantic -Wfloat-equal -Wno-unused-parameter -Wnon-virtual-dtor -Wmain -fstack-usage -g3)
+  set(MY_RELEASE_OPTIONS -O2)
+
+elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
+  set(MY_DEBUG_OPTIONS -Wall -Wconversion -Wdouble-promotion -Weffc++ -Wextra -Wfloat-equal -Wmain -Wshadow -pedantic -g3)
+  set(MY_RELEASE_OPTIONS -O2)
+
+elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
+  set(MY_DEBUG_OPTIONS /Wall /RTC)
+  set(MY_RELEASE_OPTIONS /w3 /O2)
+endif()
+
+target_compile_options(restful PRIVATE "$<$<CONFIG:DEBUG>:${MY_DEBUG_OPTIONS}>")
+target_compile_options(restful PRIVATE 
+                                   "$<$<CONFIG:RELEASE>:{MY_RELEASE_OPTIONS>")
 
 target_compile_definitions(restful 
     PUBLIC $<$<BOOL:${HTTPLIB_IS_USING_OPENSSL}>:CPPHTTPLIB_OPENSSL_SUPPORT>

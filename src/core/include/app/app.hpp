@@ -47,8 +47,8 @@ class XUZY_API App {
   XUZY_API virtual void dumpError(std::string error);
 
  private:
-  std::string m_app_name;
-  ArgsParser* p_cli_parser;
+  std::string m_app_name_;
+  ArgsParser* p_cli_parser_;
 
   static void init_logger(const char* app);
 };

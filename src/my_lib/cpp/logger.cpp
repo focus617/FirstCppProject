@@ -3,7 +3,7 @@
 #include <iostream>
 #include <sstream>
 
-#include "timer.h"
+#include "resource/timer.hpp"
 
 using namespace xuzy;
 
@@ -157,10 +157,10 @@ void Logger::TRACE(const std::string& t_message, int t_line_number,
 /////////////////////////////////////////////////
 
 void Logger::print_timestamp() {
-  std::time_t current_time = std::time(0);
-  std::tm* timestamp = std::localtime(&current_time);
+  std::time_t now = std::time(0);
+  std::tm* localtime = std::localtime(&now);
 
   char buffer[80];
-  strftime(buffer, 80, "%c", timestamp);
+  strftime(buffer, 80, "%c", localtime);
   printf("%s", buffer);
 }

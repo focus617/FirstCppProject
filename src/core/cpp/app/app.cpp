@@ -12,34 +12,36 @@
 using namespace xuzy;
 
 App::App(std::string t_app_name)
-    : m_app_name{t_app_name}, p_cli_parser{nullptr} {}
+    : m_app_name_{t_app_name}, p_cli_parser_{nullptr} {}
 
 App::~App() {
-  if (p_cli_parser) {
-    delete p_cli_parser;
+  if (p_cli_parser_) {
+    delete p_cli_parser_;
   }
 }
 
 void App::version_check(int argc, char* argv[], const std::string& version) {
-  LOG(INFO) << m_app_name << " version: " << version << std::endl;
+  LOG(INFO) << m_app_name_ << " version: " << version << std::endl;
 }
 
 void App::dumpError(std::string error) {
-  LOG(ERROR) << m_app_name << " error: " << error << std::endl;
+  LOG(ERROR) << m_app_name_ << " error: " << error << std::endl;
 }
 
 void App::load_configuration_from_file(const std::string& filename) {
+  // Make sure the config file is exist
   if (!std::filesystem::exists(filename)) {
     throw xuzy::FileNotFoundException(filename + " not exist.");
   }
 
-  LOG(INFO) << m_app_name << ": Load configuration from " << filename;
+  LOG(INFO) << m_app_name_ << ": Load configuration from " << filename;
   std::ifstream config_file(filename.c_str());
 
   // Make sure the config is open
   if (!config_file.is_open()) {
     throw xuzy::OpenFileException("Failed to open " + filename);
   }
+    // Make sure the config is not empty
   if (config_file.std::ios::eof()) {
     throw xuzy::FileNotReadyException(filename + " is empty");
   }
@@ -49,7 +51,7 @@ void App::load_configuration_from_file(const std::string& filename) {
 
 void App::setup() {
   // Setup configuration
-  std::string config_filename = m_app_name + ".json";
+  std::string config_filename = m_app_name_ + ".json";
   load_configuration_from_file(config_filename);
 
   if (m_conf_.empty()) {
@@ -67,9 +69,9 @@ void App::init_logger(const char* app) {
 
 // Command line parser
 void App::set_cli_parser(ArgsParser* p_parser) {
-  LOG(INFO) << m_app_name << ": Setup CLI parser" << std::endl;
+  LOG(INFO) << m_app_name_ << ": Setup CLI parser" << std::endl;
 
-  p_cli_parser = p_parser;
+  p_cli_parser_ = p_parser;
 }
 
 void App::main(int argc, char* argv[], const std::string& version,
@@ -81,8 +83,8 @@ void App::main(int argc, char* argv[], const std::string& version,
     try {
       app->version_check(argc, argv, version);
 
-      if (app->p_cli_parser) {
-        app->p_cli_parser->parse_commandline(argc, argv);
+      if (app->p_cli_parser_) {
+        app->p_cli_parser_->parse_commandline(argc, argv);
       }
 
       // Call the subclass with the configuration

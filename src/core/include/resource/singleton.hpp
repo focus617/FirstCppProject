@@ -21,8 +21,10 @@ class Singleton {
    * @return Singleton instance.
    */
   static Singleton& Instance() {
-    static Singleton* instance = new Singleton();  // inits once (lazy)
-    return *instance;
+    // static Singleton* instance = new Singleton();  //  lazy inits once
+    // return *instance;
+    static Singleton instance;      // thread safe solution for init once
+    return instance;
   }
 
   ~Singleton() {

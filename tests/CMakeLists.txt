@@ -79,11 +79,27 @@ add_executable(testRunner ${_TEST_SOURCES})
 
 # 指定编译语言标准
 target_compile_features(testRunner PRIVATE cxx_std_20)
+set_target_properties(testRunner PROPERTIES CXX_EXTENSIONS OFF)
 
 # 添加编译选项
-set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG} ${EXTRA_COMPILE_OPTIONS}")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${EXTRA_COMPILE_OPTIONS}")
+if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
+  set(MY_DEBUG_OPTIONS -Wall -Werror -Wextra -Wshadow -pedantic -Wfloat-equal -Wno-unused-parameter -Wmain -fstack-usage -g3)
+  set(MY_RELEASE_OPTIONS -O2)
 
+elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
+  set(MY_DEBUG_OPTIONS -Wall -Wconversion -Wdouble-promotion -Weffc++ -Wextra -Wfloat-equal -Wmain -Wshadow -pedantic -g3)
+  set(MY_RELEASE_OPTIONS -O2)
+
+elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
+  set(MY_DEBUG_OPTIONS /Wall /RTC)
+  set(MY_RELEASE_OPTIONS /w3 /O2)
+endif()
+
+target_compile_options(testRunner PRIVATE
+                                  "$<$<CONFIG:DEBUG>:${MY_DEBUG_OPTIONS}>")
+target_compile_options(testRunner PRIVATE 
+                                  "$<$<CONFIG:RELEASE>:{MY_RELEASE_OPTIONS>")
+                                  
 # 指定头文件路径
 target_include_directories(testRunner PUBLIC
   ${TEST_EXTRA_INCLUDES}

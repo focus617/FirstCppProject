@@ -1,13 +1,14 @@
 #pragma once
 
+#include <glog/logging.h>
 #include <chrono>
 #include <iomanip>
 #include <iostream>
 
-#include "logger.h"
+#include "visibility_control.hpp"
 
 namespace xuzy {
-class Timer {
+class XUZY_API Timer {
   friend std::ostream& operator<<(std::ostream& stream, const Timer& timer);
 
  private:
@@ -20,7 +21,7 @@ class Timer {
   ~Timer() {
     peek();
 
-    LOG_INFO("Timer exist for %fms totally.", count_in_ms());
+    LOG(INFO) << "Timer exist for " << count_in_ms() << "ms totally.";
   }
 
   void mark() { m_start = std::chrono::high_resolution_clock::now(); }

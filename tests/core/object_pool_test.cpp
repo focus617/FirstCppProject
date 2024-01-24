@@ -2,6 +2,8 @@
 
 #include <gtest/gtest.h>
 
+using namespace xuzy;
+
 class ObjectPool_Test_Fixture : public testing::Test {
  private:
   /* data */
