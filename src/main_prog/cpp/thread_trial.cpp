@@ -1,8 +1,8 @@
 #include <thread>
 #include <vector>
 
+#include "helper/timer.hpp"
 #include "logger.h"
-#include "timer.hpp"
 
 using xuzy::Logger;
 

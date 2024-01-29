@@ -75,7 +75,17 @@ std::string AbslUnparseFlag(LogLevel t_log_level) {
   }
 }
 
+/**
+ * @brief Parses the command line flags, without initializing other parts of
+ * App. This function updates argc and argv by removing flags that are known to
+ * App (including other user flags defined using ABSL_FLAG). Other arguments
+ * remain in place. Unrecognized flags are not reported and do not cause the
+ * program to exit.
+ */
 bool CLI_Parser::parse_commandline(int argc, char* argv[]) {
+  if (argc <= 0) return false;
+
+  // Set the program usage message to the help message
   absl::SetProgramUsageMessage(
       absl::StrCat("Version ", PROJECT_VERSION, "\n",
                    "This program does nothing.\n\nSample usage:\n", argv[0],

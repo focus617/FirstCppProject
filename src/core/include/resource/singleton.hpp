@@ -15,23 +15,32 @@ class Singleton {
 
  public:
   /**
-   * @brief Static method for accessing class instance.
-   * Part of Singleton design pattern.
-   *
+   * @brief Static method for accessing singleton instance.
+   * The first time this method is called, a Singleton object is constructed
+   * and returned.  Consecutive calls will return the same object.
    * @return Singleton instance.
    */
-  static Singleton& Instance() {
-    // static Singleton* instance = new Singleton();  //  lazy inits once
-    // return *instance;
-    static Singleton instance;      // thread safe solution for init once
-    return instance;
+  static Singleton* GetInstance() {
+    // CodeGear C++Builder insists on a public destructor for the
+    // default implementation.  Use this implementation to keep good OO
+    // design with private destructor.
+#if defined(__BORLANDC__)
+    static Singleton* instance = new Singleton();  //  lazy inits once
+    return *instance;
+#else
+    static Singleton instance;  // thread safe solution for init once
+    return &instance;
+#endif  // defined(__BORLANDC__)
   }
 
   ~Singleton() {
     LOG(INFO) << "singleton instance " << m_unique_name_ << " destroyed."
               << std::endl;
   };
-  void operator=(const Singleton&) = delete;
+
+  // We disallow copying Singleton.
+  Singleton(const Singleton&) = delete;
+  Singleton& operator=(const Singleton&) = delete;
 
   static std::string get_unique_name() { return Singleton::m_unique_name_; }
 

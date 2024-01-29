@@ -4,18 +4,19 @@
 #include <glog/logging.h>
 
 #include <filesystem>
-#include <fstream>
-#include <iostream>
 
+#include "app/app_impl.hpp"
 #include "exception.hpp"
 
-using namespace xuzy;
+namespace xuzy {
+
+internal::AppImpl* App::p_impl_ = internal::AppImpl::GetInstance();
 
 App::App(std::string t_app_name)
     : m_app_name_{t_app_name}, p_cli_parser_{nullptr} {}
 
 App::~App() {
-  if (p_cli_parser_) {
+  if (nullptr != p_cli_parser_) {
     delete p_cli_parser_;
   }
 }
@@ -28,31 +29,20 @@ void App::dumpError(std::string error) {
   LOG(ERROR) << m_app_name_ << " error: " << error << std::endl;
 }
 
-void App::load_configuration_from_file(const std::string& filename) {
+void App::load_conf(const std::string& filename) {
   // Make sure the config file is exist
   if (!std::filesystem::exists(filename)) {
     throw xuzy::FileNotFoundException(filename + " not exist.");
   }
 
   LOG(INFO) << m_app_name_ << ": Load configuration from " << filename;
-  std::ifstream config_file(filename.c_str());
-
-  // Make sure the config is open
-  if (!config_file.is_open()) {
-    throw xuzy::OpenFileException("Failed to open " + filename);
-  }
-    // Make sure the config is not empty
-  if (config_file.std::ios::eof()) {
-    throw xuzy::FileNotReadyException(filename + " is empty");
-  }
-
-  config_file >> m_conf_;
+  App::GetImpl()->load_conf_from_file(filename, m_conf_);
 }
 
 void App::setup() {
   // Setup configuration
   std::string config_filename = m_app_name_ + ".json";
-  load_configuration_from_file(config_filename);
+  load_conf(config_filename);
 
   if (m_conf_.empty()) {
     LOG(WARNING) << "Failure during config: empty configuration file."
@@ -68,15 +58,18 @@ void App::init_logger(const char* app) {
 }
 
 // Command line parser
-void App::set_cli_parser(ArgsParser* p_parser) {
-  LOG(INFO) << m_app_name_ << ": Setup CLI parser" << std::endl;
-
-  p_cli_parser_ = p_parser;
-}
+void App::set_cli_parser(ArgsParser* p_parser) { p_cli_parser_ = p_parser; }
 
 void App::main(int argc, char* argv[], const std::string& version,
                App* app = nullptr) {
+  if (argc <= 0) return;
+
   init_logger(argv[0]);
+
+  // We don't want to run the initialization code twice.
+  if (App::GetImpl()->is_initialized()) return;
+
+  App::GetImpl()->init(argc, argv);
 
   if (app) {
     // Show outself, then run
@@ -110,3 +103,5 @@ void App::main(int argc, char* argv[], const std::string& version,
     delete app;
   }
 }
+
+}  // namespace xuzy

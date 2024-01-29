@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glog/logging.h>
+
 #include <chrono>
 #include <iomanip>
 #include <iostream>
@@ -8,6 +9,13 @@
 #include "visibility_control.hpp"
 
 namespace xuzy {
+
+// Integer types of known sizes.
+using TimeInMillis = int64_t;  // Represents time in milliseconds.
+
+/**
+ * @brief A helper class for measuring elapsed times.
+ */
 class XUZY_API Timer {
   friend std::ostream& operator<<(std::ostream& stream, const Timer& timer);
 
@@ -16,21 +24,32 @@ class XUZY_API Timer {
   std::chrono::duration<float> m_duration;
 
  public:
-  Timer() { m_start = std::chrono::high_resolution_clock::now(); }
+  XUZY_API Timer() { m_start = std::chrono::high_resolution_clock::now(); }
 
-  ~Timer() {
+  XUZY_API ~Timer() {
     peek();
 
     LOG(INFO) << "Timer exist for " << count_in_ms() << "ms totally.";
   }
 
+  /**
+   * @brief reset the timer and  restart
+   */
+  XUZY_API
   void mark() { m_start = std::chrono::high_resolution_clock::now(); }
 
+  /**
+   * @brief measure time elapsed since timer was created or marked
+   */
+  XUZY_API
   void peek() {
     m_end = std::chrono::high_resolution_clock::now();
     m_duration = m_end - m_start;
   }
 
+  /**
+   * @brief return elapse time in millisecond
+   */
   float count_in_ms() { return m_duration.count() * 1000.0f; }
 
   static const std::string get_current_timestamp();

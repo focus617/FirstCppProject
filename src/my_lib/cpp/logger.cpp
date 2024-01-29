@@ -3,7 +3,7 @@
 #include <iostream>
 #include <sstream>
 
-#include "resource/timer.hpp"
+#include "helper/timer.hpp"
 
 using namespace xuzy;
 

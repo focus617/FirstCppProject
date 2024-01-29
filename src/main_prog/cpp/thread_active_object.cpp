@@ -5,8 +5,8 @@
 #include <thread>
 #include <vector>
 
+#include "helper/timer.hpp"
 #include "logger.h"
-#include "timer.hpp"
 #include "worker.hpp"
 
 using xuzy::Logger;
