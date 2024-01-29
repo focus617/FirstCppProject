@@ -1,8 +1,8 @@
+#include "resource/singleton.hpp"
+
 #include <gtest/gtest.h>
 
 #include <iostream>
-
-#include "resource/singleton.hpp"
 
 TEST(Singleton_Test, same_operation_result_on_two_instances) {
   std::string empty("");
