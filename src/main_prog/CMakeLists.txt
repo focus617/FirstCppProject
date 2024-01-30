@@ -14,6 +14,7 @@ add_executable(my_app ${_SOURCES})
 
 target_compile_features(my_app PUBLIC cxx_std_20)
 set_target_properties(my_app PROPERTIES CXX_EXTENSIONS OFF)
+target_compile_definitions(my_app PRIVATE XUZY_DLL _DEBUG)
 
 # 给Debug版本的应用添加后缀
 set_target_properties(my_app PROPERTIES DEBUG_POSTFIX ${CMAKE_DEBUG_POSTFIX})

@@ -10,6 +10,7 @@
  * XUZY_OS_HP       - HP-UX
  */
 #pragma once
+#include <stdlib.h>
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
 #  define XUZY_OS_WINDOWS

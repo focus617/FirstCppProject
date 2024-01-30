@@ -6,7 +6,6 @@
 #include <filesystem>
 #include <thread>
 
-#include "exception.hpp"
 #include "http/handler.h"
 
 using namespace http;

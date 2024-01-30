@@ -3,8 +3,8 @@
 #include <dlfcn.h>
 #include <memory>
 
-#include "exception.hpp"
-#include "visibility_control.hpp"
+#include "core/exception.hpp"
+#include "core/visibility_control.hpp"
 
 #define OS_FAMILY_UNIX
 

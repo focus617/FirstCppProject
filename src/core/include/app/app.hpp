@@ -5,7 +5,8 @@
 #include <string>
 
 #include "argsparser.hpp"
-#include "visibility_control.hpp"
+#include "core/visibility_control.hpp"
+#include "core/exception.hpp"
 
 using json = nlohmann::json;
 
@@ -13,7 +14,7 @@ namespace xuzy {
 
 namespace internal {
 
-class AppImpl;
+class XUZY_LOCAL AppImpl;
 
 }
 

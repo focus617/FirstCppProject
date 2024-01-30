@@ -7,7 +7,6 @@
 
 #include "classloader/class_loader.hpp"
 #include "classloader/shared_library.hpp"
-#include "exception.hpp"
 
 namespace xuzy {
 XUZY_IMPLEMENT_EXCEPTION(CreateClassException, RuntimeException,

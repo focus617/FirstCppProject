@@ -3,12 +3,12 @@
 
 #include <string>
 
-#include "visibility_control.hpp"
+#include "core/visibility_control.hpp"
 
 class XUZY_API Shape {
-public:
+ public:
   virtual ~Shape() {}
-  virtual float Area() const =0;
-  virtual std::string get_name() const =0;
+  virtual float Area() const = 0;
+  virtual std::string get_name() const = 0;
 };
 #endif  // HELLOBASE_H

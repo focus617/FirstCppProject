@@ -1,12 +1,12 @@
 #pragma once
 
+#include <core.h>
 #include <stdio.h>
 
 #include <ctime>
 #include <mutex>
 
 #include "config.h"
-#include "visibility_control.hpp"
 
 #define LOG_OPTION_DEBUG debug
 #define LOG_OPTION_RELEASE release

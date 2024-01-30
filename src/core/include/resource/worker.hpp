@@ -13,8 +13,8 @@
 #include <span>
 #include <thread>
 
+#include "core/visibility_control.hpp"
 #include "mastercontroller.hpp"
-#include "visibility_control.hpp"
 
 namespace xuzy {
 

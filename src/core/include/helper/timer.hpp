@@ -6,7 +6,7 @@
 #include <iomanip>
 #include <iostream>
 
-#include "visibility_control.hpp"
+#include "core/visibility_control.hpp"
 
 namespace xuzy {
 

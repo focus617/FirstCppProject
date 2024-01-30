@@ -10,7 +10,7 @@
 #include <thread>
 #include <vector>
 
-#include "visibility_control.hpp"
+#include "core/visibility_control.hpp"
 
 #ifndef CPPHTTPLIB_THREAD_POOL_COUNT
 #  define CPPHTTPLIB_THREAD_POOL_COUNT                            \

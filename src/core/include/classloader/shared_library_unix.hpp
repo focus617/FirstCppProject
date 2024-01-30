@@ -4,8 +4,8 @@
 
 #include <mutex>
 
-#include "visibility_control.hpp"
-#include "exception.hpp"
+#include "core/visibility_control.hpp"
+#include "core/exception.hpp"
 
 namespace class_loader {
 ///

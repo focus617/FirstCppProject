@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "classloader/class_loader.hpp"
-#include "visibility_control.hpp"
+#include "core/visibility_control.hpp"
 
 namespace plugin {
 

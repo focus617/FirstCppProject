@@ -1,12 +1,12 @@
 #pragma once
 
+#include <core.h>
 #include <httplib.h>
 
 #include <string>
 
 #include "app/app.hpp"
 #include "host.hpp"
-#include "visibility_control.hpp"
 
 #ifdef CPPHTTPLIB_OPENSSL_SUPPORT
 #  define SERVER_CERT_FILE "./cert.pem"

@@ -4,7 +4,8 @@
 
 #include <nlohmann/json.hpp>
 
-#include "visibility_control.hpp"
+#include "core/visibility_control.hpp"
+#include "core/exception.hpp"
 
 using json = nlohmann::json;
 
@@ -12,9 +13,9 @@ namespace xuzy {
 namespace internal {
 
 /**
- *  @brief App scaffold
+ *  @brief App internal implementation
  */
-class XUZY_API AppImpl {
+class XUZY_LOCAL AppImpl {
  public:
   /**
    * @brief Static method for accessing AppImpl singleton instance.

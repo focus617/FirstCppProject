@@ -3,7 +3,6 @@
 #include <glog/logging.h>
 
 #include "classloader/shared_library.hpp"
-#include "exception.hpp"
 
 namespace class_loader {
 

@@ -2,7 +2,6 @@
 
 #include <fstream>
 
-#include "exception.hpp"
 #include "helper/stream_formatter.hpp"
 
 namespace xuzy {

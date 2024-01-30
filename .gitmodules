@@ -22,3 +22,6 @@
 [submodule "extern/ros_class_loader"]
 	path = extern/ros_class_loader
 	url = https://github.com/ros/class_loader.git
+[submodule "extern/hazel"]
+	path = extern/hazel
+	url = https://github.com/focus617/Hazel.git

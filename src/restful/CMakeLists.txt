@@ -20,6 +20,11 @@ add_library(restful SHARED ${_SOURCES})
 target_compile_features(restful PUBLIC cxx_std_20)
 set_target_properties(restful PROPERTIES CXX_EXTENSIONS OFF)
 
+target_compile_definitions(restful 
+    PUBLIC $<$<BOOL:${HTTPLIB_IS_USING_OPENSSL}>:CPPHTTPLIB_OPENSSL_SUPPORT>
+    PRIVATE XUZY_DLL XUZY_DLL_EXPORTS  _DEBUG
+)
+
 # 添加编译选项
 if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
   set(MY_DEBUG_OPTIONS -Wall -Werror -Wextra -Wshadow -pedantic -Wfloat-equal -Wno-unused-parameter -Wnon-virtual-dtor -Wmain -fstack-usage -g3)
@@ -37,11 +42,6 @@ endif()
 target_compile_options(restful PRIVATE "$<$<CONFIG:DEBUG>:${MY_DEBUG_OPTIONS}>")
 target_compile_options(restful PRIVATE 
                                    "$<$<CONFIG:RELEASE>:{MY_RELEASE_OPTIONS>")
-
-target_compile_definitions(restful 
-    PUBLIC $<$<BOOL:${HTTPLIB_IS_USING_OPENSSL}>:CPPHTTPLIB_OPENSSL_SUPPORT>
-    PRIVATE XUZY_DLL XUZY_DLL_EXPORTS  _DEBUG
-)
 
 set(NLOHMANN_JSON_INCLUDE_DIR
   ${PROJECT_SOURCE_DIR}/extern/nlohmann-json/include

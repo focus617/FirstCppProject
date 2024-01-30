@@ -5,7 +5,6 @@
 #include <string>
 
 #include "classloader/class_loader.hpp"
-#include "exception.hpp"
 
 namespace class_loader {
 namespace impl {

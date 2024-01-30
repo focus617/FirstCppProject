@@ -6,8 +6,8 @@
 #include <mutex>
 
 #include "classloader/meta_object.hpp"
-#include "exception.hpp"
-#include "visibility_control.hpp"
+#include "core/exception.hpp"
+#include "core/visibility_control.hpp"
 
 namespace xuzy {
 XUZY_DECLARE_EXCEPTION(XUZY_API, CreateClassException, RuntimeException)
@@ -147,11 +147,12 @@ void setANonPurePluginLibraryBeenOpened(bool hasIt);
  * will cause this function to be invoked when the library is loaded. The
  * function will create a MetaObject (i.e. factory) for the corresponding
  * Derived class and insert it into the appropriate FactoryMap in the global
- * Base-to-FactoryMap map. Note that the passed derived_class_name is the literal class
- * name and not the mangled version.
+ * Base-to-FactoryMap map. Note that the passed derived_class_name is the
+ * literal class name and not the mangled version.
  * @tparam Derived - parameteric type indicating concrete type of plugin
  * @tparam Base - parameteric type indicating base type of plugin
- * @param derived_class_name - the literal name of the class being registered (NOT MANGLED)
+ * @param derived_class_name - the literal name of the class being registered
+ * (NOT MANGLED)
  * @param base_class_name - the literal name of the base class (NOT MANGLED)
  */
 template <typename Derived, typename Base>

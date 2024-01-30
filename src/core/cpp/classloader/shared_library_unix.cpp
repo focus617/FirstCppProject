@@ -5,8 +5,7 @@
 
 #include <filesystem>
 
-#include "exception.hpp"
-#include "platform.hpp"
+#include "core/platform.hpp"
 
 using namespace class_loader;
 

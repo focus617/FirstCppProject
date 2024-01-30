@@ -1,10 +1,10 @@
 #pragma once
 
-#include <string>
 #include <ios>
 #include <sstream>
+#include <string>
 
-#include "visibility_control.hpp"
+#include "core/visibility_control.hpp"
 
 namespace xuzy::internal {
 
@@ -38,6 +38,6 @@ XUZY_API std::string StringStreamToString(::std::stringstream* stream);
 
 // Converts a wide C string to an std::string using the UTF-8 encoding.
 // NULL will be converted to "(null)".
-std::string ShowWideCString(const wchar_t* wide_c_str); 
+std::string ShowWideCString(const wchar_t* wide_c_str);
 
 }  // namespace xuzy::internal

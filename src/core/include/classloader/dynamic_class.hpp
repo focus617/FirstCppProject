@@ -1,6 +1,6 @@
 #pragma once
 
-#include "visibility_control.hpp"
+#include "core/visibility_control.hpp"
 
 namespace class_loader {
 

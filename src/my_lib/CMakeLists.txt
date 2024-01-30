@@ -13,7 +13,7 @@ add_library(my_lib STATIC ${_SOURCES})
 # 指定编译语言标准
 target_compile_features(my_lib PRIVATE cxx_std_20)
 set_target_properties(restful PROPERTIES CXX_EXTENSIONS OFF)
-target_compile_definitions(my_lib PRIVATE "USE_MYLIB")
+target_compile_definitions(my_lib PRIVATE "USE_MYLIB" XUZY_DLL _DEBUG)
 
 # 添加编译选项
 if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
@@ -42,4 +42,3 @@ target_include_directories(my_lib
 
 # 添加链接库
 target_link_libraries(my_lib PRIVATE core)
-# target_link_libraries(my_lib PRIVATE xuzy::core)

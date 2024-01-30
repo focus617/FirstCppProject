@@ -6,8 +6,8 @@
 
 #include "classloader/class_loader_core.hpp"
 #include "classloader/register_macro.hpp"
-#include "exception.hpp"
-#include "visibility_control.hpp"
+#include "core/exception.hpp"
+#include "core/visibility_control.hpp"
 
 namespace class_loader {
 /**

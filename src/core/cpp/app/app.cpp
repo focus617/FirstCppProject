@@ -6,7 +6,6 @@
 #include <filesystem>
 
 #include "app/app_impl.hpp"
-#include "exception.hpp"
 
 namespace xuzy {
 

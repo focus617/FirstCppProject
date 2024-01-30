@@ -10,8 +10,8 @@
 #include <glog/logging.h>
 
 #include "classloader/class_loader.hpp"
-#include "exception.hpp"
-#include "visibility_control.hpp"
+#include "core/exception.hpp"
+#include "core/visibility_control.hpp"
 
 namespace xuzy {
 XUZY_DECLARE_EXCEPTION(XUZY_API, NoClassLoaderExistsException, RuntimeException)

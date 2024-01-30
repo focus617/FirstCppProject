@@ -11,7 +11,7 @@
 #include <mutex>
 #include <thread>
 
-#include "visibility_control.hpp"
+#include "core/visibility_control.hpp"
 
 namespace xuzy {
 using namespace std::chrono_literals;
