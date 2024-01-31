@@ -1,3 +1,5 @@
+#include "pch.h"
+
 #include "helper/timer.hpp"
 
 std::ostream& xuzy::operator<<(std::ostream& stream, const xuzy::Timer& timer) {

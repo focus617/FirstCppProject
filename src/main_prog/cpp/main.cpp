@@ -4,15 +4,15 @@
 #include "args.hpp"
 #include "restful/http/restful_server.hpp"
 
-const std::string APP_NAME{"Restful-Server"};
-const std::string VERSION{"0.0.1"};
+extern xuzy::App* xuzy::CreateApplication();
 
 int main(int argc, char* argv[]) {
-  xuzy::App* app = new http::RestfulServer(APP_NAME);
+  // defined in specific application, e.g. restful_server.cpp
+  xuzy::App* app = xuzy::CreateApplication();
 
   app->set_cli_parser(new CLI_Parser());
 
-  xuzy::App::main(argc, argv, VERSION, app);
+  xuzy::App::main(argc, argv, app);
 
   delete app;
 

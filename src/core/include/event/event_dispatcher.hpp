@@ -9,6 +9,9 @@
 #include <mutex>
 #include <type_traits>
 
+#include "core/base.hpp"
+#include "event/event_if.hpp"
+
 namespace xuzy {
 
 #define DELEGATE_ID_TYPE std::atomic_uint64_t
@@ -19,17 +22,17 @@ static DELEGATE_ID_TYPE DELEGATE_ID = 1;
  * @brief prototype
  */
 template <typename Prototype>
-class Event;
+class EventDispatcher;
 
 /**
  * @brief 特例: 对事件类Event进行了模板化
  * 使用变参模板自定义事件绑定的委托函数参数列表，可以接受多个不同类型的参数。
  */
 template <typename ReturnType, typename... Args>
-class Event<ReturnType(Args...)> {
+class EventDispatcher<ReturnType(Args...)> {
  private:
   using return_type = ReturnType;
-  using function_type = ReturnType(Args...);
+  using function_type = ReturnType(Ref<IEvent>, bool&, Args...);
   using std_function_type = std::function<function_type>;
   using pointer = ReturnType (*)(Args...);
 
@@ -45,9 +48,9 @@ class Event<ReturnType(Args...)> {
       m_Handler_ = handler;
     }
 
-    void invoke(Args... args) {
+    void invoke(Ref<IEvent> event, bool& handled, Args... args) {
       if (m_Handler_ != nullptr) {
-        m_Handler_(args...);
+        m_Handler_(event, handled, args...);
       }
     }
 
@@ -56,13 +59,18 @@ class Event<ReturnType(Args...)> {
   };
 
  public:
+  EventDispatcher() {}
+  virtual ~EventDispatcher() = default;
+
+  void set_event(Ref<IEvent> event) { m_event_ = event; }
+
   // 这里 std_function_type 决定了所有Handler的返回值和参数都必须是一致的
   int operator+=(std_function_type handler) { return subscribe(handler); }
 
   // TODO: 使用ID不方便，能否找到比较简单清晰的注册函数的方法？
   bool operator-=(int handler_id) { return unsubscribe(handler_id); }
 
-  void operator()(Args... args) { invoke(args...); }
+  void operator()(Args... args) { dispatch(args...); }
 
   int handler_count() {
     std::lock_guard<std::mutex> guard_mutex(m_mutex_);
@@ -75,14 +83,15 @@ class Event<ReturnType(Args...)> {
   }
 
  private:
-  std::map<int, std::shared_ptr<EventHandler>> m_Handlers_;
+  // 待处理的事件，需要外部构造后传入
+  Ref<IEvent> m_event_;
+  std::map<int, Ref<EventHandler>> m_Handlers_;
   std::mutex m_mutex_;
 
   int subscribe(std_function_type handler) {
     if (nullptr == handler) return -1;
 
-    std::shared_ptr<EventHandler> pEventHandler =
-        std::make_shared<EventHandler>(handler);
+    Ref<EventHandler> pEventHandler = CreateRef<EventHandler>(handler);
     if (nullptr == pEventHandler) return -1;
 
     std::lock_guard<std::mutex> guard_mutex(m_mutex_);
@@ -102,20 +111,25 @@ class Event<ReturnType(Args...)> {
     return true;
   }
 
-  void invoke(Args... args) {
+  void dispatch(Args... args) {
     std::lock_guard<std::mutex> guard_mutex(m_mutex_);
 
     for (const auto& key : m_Handlers_) {
-      key.second->invoke(args...);
+      bool handled = false;
+      key.second->invoke(m_event_, handled, args...);
+      m_event_->Handled |= handled;
     }
   }
 
-  bool invoke(int handler_id, Args... args) {
+  bool dispatch(int handler_id, Args... args) {
     std::lock_guard<std::mutex> guard_mutex(m_mutex_);
 
     if (m_Handlers_.count(handler_id) == 0) return false;
 
-    m_Handlers_[handler_id]->invoke(args...);
+    bool handled = false;
+    m_Handlers_[handler_id]->invoke(m_event_, handled, args...);
+    m_event_->Handled |= handled;
+
     return true;
   }
 };

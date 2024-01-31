@@ -20,7 +20,8 @@ namespace http {
  */
 class XUZY_API RestfulServer : public xuzy::App {
  public:
-  XUZY_API explicit RestfulServer(std::string t_app_name);
+  XUZY_API explicit RestfulServer(const std::string& t_app_name,
+                                  const std::string& t_version);
   XUZY_API ~RestfulServer();
 
   RestfulServer(const RestfulServer&) = delete;

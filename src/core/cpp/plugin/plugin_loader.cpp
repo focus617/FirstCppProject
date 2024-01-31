@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "plugin/plugin_loader.hpp"
 
 namespace xuzy {

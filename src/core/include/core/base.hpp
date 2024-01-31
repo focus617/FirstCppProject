@@ -5,6 +5,21 @@
 #include "visibility_control.hpp"
 
 namespace xuzy {
+
+template <typename T>
+using Scope = std::unique_ptr<T>;
+template <typename T, typename... Args>
+constexpr Scope<T> CreateScope(Args&&... args) {
+  return std::make_unique<T>(std::forward<Args>(args)...);
+}
+
+template <typename T>
+using Ref = std::shared_ptr<T>;
+template <typename T, typename... Args>
+constexpr Ref<T> CreateRef(Args&&... args) {
+  return std::make_shared<T>(std::forward<Args>(args)...);
+}
+
 namespace internal {
 
 // A helper for suppressing warnings on constant condition.  It just
@@ -12,7 +27,10 @@ namespace internal {
 XUZY_API bool IsTrue(bool condition);
 
 }  // namespace internal
+
 }  // namespace xuzy
+
+#define BIT(x) (1 << x)
 
 // Defines some utility macros.
 

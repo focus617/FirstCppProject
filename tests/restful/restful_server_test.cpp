@@ -1,8 +1,9 @@
 #include "restful_server.hpp"
 
-#include <thread>
 #include <glog/logging.h>
 #include <gtest/gtest.h>
+
+#include <thread>
 
 #include "app/app.hpp"
 
@@ -45,7 +46,7 @@ class RestfulServer_Test_Fixture : public testing::Test {
 };
 
 RestfulServer_Test_Fixture::RestfulServer_Test_Fixture()
-    : server("Restful-Server"), cli(HOST, PORT) {}
+    : server("Restful-Server", "0.0.1"), cli(HOST, PORT) {}
 
 void RestfulServer_Test_Fixture::SetUp() {
   // GTEST_SKIP() << "Skipping single test";
@@ -61,8 +62,7 @@ void RestfulServer_Test_Fixture::SetUp() {
   server.wait_until_ready();
 }
 
-void RestfulServer_Test_Fixture::TearDown() {
-}
+void RestfulServer_Test_Fixture::TearDown() {}
 
 TEST_F(RestfulServer_Test_Fixture, HeadMethod404) {
   auto res = cli.Head("/invalid");
@@ -96,10 +96,11 @@ TEST_F(RestfulServer_Test_Fixture, lists_GetMethod200_return_correct_value) {
   cli.set_follow_location(true);
 
   std::string body;
-  auto res = cli.Get("/api/v1/lists/2", [&](const char* data, size_t data_length) {
-    body.append(data, data_length);
-    return true;
-  });
+  auto res =
+      cli.Get("/api/v1/lists/2", [&](const char* data, size_t data_length) {
+        body.append(data, data_length);
+        return true;
+      });
 
   ASSERT_TRUE(res);
   EXPECT_EQ("HTTP/1.1", res->version);

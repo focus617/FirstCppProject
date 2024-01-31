@@ -1,6 +1,6 @@
-#include "resource/random.hpp"
+#include "pch.h"
 
-#include "core/utilities.hpp"
+#include "resource/random.hpp"
 
 namespace xuzy {
 

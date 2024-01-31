@@ -50,6 +50,11 @@ target_include_directories(core
   PRIVATE ${NLOHMANN_JSON_INCLUDE_DIR}
 )
 
+# Precompiled headers
+target_precompile_headers(core 
+  PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/pch.h"
+)
+
 # 添加链接库
 target_link_libraries(core
   PUBLIC glog::glog

@@ -1,9 +1,5 @@
+#include "pch.h"
 #include "classloader/class_loader_core.hpp"
-
-#include <glog/logging.h>
-
-#include <cassert>
-#include <vector>
 
 #include "classloader/class_loader.hpp"
 #include "classloader/shared_library.hpp"

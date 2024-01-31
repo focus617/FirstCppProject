@@ -1,6 +1,6 @@
-#include "classloader/class_loader.hpp"
+#include "pch.h"
 
-#include <glog/logging.h>
+#include "classloader/class_loader.hpp"
 
 #include "classloader/shared_library.hpp"
 

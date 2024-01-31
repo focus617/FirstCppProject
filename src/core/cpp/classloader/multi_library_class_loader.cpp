@@ -1,10 +1,8 @@
+#include "pch.h"
+
 #include "classloader/multi_library_class_loader.hpp"
 
-#include <glog/logging.h>
-
 #include <cstddef>
-#include <string>
-#include <vector>
 
 namespace xuzy {
 XUZY_IMPLEMENT_EXCEPTION(NoClassLoaderExistsException, RuntimeException,

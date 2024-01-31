@@ -1,8 +1,6 @@
+#include "pch.h"
+
 #include "classloader/meta_object.hpp"
-
-#include <glog/logging.h>
-
-#include <string>
 
 #include "classloader/class_loader.hpp"
 

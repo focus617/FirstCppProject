@@ -10,8 +10,9 @@
 
 using namespace http;
 
-RestfulServer::RestfulServer(std::string t_app_name)
-    : App{std::move(t_app_name)},
+RestfulServer::RestfulServer(const std::string& t_app_name,
+                             const std::string& t_version)
+    : App{std::move(t_app_name), std::move(t_version)},
       m_server_ptr_{nullptr},
       m_host_ptr_{nullptr} {}
 
@@ -118,3 +119,15 @@ void RestfulServer::wait_until_ready() {
 bool RestfulServer::is_running() {
   return ((nullptr != m_server_ptr_) && (m_server_ptr_->is_running()));
 }
+
+namespace xuzy {
+
+const std::string APP_NAME{"Restful-Server"};
+const std::string VERSION{"0.0.1"};
+
+App* CreateApplication() {
+  App* app = new http::RestfulServer(APP_NAME, VERSION);
+  return app;
+}
+
+}  // namespace xuzy

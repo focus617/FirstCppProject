@@ -5,8 +5,8 @@
 #include <string>
 
 #include "argsparser.hpp"
-#include "core/visibility_control.hpp"
 #include "core/exception.hpp"
+#include "core/visibility_control.hpp"
 
 using json = nlohmann::json;
 
@@ -23,7 +23,7 @@ class XUZY_LOCAL AppImpl;
  */
 class XUZY_API App {
  public:
-  App(std::string t_app_name);
+  App(const std::string& t_app_name, const std::string& t_version);
   virtual ~App();
 
   /**
@@ -36,8 +36,7 @@ class XUZY_API App {
    * @brief Main program entrance
    * @param
    */
-  static void main(int argc, char* argv[], const std::string& version,
-                   App* app);
+  static void main(int argc, char* argv[], App* app);
 
  protected:
   /**
@@ -45,8 +44,10 @@ class XUZY_API App {
    */
   json m_conf_;
 
-  XUZY_API virtual void version_check(int argc, char* argv[],
-                                      const std::string& version);
+  XUZY_API virtual void init_logger();
+  XUZY_API virtual void close_logger();
+
+  XUZY_API virtual void version_check(int argc, char* argv[]);
   XUZY_API virtual void load_conf(const std::string& filename);
   XUZY_API virtual void setup();
   XUZY_API virtual void run() = 0;
@@ -58,6 +59,7 @@ class XUZY_API App {
 
  private:
   std::string m_app_name_;
+  std::string m_version_;
   ArgsParser* p_cli_parser_;
 
   // Protects mutable state in *p_impl_.
@@ -70,10 +72,12 @@ class XUZY_API App {
   // Mutable state in *p_impl_ is protected by m_mutex_.
   static internal::AppImpl* p_impl_;
 
-  static void init_logger(const char* app);
 
   // These classes and functions are friends as they need to access private
   // members of App.
 };
+
+// To be defined in CLIENT
+XUZY_API App* CreateApplication();
 
 }  // namespace xuzy

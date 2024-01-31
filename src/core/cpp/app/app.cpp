@@ -1,4 +1,5 @@
 
+#include "pch.h"
 #include "app/app.hpp"
 
 #include <glog/logging.h>
@@ -7,12 +8,13 @@
 
 #include "app/app_impl.hpp"
 
+
 namespace xuzy {
 
 internal::AppImpl* App::p_impl_ = internal::AppImpl::GetInstance();
 
-App::App(std::string t_app_name)
-    : m_app_name_{t_app_name}, p_cli_parser_{nullptr} {}
+App::App(const std::string& t_app_name, const std::string& t_version)
+    : m_app_name_{t_app_name}, m_version_{t_version}, p_cli_parser_{nullptr} {}
 
 App::~App() {
   if (nullptr != p_cli_parser_) {
@@ -20,8 +22,20 @@ App::~App() {
   }
 }
 
-void App::version_check(int argc, char* argv[], const std::string& version) {
-  LOG(INFO) << m_app_name_ << " version: " << version << std::endl;
+void App::init_logger() {
+  // Initialize Google’s logging library.
+  google::InitGoogleLogging(m_app_name_.c_str());
+  // Log both to log file and stderr
+  FLAGS_alsologtostderr = true;
+}
+
+void App::close_logger() {
+  // Shutdown Google’s logging system.
+  google::ShutdownGoogleLogging();
+}
+
+void App::version_check(int argc, char* argv[]) {
+  LOG(INFO) << m_app_name_ << " version: " << m_version_ << std::endl;
 }
 
 void App::dumpError(std::string error) {
@@ -49,58 +63,50 @@ void App::setup() {
   }
 }
 
-void App::init_logger(const char* app) {
-  // Initialize Google’s logging library.
-  google::InitGoogleLogging(app);
-  // Log both to log file and stderr
-  FLAGS_alsologtostderr = true;
-}
-
 // Command line parser
 void App::set_cli_parser(ArgsParser* p_parser) { p_cli_parser_ = p_parser; }
 
-void App::main(int argc, char* argv[], const std::string& version,
-               App* app = nullptr) {
-  if (argc <= 0) return;
+void App::main(int argc, char* argv[], App* app) {
+  XUZY_CHECK_(argc > 0) << "Invalid argc (value: " << argc << ").";
+  XUZY_CHECK_(nullptr != app) << "Empty application";
 
-  init_logger(argv[0]);
+  app->init_logger();
 
   // We don't want to run the initialization code twice.
   if (App::GetImpl()->is_initialized()) return;
 
   App::GetImpl()->init(argc, argv);
 
-  if (app) {
-    // Show outself, then run
-    try {
-      app->version_check(argc, argv, version);
+  // Show outself, then run
+  try {
+    app->version_check(argc, argv);
 
-      if (app->p_cli_parser_) {
-        app->p_cli_parser_->parse_commandline(argc, argv);
-      }
-
-      // Call the subclass with the configuration
-      app->setup();
-
-      // Run forever
-      app->run();
-    } catch (xuzy::Exception& e) {
-      app->dumpError(e.displayText());
-    } catch (std::exception& e) {
-      app->dumpError(e.what());
-    } catch (std::string s) {
-      app->dumpError(s);
-    } catch (const char* s) {
-      app->dumpError(s);
-    } catch (...) {
-      app->dumpError("Unknown");
+    if (app->p_cli_parser_) {
+      app->p_cli_parser_->parse_commandline(argc, argv);
     }
+
+    // Call the subclass with the configuration
+    app->setup();
+
+    // Run forever
+    app->run();
+
+  } catch (xuzy::Exception& e) {
+    app->dumpError(e.displayText());
+  } catch (std::exception& e) {
+    app->dumpError(e.what());
+  } catch (std::string s) {
+    app->dumpError(s);
+  } catch (const char* s) {
+    app->dumpError(s);
+  } catch (...) {
+    app->dumpError("Unknown");
   }
+
+  app->close_logger();
 
   // Cleanup
-  if (app) {
-    delete app;
-  }
+  delete app;
 }
 
 }  // namespace xuzy

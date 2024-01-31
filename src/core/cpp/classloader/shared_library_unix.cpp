@@ -1,11 +1,12 @@
+#include "pch.h"
+
 #include "classloader/shared_library_unix.hpp"
 
 #include <dlfcn.h>
-#include <glog/logging.h>
 
 #include <filesystem>
 
-#include "core/platform.hpp"
+
 
 using namespace class_loader;
 

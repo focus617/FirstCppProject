@@ -3,7 +3,7 @@
 #include <algorithm>
 
 #include "resource/random.hpp"
-#include "core/utilities.hpp"
+#include "core/base.hpp"
 
 namespace xuzy {
 

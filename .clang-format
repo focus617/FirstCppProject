@@ -69,6 +69,8 @@ ForEachMacros:
   - BOOST_FOREACH
 IncludeBlocks:   Regroup
 IncludeCategories:
+  - Regex:           '"pch.h"'
+    Priority:        -1
   - Regex:           '^<ext/.*\.h>'
     Priority:        2
     SortPriority:    0
