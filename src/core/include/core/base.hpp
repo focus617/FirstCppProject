@@ -67,10 +67,19 @@ XUZY_API bool IsTrue(bool condition);
  *    and then it aborts the program. It aborts the program irrespective of
  *    whether it is built in the debug mode or not.
  */
-#  define XUZY_CHECK_(condition)           \
-    XUZY_AMBIGUOUS_ELSE_BLOCKER_           \
-    if (xuzy::internal::IsTrue(condition)) \
-      ;                                    \
-    else                                   \
-      LOG(FATAL) << "Condition " #condition " failed. "
-#endif  // !defined(XUZY_CHECK_)
+#  ifdef NDEBUG
+#    define XUZY_CHECK_(condition)           \
+      XUZY_AMBIGUOUS_ELSE_BLOCKER_           \
+      if (xuzy::internal::IsTrue(condition)) \
+        ;                                    \
+      else                                   \
+        LOG(FATAL) << "Condition " #condition " failed. "
+#  else
+#    define XUZY_CHECK_(condition)           \
+      XUZY_AMBIGUOUS_ELSE_BLOCKER_           \
+      if (xuzy::internal::IsTrue(condition)) \
+        ;                                    \
+      else                                   \
+        LOG(WARNING) << "Condition " #condition " failed. "
+#  endif  // ifdef NDEBUG
+#endif    // !defined(XUZY_CHECK_)

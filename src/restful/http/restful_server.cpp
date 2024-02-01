@@ -72,7 +72,9 @@ void RestfulServer::setup() {
 
 void RestfulServer::run() {
   start();
-  idle();
+  
+  // Disable idle, since main thread will deal with UI now
+  // idle();
 }
 
 void RestfulServer::start() {

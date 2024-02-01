@@ -25,3 +25,6 @@
 [submodule "extern/hazel"]
 	path = extern/hazel
 	url = https://github.com/focus617/Hazel.git
+[submodule "extern/glfw"]
+	path = extern/glfw
+	url = https://github.com/glfw/glfw.git

@@ -3,11 +3,11 @@
 #include <sstream>
 
 #include "core/key_code.hpp"
-#include "event/event_if.hpp"
+#include "event/event.hpp"
 
 namespace xuzy {
 
-class KeyEvent : public IEvent {
+class KeyEvent : public Event {
  public:
   KeyCode GetKeyCode() const { return m_KeyCode; }
 

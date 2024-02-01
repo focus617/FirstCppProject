@@ -1,7 +1,6 @@
 set(CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/install")
-# Import Abseil Library
+# Import extern Libraries
 find_package (absl REQUIRED)
-# find_package (core REQUIRED)
 
 # 查找当前目录下的所有源文件，并将名称保存到 _SOURCES 变量
 aux_source_directory(. _SOURCES)
@@ -14,7 +13,8 @@ add_executable(my_app ${_SOURCES})
 
 target_compile_features(my_app PUBLIC cxx_std_20)
 set_target_properties(my_app PROPERTIES CXX_EXTENSIONS OFF)
-target_compile_definitions(my_app PRIVATE XUZY_DLL _DEBUG)
+target_compile_definitions(my_app PRIVATE XUZY_DLL )
+target_compile_definitions(my_app PRIVATE NDEBUG _DEBUG)
 
 # 给Debug版本的应用添加后缀
 set_target_properties(my_app PROPERTIES DEBUG_POSTFIX ${CMAKE_DEBUG_POSTFIX})
@@ -54,7 +54,6 @@ target_include_directories(my_app
 
 # 添加链接库
 target_link_libraries(my_app PUBLIC
-     # xuzy::core
      core
      restful
      absl::flags

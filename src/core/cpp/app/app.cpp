@@ -1,37 +1,27 @@
-
 #include "pch.h"
+
 #include "app/app.hpp"
-
-#include <glog/logging.h>
-
-#include <filesystem>
 
 #include "app/app_impl.hpp"
 
 
 namespace xuzy {
 
+#define BIND_EVENT_FN(x) \
+  std::bind(&App::x, this, std::placeholders::_1, std::placeholders::_2)
+
 internal::AppImpl* App::p_impl_ = internal::AppImpl::GetInstance();
 
 App::App(const std::string& t_app_name, const std::string& t_version)
-    : m_app_name_{t_app_name}, m_version_{t_version}, p_cli_parser_{nullptr} {}
+    : m_app_name_{t_app_name}, m_version_{t_version}, p_cli_parser_{nullptr} {
+  m_window_ = std::unique_ptr<Window>(Window::Create());
+  m_window_->set_event_callback(BIND_EVENT_FN(on_event));
+}
 
 App::~App() {
   if (nullptr != p_cli_parser_) {
     delete p_cli_parser_;
   }
-}
-
-void App::init_logger() {
-  // Initialize Google’s logging library.
-  google::InitGoogleLogging(m_app_name_.c_str());
-  // Log both to log file and stderr
-  FLAGS_alsologtostderr = true;
-}
-
-void App::close_logger() {
-  // Shutdown Google’s logging system.
-  google::ShutdownGoogleLogging();
 }
 
 void App::version_check(int argc, char* argv[]) {
@@ -66,11 +56,8 @@ void App::setup() {
 // Command line parser
 void App::set_cli_parser(ArgsParser* p_parser) { p_cli_parser_ = p_parser; }
 
-void App::main(int argc, char* argv[], App* app) {
+void App::main(int argc, char* argv[]) {
   XUZY_CHECK_(argc > 0) << "Invalid argc (value: " << argc << ").";
-  XUZY_CHECK_(nullptr != app) << "Empty application";
-
-  app->init_logger();
 
   // We don't want to run the initialization code twice.
   if (App::GetImpl()->is_initialized()) return;
@@ -79,34 +66,56 @@ void App::main(int argc, char* argv[], App* app) {
 
   // Show outself, then run
   try {
-    app->version_check(argc, argv);
+    version_check(argc, argv);
 
-    if (app->p_cli_parser_) {
-      app->p_cli_parser_->parse_commandline(argc, argv);
+    if (p_cli_parser_) {
+      p_cli_parser_->parse_commandline(argc, argv);
     }
 
-    // Call the subclass with the configuration
-    app->setup();
+    // Call the derived class to setup configuration
+    setup();
+
+    // Launch threads in derived class
+    run();
 
     // Run forever
-    app->run();
+    while (m_running_) {
+      m_window_->OnUpdate();
+    }
 
   } catch (xuzy::Exception& e) {
-    app->dumpError(e.displayText());
+    dumpError(e.displayText());
   } catch (std::exception& e) {
-    app->dumpError(e.what());
+    dumpError(e.what());
   } catch (std::string s) {
-    app->dumpError(s);
+    dumpError(s);
   } catch (const char* s) {
-    app->dumpError(s);
+    dumpError(s);
   } catch (...) {
-    app->dumpError("Unknown");
+    dumpError("Unknown");
   }
+}
 
-  app->close_logger();
+void App::on_event(Ref<Event> event, bool& handled) {
+  handled = false;
 
-  // Cleanup
-  delete app;
+  switch (event->GetEventId()) {
+    case EventId::WindowClose:
+      LOG(INFO) << "Window Close Clicked (Event: " << *event << ")"
+                << std::endl;
+      OnWindowClose(std::static_pointer_cast<WindowCloseEvent>(event));
+      handled = true;
+      break;
+
+    default:
+      LOG(INFO) << "Other Event: " << *event << std::endl;
+      break;
+  }
+}
+
+bool App::OnWindowClose(Ref<WindowCloseEvent> e) {
+  m_running_ = false;
+  return true;
 }
 
 }  // namespace xuzy

@@ -1,21 +1,19 @@
 #pragma once
 
-#include <mutex>
+#include "pch.h"
+
 #include <nlohmann/json.hpp>
-#include <string>
 
 #include "argsparser.hpp"
-#include "core/exception.hpp"
-#include "core/visibility_control.hpp"
+#include "window/window.hpp"
+#include "event/application_event.hpp"
 
 using json = nlohmann::json;
 
 namespace xuzy {
 
 namespace internal {
-
 class XUZY_LOCAL AppImpl;
-
 }
 
 /**
@@ -36,16 +34,13 @@ class XUZY_API App {
    * @brief Main program entrance
    * @param
    */
-  static void main(int argc, char* argv[], App* app);
+  void main(int argc, char* argv[]);
 
  protected:
   /**
    *  @brief Configuration in json format
    */
   json m_conf_;
-
-  XUZY_API virtual void init_logger();
-  XUZY_API virtual void close_logger();
 
   XUZY_API virtual void version_check(int argc, char* argv[]);
   XUZY_API virtual void load_conf(const std::string& filename);
@@ -54,13 +49,19 @@ class XUZY_API App {
 
   XUZY_API virtual void dumpError(std::string error);
 
+  XUZY_API virtual void on_event(Ref<Event> evt, bool& handled);
+  XUZY_API virtual bool OnWindowClose(Ref<WindowCloseEvent> e);
+
   // Accessors for the implementation object.
   static internal::AppImpl* GetImpl() { return p_impl_; }
 
  private:
   std::string m_app_name_;
   std::string m_version_;
+
   ArgsParser* p_cli_parser_;
+  Scope<Window> m_window_;
+  bool m_running_ = true;
 
   // Protects mutable state in *p_impl_.
   // This is mutable as some const methods need to lock it too.
@@ -71,7 +72,6 @@ class XUZY_API App {
   // doing so will cause a warning in the constructor of App.
   // Mutable state in *p_impl_ is protected by m_mutex_.
   static internal::AppImpl* p_impl_;
-
 
   // These classes and functions are friends as they need to access private
   // members of App.

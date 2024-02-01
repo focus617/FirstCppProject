@@ -20,3 +20,6 @@ set(JSON_BuildTests OFF CACHE INTERNAL "")
 add_subdirectory(nlohmann-json)
 install(TARGETS nlohmann_json EXPORT nlohmann_json DESTINATION include)
 install(EXPORT nlohmann_json DESTINATION share/cmake/nlohmann_json)
+
+message(STATUS "Build GLFW...")
+add_subdirectory(glfw)

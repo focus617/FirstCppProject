@@ -1,16 +1,9 @@
 #pragma once
+#include "pch.h"
 
 #include <assert.h>
 
-#include <atomic>
-#include <functional>
-#include <map>
-#include <memory>
-#include <mutex>
-#include <type_traits>
-
-#include "core/base.hpp"
-#include "event/event_if.hpp"
+#include "event/event.hpp"
 
 namespace xuzy {
 
@@ -32,7 +25,7 @@ template <typename ReturnType, typename... Args>
 class EventDispatcher<ReturnType(Args...)> {
  private:
   using return_type = ReturnType;
-  using function_type = ReturnType(Ref<IEvent>, bool&, Args...);
+  using function_type = ReturnType(Ref<Event>, bool&, Args...);
   using std_function_type = std::function<function_type>;
   using pointer = ReturnType (*)(Args...);
 
@@ -48,7 +41,7 @@ class EventDispatcher<ReturnType(Args...)> {
       m_Handler_ = handler;
     }
 
-    void invoke(Ref<IEvent> event, bool& handled, Args... args) {
+    void invoke(Ref<Event> event, bool& handled, Args... args) {
       if (m_Handler_ != nullptr) {
         m_Handler_(event, handled, args...);
       }
@@ -62,15 +55,41 @@ class EventDispatcher<ReturnType(Args...)> {
   EventDispatcher() {}
   virtual ~EventDispatcher() = default;
 
-  void set_event(Ref<IEvent> event) { m_event_ = event; }
+  /**
+   * @brief cache a event to dispatcher
+   */
+  void publish_event(Ref<Event> event) { m_event_ = event; }
+
+  /**
+   * @brief dispatch event to all registered event handler
+   */
+  void dispatch(Args... args) {
+    std::lock_guard<std::mutex> guard_mutex(m_mutex_);
+
+    for (const auto& key : m_Handlers_) {
+      bool handled = false;
+      key.second->invoke(m_event_, handled, args...);
+      m_event_->Handled |= handled;
+    }
+  }
+
+  bool dispatch(int handler_id, Args... args) {
+    std::lock_guard<std::mutex> guard_mutex(m_mutex_);
+
+    if (m_Handlers_.count(handler_id) == 0) return false;
+
+    bool handled = false;
+    m_Handlers_[handler_id]->invoke(m_event_, handled, args...);
+    m_event_->Handled |= handled;
+
+    return true;
+  }
 
   // 这里 std_function_type 决定了所有Handler的返回值和参数都必须是一致的
   int operator+=(std_function_type handler) { return subscribe(handler); }
 
   // TODO: 使用ID不方便，能否找到比较简单清晰的注册函数的方法？
   bool operator-=(int handler_id) { return unsubscribe(handler_id); }
-
-  void operator()(Args... args) { dispatch(args...); }
 
   int handler_count() {
     std::lock_guard<std::mutex> guard_mutex(m_mutex_);
@@ -81,12 +100,6 @@ class EventDispatcher<ReturnType(Args...)> {
     std::lock_guard<std::mutex> guard_mutex(m_mutex_);
     m_Handlers_.clear();
   }
-
- private:
-  // 待处理的事件，需要外部构造后传入
-  Ref<IEvent> m_event_;
-  std::map<int, Ref<EventHandler>> m_Handlers_;
-  std::mutex m_mutex_;
 
   int subscribe(std_function_type handler) {
     if (nullptr == handler) return -1;
@@ -110,28 +123,13 @@ class EventDispatcher<ReturnType(Args...)> {
 
     return true;
   }
+  
+ private:
+  // 待处理的事件，需要外部构造后传入
+  Ref<Event> m_event_;
+  std::map<int, Ref<EventHandler>> m_Handlers_;
+  std::mutex m_mutex_;
 
-  void dispatch(Args... args) {
-    std::lock_guard<std::mutex> guard_mutex(m_mutex_);
-
-    for (const auto& key : m_Handlers_) {
-      bool handled = false;
-      key.second->invoke(m_event_, handled, args...);
-      m_event_->Handled |= handled;
-    }
-  }
-
-  bool dispatch(int handler_id, Args... args) {
-    std::lock_guard<std::mutex> guard_mutex(m_mutex_);
-
-    if (m_Handlers_.count(handler_id) == 0) return false;
-
-    bool handled = false;
-    m_Handlers_[handler_id]->invoke(m_event_, handled, args...);
-    m_event_->Handled |= handled;
-
-    return true;
-  }
 };
 
 }  // namespace xuzy

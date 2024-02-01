@@ -20,6 +20,7 @@ add_library(restful SHARED ${_SOURCES})
 target_compile_features(restful PUBLIC cxx_std_20)
 set_target_properties(restful PROPERTIES CXX_EXTENSIONS OFF)
 
+target_compile_definitions(restful PRIVATE NDEBUG _DEBUG)
 target_compile_definitions(restful 
     PUBLIC $<$<BOOL:${HTTPLIB_IS_USING_OPENSSL}>:CPPHTTPLIB_OPENSSL_SUPPORT>
     PRIVATE XUZY_DLL XUZY_DLL_EXPORTS  _DEBUG
@@ -54,6 +55,12 @@ target_include_directories(restful
     PUBLIC $<INSTALL_INTERFACE:include/restful>
     PRIVATE ${PROJECT_SOURCE_DIR}/extern/cpp-httplib
     PRIVATE ${NLOHMANN_JSON_INCLUDE_DIR}
+)
+
+# Precompiled headers
+target_precompile_headers(restful PUBLIC
+   "${PROJECT_SOURCE_DIR}/src/core/include/core.h"
+   "${PROJECT_SOURCE_DIR}/extern/cpp-httplib/httplib.h"
 )
 
 # 添加链接库

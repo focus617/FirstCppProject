@@ -62,6 +62,7 @@ TEST(ContainerUtilityTest, GetElementOr) {
   EXPECT_EQ('x', GetElementOr(a, 2, 'x'));
 }
 
+#ifdef NDEBUG
 TEST(ContainerUtilityDeathTest, ShuffleRange) {
   std::vector<int> a;
   a.push_back(0);
@@ -82,3 +83,4 @@ TEST(ContainerUtilityDeathTest, ShuffleRange) {
       ShuffleRange(&random, 3, 4, &a),
       "Invalid shuffle range finish 4: must be in range \\[3, 3\\]");
 }
+#endif

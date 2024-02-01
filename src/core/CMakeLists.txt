@@ -1,4 +1,8 @@
 set(CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/install")
+# Import extern Libraries
+find_package(glog REQUIRED)
+find_package(glfw3 REQUIRED)
+
 # Import nlohmann_json
 find_package(nlohmann_json 3.11.3 REQUIRED)
 if(nlohmann_json_FOUND)
@@ -10,6 +14,7 @@ aux_source_directory(. _SOURCES)
 
 # 添加子目录
 add_subdirectory(cpp)
+add_subdirectory(platform)
 add_subdirectory(include/resource)
 
 # 生成动态链接库
@@ -17,7 +22,8 @@ add_library(core SHARED ${_SOURCES})
 
 target_compile_features(core PUBLIC cxx_std_20)
 set_target_properties(core PROPERTIES CXX_EXTENSIONS OFF)
-target_compile_definitions(core PRIVATE XUZY_DLL XUZY_DLL_EXPORTS _DEBUG)
+target_compile_definitions(core PRIVATE XUZY_DLL XUZY_DLL_EXPORTS)
+target_compile_definitions(core PRIVATE NDEBUG _DEBUG)
 
 # 添加编译选项
 if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
@@ -42,12 +48,23 @@ set(NLOHMANN_JSON_INCLUDE_DIR
   CACHE PATH "nlohmann/json include directory"
 )
 
+set(GLFW_INCLUDE_DIR
+  ${PROJECT_SOURCE_DIR}/extern/glfw/include
+  CACHE PATH "GLFW include directory"
+)
+
 # 指定头文件路径
 target_include_directories(core
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   PUBLIC $<INSTALL_INTERFACE:include/core>
   PRIVATE ${PROJECT_BINARY_DIR}/src
   PRIVATE ${NLOHMANN_JSON_INCLUDE_DIR}
+  PRIVATE ${GLFW_INCLUDE_DIR}
+)
+
+# Precompiled headers
+target_precompile_headers(core 
+  PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/pch.h"
 )
 
 # Precompiled headers
@@ -60,6 +77,8 @@ target_link_libraries(core
   PUBLIC glog::glog
   PUBLIC nlohmann_json::nlohmann_json
   PUBLIC resource
+  PUBLIC glfw
+  # PUBLIC opengl32.lib
 )
 
 # 安装库

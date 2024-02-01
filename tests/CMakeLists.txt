@@ -80,6 +80,7 @@ add_executable(testRunner ${_TEST_SOURCES})
 # 指定编译语言标准
 target_compile_features(testRunner PRIVATE cxx_std_20)
 set_target_properties(testRunner PROPERTIES CXX_EXTENSIONS OFF)
+target_compile_definitions(testRunner PRIVATE NDEBUG _DEBUG)
 
 # 添加编译选项
 if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")

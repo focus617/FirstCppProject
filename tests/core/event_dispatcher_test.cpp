@@ -15,12 +15,12 @@ class Button {
   virtual ~Button() {}
 
  public:
-  // EventHandler:  void(*func)(int& result)
+  // EventHandler:  void(*func)(oid(Ref<Event>, bool&)
   xuzy::EventDispatcher<void()> eventDispatcher;
 };
 
 // 一个能够处理事件的静态函数
-void EventHandler(Ref<IEvent> evt, bool& handled) {
+void EventHandler(Ref<Event> evt, bool& handled) {
   checker = true;  // modify global static variable
 
   handled = false;
@@ -43,7 +43,7 @@ void EventHandler(Ref<IEvent> evt, bool& handled) {
 // 一个接收事件的类，并且它具有能够处理事件的方法
 class Example {
  public:
-  void EventHandler(Ref<IEvent> evt, bool& handled) {
+  void EventHandler(Ref<Event> evt, bool& handled) {
     checker = true;  // modify global static variable
 
     handled = false;
@@ -64,7 +64,7 @@ class Example {
 class EventDispatcher_Test_Fixture : public testing::Test {
  public:
   Button button;
-  Ref<IEvent> event;
+  Ref<Event> event;
 
   EventDispatcher_Test_Fixture() {}
   ~EventDispatcher_Test_Fixture() {}
@@ -76,7 +76,7 @@ class EventDispatcher_Test_Fixture : public testing::Test {
 // 生产KeyPressed事件
 void EventDispatcher_Test_Fixture::SetUp() {
   event = CreateRef<KeyPressedEvent>(KeyPressedEvent(Key::Space, 1));
-  button.eventDispatcher.set_event(event);
+  button.eventDispatcher.publish_event(event);
 }
 
 void EventDispatcher_Test_Fixture::TearDown() {}
@@ -91,7 +91,7 @@ TEST_F(EventDispatcher_Test_Fixture, event_on_static_func) {
   EXPECT_EQ(false, event->Handled);
 
   // Then
-  button.eventDispatcher();
+  button.eventDispatcher.dispatch();
   EXPECT_EQ(true, checker);
   EXPECT_EQ(true, event->Handled);
 }
@@ -109,7 +109,7 @@ TEST_F(EventDispatcher_Test_Fixture, event_on_class_member_func) {
   EXPECT_EQ(false, event->Handled);
 
   // Then
-  button.eventDispatcher();
+  button.eventDispatcher.dispatch();
   EXPECT_EQ(true, checker);
   EXPECT_EQ(true, event->Handled);
 }
@@ -119,7 +119,7 @@ TEST_F(EventDispatcher_Test_Fixture, event_on_lambda_func) {
   checker = false;
 
   // When: 匿名函数做委托函数
-  button.eventDispatcher += [](Ref<IEvent> evt, bool& handled) {
+  button.eventDispatcher += [](Ref<Event> evt, bool& handled) {
     checker = true;  // modify global static variable
 
     handled = false;
@@ -137,7 +137,7 @@ TEST_F(EventDispatcher_Test_Fixture, event_on_lambda_func) {
   EXPECT_EQ(false, event->Handled);
 
   // Then
-  button.eventDispatcher();
+  button.eventDispatcher.dispatch();
   EXPECT_EQ(true, checker);
   EXPECT_EQ(true, event->Handled);
 }
@@ -160,7 +160,7 @@ TEST_F(EventDispatcher_Test_Fixture, handler_count) {
   EXPECT_EQ(2, button.eventDispatcher.handler_count());
 
   // When: 匿名函数做委托函数
-  button.eventDispatcher += [](Ref<IEvent> evt, bool& handled) {
+  button.eventDispatcher += [](Ref<Event> evt, bool& handled) {
     checker = true;  // modify global static variable
 
     handled = false;
@@ -192,7 +192,7 @@ TEST_F(EventDispatcher_Test_Fixture, clear_handler) {
                 std::placeholders::_2);
 
   // 匿名函数做委托函数
-  button.eventDispatcher += [](Ref<IEvent> evt, bool& handled) {
+  button.eventDispatcher += [](Ref<Event> evt, bool& handled) {
     checker = true;  // modify global static variable
 
     handled = false;
