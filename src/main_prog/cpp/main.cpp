@@ -7,7 +7,7 @@
 
 using namespace xuzy;
 
-extern App* xuzy::CreateApplication();
+extern WindowApp* xuzy::CreateApplication();
 void init_logger(const char* argv0);
 void close_logger();
 

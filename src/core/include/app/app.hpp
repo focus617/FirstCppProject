@@ -5,8 +5,6 @@
 #include <nlohmann/json.hpp>
 
 #include "argsparser.hpp"
-#include "window/window.hpp"
-#include "event/application_event.hpp"
 
 using json = nlohmann::json;
 
@@ -45,12 +43,10 @@ class XUZY_API App {
   XUZY_API virtual void version_check(int argc, char* argv[]);
   XUZY_API virtual void load_conf(const std::string& filename);
   XUZY_API virtual void setup();
-  XUZY_API virtual void run() = 0;
+  XUZY_API virtual void launch_tasks() = 0;
+  XUZY_API virtual void main_loop() = 0;
 
   XUZY_API virtual void dumpError(std::string error);
-
-  XUZY_API virtual void on_event(Ref<Event> evt, bool& handled);
-  XUZY_API virtual bool OnWindowClose(Ref<WindowCloseEvent> e);
 
   // Accessors for the implementation object.
   static internal::AppImpl* GetImpl() { return p_impl_; }
@@ -60,8 +56,6 @@ class XUZY_API App {
   std::string m_version_;
 
   ArgsParser* p_cli_parser_;
-  Scope<Window> m_window_;
-  bool m_running_ = true;
 
   // Protects mutable state in *p_impl_.
   // This is mutable as some const methods need to lock it too.
@@ -76,8 +70,5 @@ class XUZY_API App {
   // These classes and functions are friends as they need to access private
   // members of App.
 };
-
-// To be defined in CLIENT
-XUZY_API App* CreateApplication();
 
 }  // namespace xuzy

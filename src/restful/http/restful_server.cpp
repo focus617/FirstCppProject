@@ -12,7 +12,7 @@ using namespace http;
 
 RestfulServer::RestfulServer(const std::string& t_app_name,
                              const std::string& t_version)
-    : App{std::move(t_app_name), std::move(t_version)},
+    : WindowApp{std::move(t_app_name), std::move(t_version)},
       m_server_ptr_{nullptr},
       m_host_ptr_{nullptr} {}
 
@@ -70,12 +70,15 @@ void RestfulServer::setup() {
   handler::setup(*m_server_ptr_, *m_host_ptr_);
 }
 
-void RestfulServer::run() {
-  start();
-  
-  // Disable idle, since main thread will deal with UI now
-  // idle();
-}
+void RestfulServer::launch_tasks() { start(); }
+
+// void RestfulServer::main_loop() {
+//   constexpr int idleTime = 5;
+//   while (true) {
+//     std::this_thread::sleep_for(std::chrono::seconds(idleTime));
+//     LOG(INFO) << "Main thread idle...";
+//   }
+// }
 
 void RestfulServer::start() {
 #ifdef CPPHTTPLIB_OPENSSL_SUPPORT
@@ -101,14 +104,6 @@ void RestfulServer::stop() {
 #endif
 }
 
-void RestfulServer::idle() {
-  constexpr int idleTime = 5;
-  while (true) {
-    std::this_thread::sleep_for(std::chrono::seconds(idleTime));
-    LOG(INFO) << "Main thread idle...";
-  }
-}
-
 void RestfulServer::wait_until_ready() {
   m_server_ptr_->wait_until_ready();
 #ifdef CPPHTTPLIB_OPENSSL_SUPPORT
@@ -127,8 +122,8 @@ namespace xuzy {
 const std::string APP_NAME{"Restful-Server"};
 const std::string VERSION{"0.0.1"};
 
-App* CreateApplication() {
-  App* app = new http::RestfulServer(APP_NAME, VERSION);
+WindowApp* CreateApplication() {
+  WindowApp* app = new http::RestfulServer(APP_NAME, VERSION);
   return app;
 }
 

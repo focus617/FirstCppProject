@@ -5,7 +5,7 @@
 
 #include <string>
 
-#include "app/app.hpp"
+#include "app/window_app.hpp"
 #include "host.hpp"
 
 #ifdef CPPHTTPLIB_OPENSSL_SUPPORT
@@ -18,7 +18,7 @@ namespace http {
 /**
  * @brief HTTP Server App
  */
-class XUZY_API RestfulServer : public xuzy::App {
+class XUZY_API RestfulServer : public xuzy::WindowApp {
  public:
   XUZY_API explicit RestfulServer(const std::string& t_app_name,
                                   const std::string& t_version);
@@ -29,16 +29,14 @@ class XUZY_API RestfulServer : public xuzy::App {
   RestfulServer(RestfulServer&&) = delete;
   RestfulServer& operator=(RestfulServer&&) = delete;
 
+  XUZY_API void setup() override;
+  XUZY_API void launch_tasks() override;
+  // XUZY_API void main_loop() override;
+
   XUZY_API void start();
   XUZY_API void stop();
   XUZY_API void wait_until_ready();
   XUZY_API bool is_running();
-
-  // Move to public for testing
-  XUZY_API void setup() override;
-
- protected:
-  XUZY_API void run() override;
 
  private:
   std::thread m_thread_;
@@ -66,8 +64,6 @@ class XUZY_API RestfulServer : public xuzy::App {
    * @brief Setup default routing related to http server management
    */
   void setup_default_routing();
-
-  static void idle();
 };
 
 }  // namespace http

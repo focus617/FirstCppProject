@@ -59,6 +59,10 @@ class Example {
   }
 };
 
+#define EXAMPLE_BIND_EVENT_FN(entity) \
+  std::bind(&Example::EventHandler, entity, \
+  std::placeholders::_1, std::placeholders::_2)
+
 ////////////////////////////////////////////////////////
 
 class EventDispatcher_Test_Fixture : public testing::Test {
@@ -102,9 +106,7 @@ TEST_F(EventDispatcher_Test_Fixture, event_on_class_member_func) {
 
   // When: 成员函数做委托函数
   Example example;
-  button.eventDispatcher +=
-      std::bind(&Example::EventHandler, example, std::placeholders::_1,
-                std::placeholders::_2);
+  button.eventDispatcher += EXAMPLE_BIND_EVENT_FN(example);
   EXPECT_EQ(false, checker);
   EXPECT_EQ(false, event->Handled);
 
@@ -152,9 +154,7 @@ TEST_F(EventDispatcher_Test_Fixture, handler_count) {
 
   // When: 成员函数做委托函数
   Example example;
-  button.eventDispatcher +=
-      std::bind(&Example::EventHandler, example, std::placeholders::_1,
-                std::placeholders::_2);
+  button.eventDispatcher += EXAMPLE_BIND_EVENT_FN(example);
 
   // Then
   EXPECT_EQ(2, button.eventDispatcher.handler_count());
@@ -187,9 +187,7 @@ TEST_F(EventDispatcher_Test_Fixture, clear_handler) {
 
   // 成员函数做委托函数
   Example example;
-  button.eventDispatcher +=
-      std::bind(&Example::EventHandler, example, std::placeholders::_1,
-                std::placeholders::_2);
+  button.eventDispatcher += EXAMPLE_BIND_EVENT_FN(example);
 
   // 匿名函数做委托函数
   button.eventDispatcher += [](Ref<Event> evt, bool& handled) {

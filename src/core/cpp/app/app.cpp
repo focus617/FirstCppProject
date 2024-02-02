@@ -4,19 +4,12 @@
 
 #include "app/app_impl.hpp"
 
-
 namespace xuzy {
-
-#define BIND_EVENT_FN(x) \
-  std::bind(&App::x, this, std::placeholders::_1, std::placeholders::_2)
 
 internal::AppImpl* App::p_impl_ = internal::AppImpl::GetInstance();
 
 App::App(const std::string& t_app_name, const std::string& t_version)
-    : m_app_name_{t_app_name}, m_version_{t_version}, p_cli_parser_{nullptr} {
-  m_window_ = std::unique_ptr<Window>(Window::Create());
-  m_window_->set_event_callback(BIND_EVENT_FN(on_event));
-}
+    : m_app_name_{t_app_name}, m_version_{t_version}, p_cli_parser_{nullptr} {}
 
 App::~App() {
   if (nullptr != p_cli_parser_) {
@@ -76,12 +69,10 @@ void App::main(int argc, char* argv[]) {
     setup();
 
     // Launch threads in derived class
-    run();
+    launch_tasks();
 
     // Run forever
-    while (m_running_) {
-      m_window_->OnUpdate();
-    }
+    main_loop();
 
   } catch (xuzy::Exception& e) {
     dumpError(e.displayText());
@@ -94,28 +85,6 @@ void App::main(int argc, char* argv[]) {
   } catch (...) {
     dumpError("Unknown");
   }
-}
-
-void App::on_event(Ref<Event> event, bool& handled) {
-  handled = false;
-
-  switch (event->GetEventId()) {
-    case EventId::WindowClose:
-      LOG(INFO) << "Window Close Clicked (Event: " << *event << ")"
-                << std::endl;
-      OnWindowClose(std::static_pointer_cast<WindowCloseEvent>(event));
-      handled = true;
-      break;
-
-    default:
-      LOG(INFO) << "Other Event: " << *event << std::endl;
-      break;
-  }
-}
-
-bool App::OnWindowClose(Ref<WindowCloseEvent> e) {
-  m_running_ = false;
-  return true;
 }
 
 }  // namespace xuzy
