@@ -1,0 +1,10 @@
+{
+    "server": {
+        "ip": "localhost",
+        "webPort": 8080,
+        "appPort": 9101,
+        "pubPort": 9102
+    },
+    "ssl-cert": "./cert.pem",
+    "ssl-key": "./key.pem"  
+}

@@ -23,3 +23,9 @@ install(EXPORT nlohmann_json DESTINATION share/cmake/nlohmann_json)
 
 message(STATUS "Build GLFW...")
 add_subdirectory(glfw)
+
+message(STATUS "Build GLAD...")
+add_subdirectory(glad)
+
+message(STATUS "Build IMGUI...")
+add_subdirectory(imgui)

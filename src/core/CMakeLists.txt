@@ -2,6 +2,8 @@ set(CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/install")
 # Import extern Libraries
 find_package(glog REQUIRED)
 find_package(glfw3 REQUIRED)
+find_package(glad REQUIRED)
+find_package(imgui REQUIRED)
 
 # Import nlohmann_json
 find_package(nlohmann_json 3.11.3 REQUIRED)
@@ -53,18 +55,27 @@ set(GLFW_INCLUDE_DIR
   CACHE PATH "GLFW include directory"
 )
 
-# 指定头文件路径
-target_include_directories(core
-  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  PUBLIC $<INSTALL_INTERFACE:include/core>
-  PRIVATE ${PROJECT_BINARY_DIR}/src
-  PRIVATE ${NLOHMANN_JSON_INCLUDE_DIR}
-  PRIVATE ${GLFW_INCLUDE_DIR}
+set(GLAD_INCLUDE_DIR
+  ${PROJECT_SOURCE_DIR}/extern/glad/include
+  CACHE PATH "GLAD include directory"
 )
 
-# Precompiled headers
-target_precompile_headers(core 
-  PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/pch.h"
+set(IMGUI_INCLUDE_DIR
+  ${PROJECT_SOURCE_DIR}/extern/imgui
+  CACHE PATH "GLAD include directory"
+)
+
+# 指定头文件路径
+target_include_directories(core
+  PUBLIC 
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include/core>
+  PRIVATE
+    ${PROJECT_BINARY_DIR}/src
+    ${NLOHMANN_JSON_INCLUDE_DIR}
+    ${GLFW_INCLUDE_DIR}
+    ${GLAD_INCLUDE_DIR}
+    ${IMGUI_INCLUDE_DIR}
 )
 
 # Precompiled headers
@@ -74,11 +85,14 @@ target_precompile_headers(core
 
 # 添加链接库
 target_link_libraries(core
-  PUBLIC glog::glog
-  PUBLIC nlohmann_json::nlohmann_json
-  PUBLIC resource
-  PUBLIC glfw
-  # PUBLIC opengl32.lib
+  PUBLIC
+    glog::glog
+    nlohmann_json::nlohmann_json
+    resource
+    glfw
+    glad
+    imgui
+    ${GL_LIBRARY}  #opengl lib
 )
 
 # 安装库

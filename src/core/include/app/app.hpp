@@ -71,4 +71,7 @@ class XUZY_API App {
   // members of App.
 };
 
+// To be defined in CLIENT
+XUZY_API App* CreateApplication();
+
 }  // namespace xuzy

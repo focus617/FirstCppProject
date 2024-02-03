@@ -12,7 +12,7 @@ using namespace http;
 
 RestfulServer::RestfulServer(const std::string& t_app_name,
                              const std::string& t_version)
-    : WindowApp{std::move(t_app_name), std::move(t_version)},
+    : App{std::move(t_app_name), std::move(t_version)},
       m_server_ptr_{nullptr},
       m_host_ptr_{nullptr} {}
 
@@ -72,13 +72,14 @@ void RestfulServer::setup() {
 
 void RestfulServer::launch_tasks() { start(); }
 
-// void RestfulServer::main_loop() {
-//   constexpr int idleTime = 5;
-//   while (true) {
-//     std::this_thread::sleep_for(std::chrono::seconds(idleTime));
-//     LOG(INFO) << "Main thread idle...";
-//   }
-// }
+void RestfulServer::main_loop() {
+  constexpr int idleTime = 5;
+  while (m_running_) {
+    std::this_thread::sleep_for(std::chrono::seconds(idleTime));
+    LOG(INFO) << "Main thread idle...";
+  }
+  LOG(INFO) << "Main thread shutdown.";
+}
 
 void RestfulServer::start() {
 #ifdef CPPHTTPLIB_OPENSSL_SUPPORT
@@ -102,6 +103,9 @@ void RestfulServer::stop() {
 #else
   LOG(INFO) << "Http Server Stopped.";
 #endif
+
+  // notify main thread to shutdown
+  m_running_ = false;
 }
 
 void RestfulServer::wait_until_ready() {
@@ -122,8 +126,8 @@ namespace xuzy {
 const std::string APP_NAME{"Restful-Server"};
 const std::string VERSION{"0.0.1"};
 
-WindowApp* CreateApplication() {
-  WindowApp* app = new http::RestfulServer(APP_NAME, VERSION);
+App* CreateApplication() {
+  App* app = new http::RestfulServer(APP_NAME, VERSION);
   return app;
 }
 

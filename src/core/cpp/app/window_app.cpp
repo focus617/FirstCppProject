@@ -14,28 +14,49 @@ WindowApp::WindowApp(const std::string& t_app_name,
 
 WindowApp::~WindowApp() {}
 
+void WindowApp::push_layer(Layer* layer) {
+  m_layerstack_.push_layer(layer);
+  layer->on_attach();
+}
+
+void WindowApp::push_overlay(Layer* layer) {
+  m_layerstack_.push_overlay(layer);
+  layer->on_attach();
+}
+
 void WindowApp::launch_tasks() {}
 
 void WindowApp::main_loop() {
   while (m_running_) {
-    m_window_->OnUpdate();
+    for (Layer* layer : m_layerstack_) layer->on_update();
+
+    m_window_->on_update();
   }
 }
 
 void WindowApp::on_event(Ref<Event> event, bool& handled) {
   handled = false;
 
-  switch (event->GetEventId()) {
+  // Handle global event, e.g. WindowCloseEvent
+  switch (event->get_event_id()) {
     case EventId::WindowClose:
       LOG(INFO) << "Window Close Clicked (Event: " << *event << ")"
                 << std::endl;
-      OnWindowClose(std::static_pointer_cast<WindowCloseEvent>(event));
-      handled = true;
-      break;
+      handled =
+          OnWindowClose(std::static_pointer_cast<WindowCloseEvent>(event));
+      return;
 
     default:
       LOG(INFO) << "Other Event: " << *event << std::endl;
       break;
+  }
+
+  // 如果不是全局事件，转交LayerStack进行处理
+  if (!handled) {
+    for (auto it = m_layerstack_.end(); it != m_layerstack_.begin();) {
+      (*--it)->on_event(event, handled);
+      if (handled) break;
+    }
   }
 }
 

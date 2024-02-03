@@ -24,8 +24,8 @@ void EventHandler(Ref<Event> evt, bool& handled) {
   checker = true;  // modify global static variable
 
   handled = false;
-  if (evt->IsInCategory(EventCategoryKeyboard)) {
-    switch (evt->GetEventId()) {
+  if (evt->is_in_category(EventCategoryKeyboard)) {
+    switch (evt->get_event_id()) {
       case EventId::KeyPressed:
         // Ref<KeyPressedEvent> event = dynamic_cast<Ref<KeyPressedEvent>>(evt);
         std::cout << "Button Click(Event: " << *evt << ")" << std::endl;
@@ -47,7 +47,7 @@ class Example {
     checker = true;  // modify global static variable
 
     handled = false;
-    switch (evt->GetEventId()) {
+    switch (evt->get_event_id()) {
       case EventId::KeyPressed:
         std::cout << "Example Click(Event: " << *evt << ")" << std::endl;
         handled = true;
@@ -92,12 +92,12 @@ TEST_F(EventDispatcher_Test_Fixture, event_on_static_func) {
   // When: 静态函数做委托函数
   button.eventDispatcher += EventHandler;
   EXPECT_EQ(false, checker);
-  EXPECT_EQ(false, event->Handled);
+  EXPECT_EQ(false, event->m_handled);
 
   // Then
   button.eventDispatcher.dispatch();
   EXPECT_EQ(true, checker);
-  EXPECT_EQ(true, event->Handled);
+  EXPECT_EQ(true, event->m_handled);
 }
 
 TEST_F(EventDispatcher_Test_Fixture, event_on_class_member_func) {
@@ -108,12 +108,12 @@ TEST_F(EventDispatcher_Test_Fixture, event_on_class_member_func) {
   Example example;
   button.eventDispatcher += EXAMPLE_BIND_EVENT_FN(example);
   EXPECT_EQ(false, checker);
-  EXPECT_EQ(false, event->Handled);
+  EXPECT_EQ(false, event->m_handled);
 
   // Then
   button.eventDispatcher.dispatch();
   EXPECT_EQ(true, checker);
-  EXPECT_EQ(true, event->Handled);
+  EXPECT_EQ(true, event->m_handled);
 }
 
 TEST_F(EventDispatcher_Test_Fixture, event_on_lambda_func) {
@@ -125,7 +125,7 @@ TEST_F(EventDispatcher_Test_Fixture, event_on_lambda_func) {
     checker = true;  // modify global static variable
 
     handled = false;
-    switch (evt->GetEventId()) {
+    switch (evt->get_event_id()) {
       case EventId::KeyPressed:
         std::cout << "Lambda Click(Event: " << *evt << ")" << std::endl;
         handled = true;
@@ -136,12 +136,12 @@ TEST_F(EventDispatcher_Test_Fixture, event_on_lambda_func) {
     }
   };
   EXPECT_EQ(false, checker);
-  EXPECT_EQ(false, event->Handled);
+  EXPECT_EQ(false, event->m_handled);
 
   // Then
   button.eventDispatcher.dispatch();
   EXPECT_EQ(true, checker);
-  EXPECT_EQ(true, event->Handled);
+  EXPECT_EQ(true, event->m_handled);
 }
 
 TEST_F(EventDispatcher_Test_Fixture, handler_count) {
@@ -164,7 +164,7 @@ TEST_F(EventDispatcher_Test_Fixture, handler_count) {
     checker = true;  // modify global static variable
 
     handled = false;
-    switch (evt->GetEventId()) {
+    switch (evt->get_event_id()) {
       case EventId::KeyPressed:
         std::cout << "Lambda Click(Event: " << *evt << ")" << std::endl;
         handled = true;
@@ -194,7 +194,7 @@ TEST_F(EventDispatcher_Test_Fixture, clear_handler) {
     checker = true;  // modify global static variable
 
     handled = false;
-    switch (evt->GetEventId()) {
+    switch (evt->get_event_id()) {
       case EventId::KeyPressed:
         std::cout << "Lambda Click(Event: " << *evt << ")" << std::endl;
         handled = true;

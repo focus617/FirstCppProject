@@ -17,13 +17,15 @@ add_subdirectory(http)
 # 生成动态链接库
 add_library(restful SHARED ${_SOURCES})
 
+# 给Debug版本的应用添加后缀
+set_target_properties(restful PROPERTIES DEBUG_POSTFIX ${CMAKE_DEBUG_POSTFIX})
+
 target_compile_features(restful PUBLIC cxx_std_20)
 set_target_properties(restful PROPERTIES CXX_EXTENSIONS OFF)
 
-target_compile_definitions(restful PRIVATE NDEBUG _DEBUG)
+target_compile_definitions(restful PRIVATE XUZY_DLL NDEBUG _DEBUG)
 target_compile_definitions(restful 
     PUBLIC $<$<BOOL:${HTTPLIB_IS_USING_OPENSSL}>:CPPHTTPLIB_OPENSSL_SUPPORT>
-    PRIVATE XUZY_DLL XUZY_DLL_EXPORTS  _DEBUG
 )
 
 # 添加编译选项
@@ -49,23 +51,29 @@ set(NLOHMANN_JSON_INCLUDE_DIR
   CACHE PATH "nlohmann/json include directory"
 )
 
+set(CPP_HTTPLIB_INCLUDE_DIR
+  ${PROJECT_SOURCE_DIR}/extern/cpp-httplib
+  CACHE PATH "cpp-httplib include directory"
+)
+
 # 指定头文件路径
 target_include_directories(restful
-    PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-    PUBLIC $<INSTALL_INTERFACE:include/restful>
-    PRIVATE ${PROJECT_SOURCE_DIR}/extern/cpp-httplib
-    PRIVATE ${NLOHMANN_JSON_INCLUDE_DIR}
+    PUBLIC
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+      $<INSTALL_INTERFACE:include/restful>
+    PRIVATE
+      ${CPP_HTTPLIB_INCLUDE_DIR}
+      ${NLOHMANN_JSON_INCLUDE_DIR}
 )
 
 # Precompiled headers
 target_precompile_headers(restful PUBLIC
-   "${PROJECT_SOURCE_DIR}/src/core/include/core.h"
    "${PROJECT_SOURCE_DIR}/extern/cpp-httplib/httplib.h"
 )
 
 # 添加链接库
-target_link_libraries(restful PUBLIC
-    # xuzy::core
+target_link_libraries(restful
+  PUBLIC
     core
     glog::glog
     $<$<BOOL:${HTTPLIB_IS_USING_OPENSSL}>:OpenSSL::SSL>

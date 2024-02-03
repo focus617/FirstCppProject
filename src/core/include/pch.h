@@ -11,6 +11,7 @@
 #endif
 
 #include <glog/logging.h>
+#include <stdio.h>
 
 #include <algorithm>
 #include <array>

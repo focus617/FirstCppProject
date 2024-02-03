@@ -69,7 +69,7 @@ class EventDispatcher<ReturnType(Args...)> {
     for (const auto& key : m_Handlers_) {
       bool handled = false;
       key.second->invoke(m_event_, handled, args...);
-      m_event_->Handled |= handled;
+      m_event_->m_handled |= handled;
     }
   }
 
@@ -80,7 +80,7 @@ class EventDispatcher<ReturnType(Args...)> {
 
     bool handled = false;
     m_Handlers_[handler_id]->invoke(m_event_, handled, args...);
-    m_event_->Handled |= handled;
+    m_event_->m_handled |= handled;
 
     return true;
   }

@@ -4,6 +4,7 @@
 
 #include "app/app.hpp"
 #include "event/application_event.hpp"
+#include "window/layerstack.hpp"
 #include "window/window.hpp"
 
 namespace xuzy {
@@ -16,6 +17,11 @@ class XUZY_API WindowApp : public App {
                               const std::string& t_version);
   XUZY_API ~WindowApp();
 
+  inline XUZY_API Window& get_window() { return *m_window_; }
+
+  XUZY_API void push_layer(Layer* layer);
+  XUZY_API void push_overlay(Layer* layer);
+
   XUZY_API virtual void on_event(Ref<Event> evt, bool& handled);
 
  protected:
@@ -27,9 +33,7 @@ class XUZY_API WindowApp : public App {
  private:
   Scope<Window> m_window_;
   bool m_running_ = true;
+  LayerStack m_layerstack_;
 };
-
-// To be defined in CLIENT
-XUZY_API WindowApp* CreateApplication();
 
 }  // namespace xuzy

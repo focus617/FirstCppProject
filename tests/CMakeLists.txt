@@ -102,22 +102,25 @@ target_compile_options(testRunner PRIVATE
                                   "$<$<CONFIG:RELEASE>:{MY_RELEASE_OPTIONS>")
                                   
 # 指定头文件路径
-target_include_directories(testRunner PUBLIC
-  ${TEST_EXTRA_INCLUDES}
-  ${PROJECT_BINARY_DIR}/src
-  PRIVATE ${PROJECT_SOURCE_DIR}/extern/cpp-httplib
-  PRIVATE ${PROJECT_SOURCE_DIR}/extern/nlohmann-json/include/nlohmann
+target_include_directories(testRunner
+  PUBLIC
+    ${TEST_EXTRA_INCLUDES}
+    ${PROJECT_BINARY_DIR}/src
+  PRIVATE
+    ${PROJECT_SOURCE_DIR}/extern/cpp-httplib
+    ${PROJECT_SOURCE_DIR}/extern/nlohmann-json/include/nlohmann
 )
 
 # 添加链接库
 target_link_libraries(testRunner
-  GTest::gtest_main
-  GTest::gmock_main
-  $<$<BOOL:${HTTPLIB_IS_USING_OPENSSL}>:OpenSSL::SSL>
-  $<$<BOOL:${HTTPLIB_IS_USING_OPENSSL}>:OpenSSL::Crypto>
-  nlohmann_json::nlohmann_json
-  ${TEST_EXTRA_LIBS}
-  ${CMAKE_DL_LIBS}
+  PUBLIC
+    GTest::gtest_main
+    GTest::gmock_main
+    $<$<BOOL:${HTTPLIB_IS_USING_OPENSSL}>:OpenSSL::SSL>
+    $<$<BOOL:${HTTPLIB_IS_USING_OPENSSL}>:OpenSSL::Crypto>
+    nlohmann_json::nlohmann_json
+    ${TEST_EXTRA_LIBS}
+    ${CMAKE_DL_LIBS}
 )
 
 install(TARGETS testRunner

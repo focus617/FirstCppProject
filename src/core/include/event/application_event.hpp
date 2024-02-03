@@ -12,7 +12,7 @@ class WindowResizeEvent : public Event {
   unsigned int GetWidth() const { return m_Width; }
   unsigned int GetHeight() const { return m_Height; }
 
-  std::string ToString() const override {
+  std::string to_string() const override {
     std::stringstream ss;
     ss << "WindowResizeEvent: " << m_Width << ", " << m_Height;
     return ss.str();
