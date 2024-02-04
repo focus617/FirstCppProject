@@ -35,10 +35,10 @@ class XUZY_API App {
   void main(int argc, char* argv[]);
 
   // Accessors for singleton instance.
-  inline static App& Get() { return *s_instance_; }
+  inline static App& get() { return *s_instance_; }
 
   // Accessors for the implementation object.
-  inline static internal::AppImpl* GetImpl() { return p_impl_; }
+  inline static internal::AppImpl* get_impl() { return p_impl_; }
 
  protected:
   /**

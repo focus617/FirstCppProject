@@ -38,7 +38,7 @@ void App::load_conf(const std::string& filename) {
   }
 
   LOG(INFO) << m_app_name_ << ": Load configuration from " << filename;
-  App::GetImpl()->load_conf_from_file(filename, m_conf_);
+  App::get_impl()->load_conf_from_file(filename, m_conf_);
 }
 
 void App::setup() {
@@ -59,9 +59,9 @@ void App::main(int argc, char* argv[]) {
   XUZY_CHECK_(argc > 0) << "Invalid argc (value: " << argc << ").";
 
   // We don't want to run the initialization code twice.
-  if (App::GetImpl()->is_initialized()) return;
+  if (App::get_impl()->is_initialized()) return;
 
-  App::GetImpl()->init(argc, argv);
+  App::get_impl()->init(argc, argv);
 
   // Show outself, then run
   try {

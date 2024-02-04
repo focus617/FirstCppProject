@@ -2,7 +2,7 @@
 
 #include <sstream>
 
-#include "core/mouse_codes.hpp"
+#include "io/mouse_codes.hpp"
 #include "event/event.hpp"
 
 namespace xuzy {

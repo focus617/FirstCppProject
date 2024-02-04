@@ -34,7 +34,7 @@ void ImGuiLayer::on_detach() {
 
 void ImGuiLayer::on_update() {
   ImGuiIO& io = ImGui::GetIO();
-  WindowApp& app = (WindowApp&)(App::Get());
+  WindowApp& app = (WindowApp&)(App::get());
   io.DisplaySize =
       ImVec2(app.get_window().get_width(), app.get_window().get_height());
 

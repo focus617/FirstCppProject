@@ -27,6 +27,8 @@ class XUZY_API LinuxWindow : public Window {
     m_data_.eventDispatcher += callback;
   }
 
+  inline virtual void* get_native_window() const { return p_glfw_window_; }
+
  private:
   virtual void Init(const WindowProps& props);
   virtual void Shutdown();

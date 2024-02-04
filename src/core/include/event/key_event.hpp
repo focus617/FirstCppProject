@@ -2,7 +2,7 @@
 
 #include <sstream>
 
-#include "core/key_codes.hpp"
+#include "io/key_codes.hpp"
 #include "event/event.hpp"
 
 namespace xuzy {
