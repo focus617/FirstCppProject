@@ -6,15 +6,21 @@
 
 namespace xuzy {
 
+App* App::s_instance_ = nullptr;
+
 internal::AppImpl* App::p_impl_ = internal::AppImpl::GetInstance();
 
 App::App(const std::string& t_app_name, const std::string& t_version)
-    : m_app_name_{t_app_name}, m_version_{t_version}, p_cli_parser_{nullptr} {}
+    : m_app_name_{t_app_name}, m_version_{t_version}, p_cli_parser_{nullptr} {
+  XUZY_CHECK_(nullptr == s_instance_) << "Application already exists!";
+  s_instance_ = this;
+}
 
 App::~App() {
   if (nullptr != p_cli_parser_) {
     delete p_cli_parser_;
   }
+  s_instance_ = nullptr;
 }
 
 void App::version_check(int argc, char* argv[]) {

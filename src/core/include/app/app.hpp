@@ -34,6 +34,12 @@ class XUZY_API App {
    */
   void main(int argc, char* argv[]);
 
+  // Accessors for singleton instance.
+  inline static App& Get() { return *s_instance_; }
+
+  // Accessors for the implementation object.
+  inline static internal::AppImpl* GetImpl() { return p_impl_; }
+
  protected:
   /**
    *  @brief Configuration in json format
@@ -48,14 +54,13 @@ class XUZY_API App {
 
   XUZY_API virtual void dumpError(std::string error);
 
-  // Accessors for the implementation object.
-  static internal::AppImpl* GetImpl() { return p_impl_; }
-
  private:
   std::string m_app_name_;
   std::string m_version_;
 
   ArgsParser* p_cli_parser_;
+
+  static App* s_instance_;
 
   // Protects mutable state in *p_impl_.
   // This is mutable as some const methods need to lock it too.

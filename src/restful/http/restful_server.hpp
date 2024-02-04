@@ -46,15 +46,15 @@ class XUZY_API RestfulServer : public xuzy::App {
  * @brief HTTP Server
  */
 #ifdef CPPHTTPLIB_OPENSSL_SUPPORT
-  httplib::SSLServer* m_server_ptr_;
+  httplib::SSLServer* p_server_;
 #else
-  httplib::Server* m_server_ptr_;
+  httplib::Server* p_server_;
 #endif
 
   /**
    * @brief Port at which HTTP Server is listening
    */
-  http::Host* m_host_ptr_;
+  http::Host* p_host_;
 
   /**
    * @brief Setup host& http(s)-server based on json configuration

@@ -16,30 +16,23 @@ class XUZY_API LinuxWindow : public Window {
 
   void on_update() override;
 
-  inline unsigned int GetWidth() const override { return m_Data.Width; }
-  inline unsigned int GetHeight() const override { return m_Data.Height; }
+  inline unsigned int get_width() const override { return m_data_.Width; }
+  inline unsigned int get_height() const override { return m_data_.Height; }
 
   // Window attributes
-  void SetVSync(bool enabled) override;
-  bool IsVSync() const override;
+  void set_vsync(bool enabled) override;
+  bool is_vsync() const override;
 
   inline void set_event_callback(const EventCallbackFn& callback) override {
-    m_Data.eventDispatcher += callback;
+    m_data_.eventDispatcher += callback;
   }
 
  private:
   virtual void Init(const WindowProps& props);
   virtual void Shutdown();
 
-  void imgui_setup(const char* glsl_version);
-  void imgui_shutdown();
-  void imgui_load_fonts();
-  void imgui_rendering();
-
-  void draw();
-
  private:
-  GLFWwindow* m_Window;
+  GLFWwindow* p_glfw_window_;
 
   struct WindowData {
     std::string Title;
@@ -49,7 +42,7 @@ class XUZY_API LinuxWindow : public Window {
     xuzy::EventDispatcher<void()> eventDispatcher;
   };
 
-  WindowData m_Data;
+  WindowData m_data_;
 };
 
 }  // namespace xuzy

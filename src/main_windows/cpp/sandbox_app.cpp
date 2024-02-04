@@ -1,11 +1,21 @@
 #include "app/window_app.hpp"
+#include "window/imgui_layer.hpp"
 
 class Sandbox : public xuzy::WindowApp {
  public:
   Sandbox(const std::string& t_app_name, const std::string& t_version)
-      : WindowApp{std::move(t_app_name), std::move(t_version)} {}
+      : WindowApp{std::move(t_app_name), std::move(t_version)} {
+    m_overlay_ = new xuzy::ImGuiLayer();
+    push_overlay(m_overlay_);
+  }
 
-  ~Sandbox() {}
+  ~Sandbox() {
+    pop_overlay(m_overlay_);
+    delete m_overlay_;
+  }
+
+ private:
+  xuzy::Layer* m_overlay_;
 };
 
 namespace xuzy {

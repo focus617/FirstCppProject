@@ -36,7 +36,7 @@ class RestfulServer_Test_Fixture : public testing::Test {
   void SetUp();
   void TearDown();
 
-  http::RestfulServer server;
+  http::RestfulServer* server;
 
 #ifdef CPPHTTPLIB_OPENSSL_SUPPORT
   SSLClient cli;
@@ -46,12 +46,12 @@ class RestfulServer_Test_Fixture : public testing::Test {
 };
 
 RestfulServer_Test_Fixture::RestfulServer_Test_Fixture()
-    : server("Restful-Server", "0.0.1"), cli(HOST, PORT) {}
+    : cli(HOST, PORT) {}
 
 void RestfulServer_Test_Fixture::SetUp() {
-  // GTEST_SKIP() << "Skipping single test";
-  server.setup();
-  server.start();
+  server = new http::RestfulServer("Restful-Server", "0.0.1");
+  server->setup();
+  server->start();
 
 #ifdef CPPHTTPLIB_OPENSSL_SUPPORT
   LOG(INFO) << "SSLClient enable";
@@ -59,10 +59,12 @@ void RestfulServer_Test_Fixture::SetUp() {
 #endif
   cli.set_connection_timeout(std::chrono::seconds(5));
 
-  server.wait_until_ready();
+  server->wait_until_ready();
 }
 
-void RestfulServer_Test_Fixture::TearDown() {}
+void RestfulServer_Test_Fixture::TearDown() {
+  delete server;
+}
 
 TEST_F(RestfulServer_Test_Fixture, HeadMethod404) {
   auto res = cli.Head("/invalid");
@@ -79,7 +81,7 @@ TEST_F(RestfulServer_Test_Fixture, GetMethod404) {
 
 TEST_F(RestfulServer_Test_Fixture, GetServerStop) {
   auto res = cli.Get("/stop");
-  EXPECT_FALSE(server.is_running());
+  EXPECT_FALSE(server->is_running());
 }
 
 TEST_F(RestfulServer_Test_Fixture, lists_GetMethod200) {

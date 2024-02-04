@@ -17,10 +17,12 @@ class XUZY_API WindowApp : public App {
                               const std::string& t_version);
   XUZY_API ~WindowApp();
 
-  inline XUZY_API Window& get_window() { return *m_window_; }
+  inline XUZY_API Window& get_window() { return *p_window_; }
 
   XUZY_API void push_layer(Layer* layer);
   XUZY_API void push_overlay(Layer* layer);
+  XUZY_API void pop_layer(Layer* layer);
+  XUZY_API void pop_overlay(Layer* layer);
 
   XUZY_API virtual void on_event(Ref<Event> evt, bool& handled);
 
@@ -31,7 +33,7 @@ class XUZY_API WindowApp : public App {
   XUZY_API void main_loop() override;
 
  private:
-  Scope<Window> m_window_;
+  Scope<Window> p_window_;
   bool m_running_ = true;
   LayerStack m_layerstack_;
 };

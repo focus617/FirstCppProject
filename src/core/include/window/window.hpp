@@ -35,12 +35,12 @@ class XUZY_API Window {
 
   virtual void on_update() = 0;
 
-  virtual unsigned int GetWidth() const = 0;
-  virtual unsigned int GetHeight() const = 0;
+  virtual unsigned int get_width() const = 0;
+  virtual unsigned int get_height() const = 0;
 
   // Window attributes
-  virtual void SetVSync(bool enabled) = 0;
-  virtual bool IsVSync() const = 0;
+  virtual void set_vsync(bool enabled) = 0;
+  virtual bool is_vsync() const = 0;
 
   virtual void set_event_callback(const EventCallbackFn& callback) = 0;
 

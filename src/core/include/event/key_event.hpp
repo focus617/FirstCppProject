@@ -2,33 +2,33 @@
 
 #include <sstream>
 
-#include "core/key_code.hpp"
+#include "core/key_codes.hpp"
 #include "event/event.hpp"
 
 namespace xuzy {
 
 class KeyEvent : public Event {
  public:
-  KeyCode GetKeyCode() const { return m_KeyCode; }
+  KeyCode get_key_code() const { return m_key_code; }
 
   EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
 
  protected:
-  KeyEvent(const KeyCode keycode) : m_KeyCode(keycode) {}
+  KeyEvent(const KeyCode keycode) : m_key_code(keycode) {}
 
-  KeyCode m_KeyCode;
+  KeyCode m_key_code;
 };
 
 class KeyPressedEvent : public KeyEvent {
  public:
   KeyPressedEvent(const KeyCode keycode, const uint16_t repeatCount)
-      : KeyEvent(keycode), m_RepeatCount(repeatCount) {}
+      : KeyEvent(keycode), m_repeat_count(repeatCount) {}
 
-  uint16_t GetRepeatCount() const { return m_RepeatCount; }
+  uint16_t get_repeat_count() const { return m_repeat_count; }
 
   std::string to_string() const override {
     std::stringstream ss;
-    ss << "KeyPressedEvent:" << m_KeyCode << " (" << m_RepeatCount
+    ss << "KeyPressedEvent:" << m_key_code << " (" << m_repeat_count
        << " repeats)";
     return ss.str();
   }
@@ -36,7 +36,7 @@ class KeyPressedEvent : public KeyEvent {
   EVENT_CLASS_ID(KeyPressed)
   
  private:
-  uint16_t m_RepeatCount;
+  uint16_t m_repeat_count;
 };
 
 class KeyReleasedEvent : public KeyEvent {
@@ -45,7 +45,7 @@ class KeyReleasedEvent : public KeyEvent {
 
   std::string to_string() const override {
     std::stringstream ss;
-    ss << "KeyReleasedEvent:" << m_KeyCode;
+    ss << "KeyReleasedEvent:" << m_key_code;
     return ss.str();
   }
 
@@ -58,7 +58,7 @@ class KeyTypedEvent : public KeyEvent {
 
   std::string to_string() const override {
     std::stringstream ss;
-    ss << "KeyTypedEvent:" << m_KeyCode;
+    ss << "KeyTypedEvent:" << m_key_code;
     return ss.str();
   }
 

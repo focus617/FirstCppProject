@@ -8,8 +8,8 @@ namespace xuzy {
 WindowApp::WindowApp(const std::string& t_app_name,
                      const std::string& t_version)
     : App{std::move(t_app_name), std::move(t_version)} {
-  m_window_ = std::unique_ptr<Window>(Window::Create());
-  m_window_->set_event_callback(BIND_EVENT_FN(on_event));
+  p_window_ = std::unique_ptr<Window>(Window::Create());
+  p_window_->set_event_callback(BIND_EVENT_FN(on_event));
 }
 
 WindowApp::~WindowApp() {}
@@ -24,13 +24,23 @@ void WindowApp::push_overlay(Layer* layer) {
   layer->on_attach();
 }
 
+void WindowApp::pop_layer(Layer* layer) {
+  m_layerstack_.pop_layer(layer);
+  layer->on_detach();
+}
+
+void WindowApp::pop_overlay(Layer* layer) {
+  m_layerstack_.pop_overlay(layer);
+  layer->on_detach();
+}
+
 void WindowApp::launch_tasks() {}
 
 void WindowApp::main_loop() {
   while (m_running_) {
     for (Layer* layer : m_layerstack_) layer->on_update();
 
-    m_window_->on_update();
+    p_window_->on_update();
   }
 }
 
@@ -40,8 +50,6 @@ void WindowApp::on_event(Ref<Event> event, bool& handled) {
   // Handle global event, e.g. WindowCloseEvent
   switch (event->get_event_id()) {
     case EventId::WindowClose:
-      LOG(INFO) << "Window Close Clicked (Event: " << *event << ")"
-                << std::endl;
       handled =
           OnWindowClose(std::static_pointer_cast<WindowCloseEvent>(event));
       return;
@@ -61,6 +69,7 @@ void WindowApp::on_event(Ref<Event> event, bool& handled) {
 }
 
 bool WindowApp::OnWindowClose(Ref<WindowCloseEvent> e) {
+  LOG(INFO) << "Window Close Clicked (Event: " << *e << ")" << std::endl;
   m_running_ = false;
   return true;
 }
