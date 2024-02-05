@@ -12,7 +12,7 @@ class XUZY_API Layer {
   virtual void on_attach() = 0;
   virtual void on_detach() = 0;
   virtual void on_update() = 0;
-  virtual void on_event(Ref<Event> evt, bool& handled) = 0;
+  virtual void on_event(Ref<Event> event, bool& handled) = 0;
 
   inline const std::string& get_name() const { return m_debug_name_; }
 

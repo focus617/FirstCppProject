@@ -28,4 +28,4 @@ message(STATUS "Build GLAD...")
 add_subdirectory(glad)
 
 message(STATUS "Build IMGUI...")
-add_subdirectory(imgui)
+add_subdirectory(imgui-docking)

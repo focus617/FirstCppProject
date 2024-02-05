@@ -55,15 +55,15 @@ set(GLFW_INCLUDE_DIR
   CACHE PATH "GLFW include directory"
 )
 
-set(GLAD_INCLUDE_DIR
-  ${PROJECT_SOURCE_DIR}/extern/glad/include
-  CACHE PATH "GLAD include directory"
-)
-
-# set(IMGUI_INCLUDE_DIR
-#   ${PROJECT_SOURCE_DIR}/extern/imgui
+# set(GLAD_INCLUDE_DIR
+#   ${PROJECT_SOURCE_DIR}/extern/glad/include
 #   CACHE PATH "GLAD include directory"
 # )
+
+set(IMGUI_INCLUDE_DIR
+  ${PROJECT_SOURCE_DIR}/extern/imgui-docking
+  CACHE PATH "IMGUI include directory"
+)
 
 # 指定头文件路径
 target_include_directories(core

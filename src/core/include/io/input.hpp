@@ -4,12 +4,14 @@
 
 namespace xuzy {
 
-
 /**
- * @brief Input class is global input manager, which enable customer to catch current key status
-*/
+ * @brief Input class is global input manager, which enable customer to poll and
+ * catch current key and mouse status
+ */
 class XUZY_API Input {
  public:
+  virtual ~Input() {}
+
   inline static bool is_key_pressed(int keycode) {
     return s_instance_->is_key_pressed_impl(keycode);
   }

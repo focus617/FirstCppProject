@@ -1,5 +1,9 @@
 #pragma once
 
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+
 #include "imgui_impl_opengl3_loader.h"
 #include <GLFW/glfw3.h>  // Will drag system OpenGL headers
 
@@ -15,21 +19,16 @@ class XUZY_API ImGuiLayer : public Layer {
   ImGuiLayer();
   ~ImGuiLayer();
 
-  void on_attach() override;
-  void on_detach() override;
-  void on_update() override;
-  void on_event(Ref<Event> event, bool& handled) override;
+  virtual void on_attach() override;
+  virtual void on_detach() override;
+  virtual void on_update() override;
+  virtual void on_event(Ref<Event> event, bool& handled) override {}
+ 
+	void begin();
+  void on_imgui_render();
+	void end();
 
  private:
-  bool on_mouse_button_pressed_event(Ref<MouseButtonPressedEvent> e);
-  bool on_mouse_button_released_event(Ref<MouseButtonReleasedEvent> e);
-  bool on_mouse_moved_event(Ref<MouseMovedEvent> e);
-  bool on_mouse_scrolled_event(Ref<MouseScrolledEvent> e);
-  bool on_key_pressed_event(Ref<KeyPressedEvent> e);
-  bool on_key_released_event(Ref<KeyReleasedEvent> e);
-  bool on_key_typed_event(Ref<KeyTypedEvent> e);
-  bool on_window_resize_event(Ref<WindowResizeEvent> e);
-
   void imgui_init();
   void imgui_load_fonts();
   void imgui_rendering();
