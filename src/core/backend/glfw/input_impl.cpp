@@ -3,7 +3,7 @@
 #include "input_impl.hpp"
 
 #include "app/window_app.hpp"
-#include "linux_window.hpp"
+#include "window_impl.hpp"
 
 namespace xuzy {
 
@@ -11,7 +11,7 @@ Input* Input::s_instance_ = new InputImpl();
 
 GLFWwindow* InputImpl::get_window() {
   WindowApp& app = (WindowApp&)(App::get());
-  LinuxWindow& win = (LinuxWindow&)(app.get_window());
+  WindowImpl& win = (WindowImpl&)(app.get_window());
   return static_cast<GLFWwindow*>(win.get_native_window());
 }
 

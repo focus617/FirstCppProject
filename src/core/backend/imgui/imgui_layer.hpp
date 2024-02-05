@@ -1,6 +1,6 @@
 #pragma once
 
-#include <glad/glad.h>
+#include "imgui_impl_opengl3_loader.h"
 #include <GLFW/glfw3.h>  // Will drag system OpenGL headers
 
 #include "event/application_event.hpp"
@@ -15,10 +15,10 @@ class XUZY_API ImGuiLayer : public Layer {
   ImGuiLayer();
   ~ImGuiLayer();
 
-  void on_attach();
-  void on_detach();
-  void on_update();
-  void on_event(Ref<Event> event, bool& handled);
+  void on_attach() override;
+  void on_detach() override;
+  void on_update() override;
+  void on_event(Ref<Event> event, bool& handled) override;
 
  private:
   bool on_mouse_button_pressed_event(Ref<MouseButtonPressedEvent> e);

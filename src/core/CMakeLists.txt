@@ -2,7 +2,7 @@ set(CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/install")
 # Import extern Libraries
 find_package(glog REQUIRED)
 find_package(glfw3 REQUIRED)
-find_package(glad REQUIRED)
+# find_package(glad REQUIRED)
 find_package(imgui REQUIRED)
 
 # Import nlohmann_json
@@ -16,7 +16,7 @@ aux_source_directory(. _SOURCES)
 
 # 添加子目录
 add_subdirectory(cpp)
-add_subdirectory(platform)
+add_subdirectory(backend)
 add_subdirectory(include/resource)
 
 # 生成动态链接库
@@ -60,21 +60,22 @@ set(GLAD_INCLUDE_DIR
   CACHE PATH "GLAD include directory"
 )
 
-set(IMGUI_INCLUDE_DIR
-  ${PROJECT_SOURCE_DIR}/extern/imgui
-  CACHE PATH "GLAD include directory"
-)
+# set(IMGUI_INCLUDE_DIR
+#   ${PROJECT_SOURCE_DIR}/extern/imgui
+#   CACHE PATH "GLAD include directory"
+# )
 
 # 指定头文件路径
 target_include_directories(core
   PUBLIC 
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/backend>
     $<INSTALL_INTERFACE:include/core>
   PRIVATE
     ${PROJECT_BINARY_DIR}/src
     ${NLOHMANN_JSON_INCLUDE_DIR}
     ${GLFW_INCLUDE_DIR}
-    ${GLAD_INCLUDE_DIR}
+    # ${GLAD_INCLUDE_DIR}
     ${IMGUI_INCLUDE_DIR}
 )
 
@@ -90,7 +91,7 @@ target_link_libraries(core
     nlohmann_json::nlohmann_json
     resource
     glfw
-    glad
+    # glad
     imgui
     ${GL_LIBRARY}  #opengl lib
 )

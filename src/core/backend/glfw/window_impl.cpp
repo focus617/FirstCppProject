@@ -1,21 +1,20 @@
 #include "pch.h"
 
-#include "linux_window.hpp"
-
-#include <glad/glad.h>
+#include "window_impl.hpp"
 
 #include "event/application_event.hpp"
 #include "event/key_event.hpp"
 #include "event/mouse_event.hpp"
+#include "imgui/imgui_impl_opengl3_loader.h"
 
 #define GL_SILENCE_DEPRECATION
 
 namespace xuzy {
 
-// class LinuxWindow
+// class WindowImpl
 #if defined(XUZY_OS_LINUX)
 Window* Window::Create(const WindowProps& props) {
-  return new LinuxWindow(props);
+  return new WindowImpl(props);
 }
 #endif  // defined(XUZY_OS_LINUX)
 
@@ -26,11 +25,11 @@ static void GLFWErrorCallback(int error, const char* description) {
   LOG(ERROR) << "GLFW Error (" << error << ": " << description << ")";
 }
 
-LinuxWindow::LinuxWindow(const WindowProps& props) { Init(props); }
+WindowImpl::WindowImpl(const WindowProps& props) { Init(props); }
 
-LinuxWindow::~LinuxWindow() { Shutdown(); }
+WindowImpl::~WindowImpl() { Shutdown(); }
 
-void LinuxWindow::set_vsync(bool enabled) {
+void WindowImpl::set_vsync(bool enabled) {
   if (enabled)
     glfwSwapInterval(1);  // Enable vsync
   else
@@ -39,9 +38,9 @@ void LinuxWindow::set_vsync(bool enabled) {
   m_data_.VSync = enabled;
 }
 
-bool LinuxWindow::is_vsync() const { return m_data_.VSync; }
+bool WindowImpl::is_vsync() const { return m_data_.VSync; }
 
-void LinuxWindow::Init(const WindowProps& props) {
+void WindowImpl::Init(const WindowProps& props) {
   m_data_.Title = props.Title;
   m_data_.Width = props.Width;
   m_data_.Height = props.Height;
@@ -80,8 +79,8 @@ void LinuxWindow::Init(const WindowProps& props) {
   XUZY_CHECK_(nullptr != p_glfw_window_) << "Could not create GLFW Window!";
   glfwMakeContextCurrent(p_glfw_window_);
 
-  int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-  XUZY_CHECK_(status) << "Failed to initialize Glad!";
+  // int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+  // XUZY_CHECK_(status) << "Failed to initialize Glad!";
 
   glfwSetWindowUserPointer(p_glfw_window_, &m_data_);
   set_vsync(true);  // Enable vsync
@@ -174,25 +173,25 @@ void LinuxWindow::Init(const WindowProps& props) {
         data.eventDispatcher.dispatch();
       });
 
-  glfwSetCursorPosCallback(
-      p_glfw_window_, [](GLFWwindow* window, double xPos, double yPos) {
-        WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+  glfwSetCursorPosCallback(p_glfw_window_, [](GLFWwindow* window, double xPos,
+                                              double yPos) {
+    WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
-        auto event = CreateRef<MouseMovedEvent>(
-            MouseMovedEvent((float)xPos, (float)yPos));
-        data.eventDispatcher.publish_event(event);
+    auto event =
+        CreateRef<MouseMovedEvent>(MouseMovedEvent((float)xPos, (float)yPos));
+    data.eventDispatcher.publish_event(event);
 
-        data.eventDispatcher.dispatch();
-      });
+    data.eventDispatcher.dispatch();
+  });
 }
 
-void LinuxWindow::Shutdown() {
+void WindowImpl::Shutdown() {
   glfwDestroyWindow(p_glfw_window_);
   // We may have more than one GLFW windows
   // TODO: glfwTerminate on system shutdown
 }
 
-void LinuxWindow::on_update() {
+void WindowImpl::on_update() {
   // Poll and handle events (inputs, window resize, etc.)
   // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell
   // if dear imgui wants to use your inputs.

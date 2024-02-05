@@ -9,10 +9,10 @@ class XUZY_API Layer {
   Layer(const std::string& name = "Layer");
   virtual ~Layer();
 
-  virtual void on_attach() {}
-  virtual void on_detach() {}
-  virtual void on_update() {}
-  virtual void on_event(Ref<Event> evt, bool& handled) {}
+  virtual void on_attach() = 0;
+  virtual void on_detach() = 0;
+  virtual void on_update() = 0;
+  virtual void on_event(Ref<Event> evt, bool& handled) = 0;
 
   inline const std::string& get_name() const { return m_debug_name_; }
 

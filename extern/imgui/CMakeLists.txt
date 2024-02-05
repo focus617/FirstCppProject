@@ -23,13 +23,10 @@ add_library(imgui STATIC
   ${CMAKE_CURRENT_SOURCE_DIR}/imgui_internal.h
   ${CMAKE_CURRENT_SOURCE_DIR}/imgui_tables.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/imgui_widgets.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/backends/imgui_impl_glfw.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
  )
 
 target_include_directories(imgui
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/backends>
   PUBLIC $<INSTALL_INTERFACE:include/imgui>
   PRIVATE ${GLFW_INCLUDE_DIR}
 )

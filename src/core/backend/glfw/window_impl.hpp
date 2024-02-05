@@ -3,16 +3,16 @@
 #include <GLFW/glfw3.h>  // Will drag system OpenGL headers
 
 #include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
 #include "window/window.hpp"
 
 namespace xuzy {
 
-class XUZY_API LinuxWindow : public Window {
+class XUZY_API WindowImpl : public Window {
  public:
-  LinuxWindow(const WindowProps& props);
-  virtual ~LinuxWindow();
+  WindowImpl(const WindowProps& props);
+  virtual ~WindowImpl();
 
   void on_update() override;
 

@@ -1,10 +1,10 @@
 #include "pch.h"
 
-#include "window/imgui_layer.hpp"
+#include "imgui_layer.hpp"
 
 #include "app/window_app.hpp"
-#include "backends/imgui_impl_glfw.h"
-#include "backends/imgui_impl_opengl3.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 #include "imgui.h"
 
 namespace xuzy {
