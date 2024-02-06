@@ -113,7 +113,6 @@ write_basic_package_version_file(
   COMPATIBILITY AnyNewerVersion
 )
 
-
 install(EXPORT coreTargets
   FILE coreTargets.cmake
   NAMESPACE xuzy::
@@ -124,3 +123,5 @@ install(FILES
     "${CMAKE_CURRENT_BINARY_DIR}/coreConfigVersion.cmake" 
     DESTINATION share/cmake/core
 )
+# 安装字体
+install(DIRECTORY resources/fonts/ DESTINATION fonts)

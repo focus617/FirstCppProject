@@ -30,8 +30,8 @@ class XUZY_API WindowImpl : public Window {
   inline virtual void* get_native_window() const { return p_glfw_window_; }
 
  private:
-  virtual void Init(const WindowProps& props);
-  virtual void Shutdown();
+  virtual void window_init(const WindowProps& props);
+  virtual void window_shutdown();
 
  private:
   GLFWwindow* p_glfw_window_;

@@ -7,10 +7,6 @@
 
 namespace xuzy {
 
-// Our state
-static bool show_another_window = true;
-static ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
 ImGuiLayer::ImGuiLayer() : Layer("ImGuiLayer") {}
 
 ImGuiLayer::~ImGuiLayer() {}
@@ -29,19 +25,35 @@ void ImGuiLayer::on_detach() {
   ImGui::DestroyContext();
 }
 
-void ImGuiLayer::on_update(){
-  begin();
+void ImGuiLayer::on_update() {
+  begin_render();
+
+  // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to 
+  // tell if dear imgui wants to use your inputs.
+  // - When io.WantCaptureMouse is true, do not dispatch mouse input data 
+  // to your main application, or clear/overwrite your copy of the mouse 
+  // data.
+  // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input 
+  // data to your main application, or clear/overwrite your copy of the 
+  // keyboard data. Generally you may always pass all inputs to dear imgui,
+  // and hide them from your application based on those two flags.
+  ImGuiIO& io = ImGui::GetIO();
+  if(!io.WantCaptureMouse){
+  }
+
   on_imgui_render();
-  end();
+  end_render();
 }
 
-void ImGuiLayer::begin() {
+void ImGuiLayer::begin_render() {
+  // Start a new frame
   ImGui_ImplOpenGL3_NewFrame();
   ImGui_ImplGlfw_NewFrame();
   ImGui::NewFrame();
 }
 
-void ImGuiLayer::end() {
+void ImGuiLayer::end_render() {
+  // Setup display size
   ImGuiIO& io = ImGui::GetIO();
   WindowApp& app = (WindowApp&)(App::get());
   io.DisplaySize =
@@ -49,9 +61,11 @@ void ImGuiLayer::end() {
 
   // Rendering
   ImGui::Render();
-  glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w,
-               clear_color.z * clear_color.w, clear_color.w);
-  glClear(GL_COLOR_BUFFER_BIT);
+  glClearColor(m_clear_color_.x * m_clear_color_.w,
+               m_clear_color_.y * m_clear_color_.w,
+               m_clear_color_.z * m_clear_color_.w, 
+               m_clear_color_.w);   // 设置清除颜色
+  glClear(GL_COLOR_BUFFER_BIT);     // 执行清除
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
   if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
@@ -63,46 +77,71 @@ void ImGuiLayer::end() {
 }
 
 void ImGuiLayer::on_imgui_render() {
-  // 1. Show the big demo window
+  // Our state
   static bool show_demo_window = true;
+  static bool show_another_window = true;
+
+  // ImGui::SetNextWindowPos();
+  // ImGui::SetNextWindowSize();
+
+  // 1. Show the big demo window
   ImGui::ShowDemoWindow(&show_demo_window);
 
-  // 2. Show a simple window that we create ourselves. We use a Begin/End pair
-  // to create a named window.
+  // 2. Show a simple window that we create ourselves.
+  // We use a Begin/End pair to create a named window.
   {
     static float f = 0.0f;
     static int counter = 0;
+    const int buffer_size = 1024;
+    char* buf = new char[buffer_size];
+    strcpy(buf, "默认字符串");
 
-    ImGui::Begin("Hello, world!");  // Create a window called "Hello, world!"
-                                    // and append into it.
+    // Switch font
+    ImGui::PushFont(m_fonts_["SimKai"]);
+    // 调整窗口内边距以适应中文文字
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8.0f, 8.0f));
 
-    ImGui::Text("This is some useful text.");  // Display some text (you can use
-                                               // a format strings too)
-    ImGui::Checkbox(
-        "Demo Window",
-        &show_demo_window);  // Edit bools storing our window open/close state
+    // Create a window called "Hello, world!" and append into it.
+    ImGui::Begin("你好，世界!");
+    // Display some text (you can use a format strings too)
+    ImGui::Text("这是第一个中文提示。");
+    ImGui::Text("输入:");
+    ImGui::SameLine();
+    ImGui::InputText("OK", buf, buffer_size);
+    ImGui::SameLine();
+    if (ImGui::Button("确认")) strcpy(buf, "已确认。");
+
+    // Edit bools storing our window open/close state
+    ImGui::Checkbox("Demo Window", &show_demo_window);
     ImGui::Checkbox("Another Window", &show_another_window);
-
-    ImGui::SliderFloat("float", &f, 0.0f,
-                       1.0f);  // Edit 1 float using a slider from 0.0f to 1.0f
-    ImGui::ColorEdit3(
-        "clear color",
-        (float*)&clear_color);  // Edit 3 floats representing a color
-
-    if (ImGui::Button("Button"))  // Buttons return true when clicked (most
-                                  // widgets return true when edited/activated)
-      counter++;
+    // Edit 1 float using a slider from 0.0f to 1.0f
+    ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
+    // Edit 3 floats representing a color
+    ImGui::ColorEdit3("clear color", (float*)&m_clear_color_);
+    // Buttons return true when clicked
+    // (most widgets return true when edited/activated)
+    if (ImGui::Button("Button")) counter++;
     ImGui::SameLine();
     ImGui::Text("counter = %d", counter);
 
     ImGuiIO& io = ImGui::GetIO();
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
                 1000.0f / io.Framerate, io.Framerate);
+
+    ImGui::SeparatorText("CORRECT");
+    ImGui::DebugTextEncoding((const char*)u8"中文");
+
     ImGui::End();
+
+    delete[] buf;
+    ImGui::PopStyleVar(1);
+    ImGui::PopFont();
   }
 
   // 3. Show another simple window.
   if (show_another_window) {
+    // Switch font
+    ImGui::PushFont(m_fonts_["LiberationSans-Regular"]);
     ImGui::Begin(
         "Another Window",
         &show_another_window);  // Pass a pointer to our bool variable (the
@@ -111,6 +150,7 @@ void ImGuiLayer::on_imgui_render() {
     ImGui::Text("Hello from another window!");
     if (ImGui::Button("Close Me")) show_another_window = false;
     ImGui::End();
+    ImGui::PopFont();
   }
 }
 
@@ -151,17 +191,19 @@ void ImGuiLayer::imgui_init() {
   // Decide GL+GLSL versions
   // GL 3.0 + GLSL 130
   // const char* glsl_version = "#version 130";
-  // GL 4.5 + GLSL 130
-  const char* glsl_version = "#version 450";
+  // GL 4.6 + GLSL 460
+  const char* glsl_version = "#version 460";
   ImGui_ImplOpenGL3_Init(glsl_version);
 }
 
 void ImGuiLayer::imgui_load_fonts() {
   ImGuiIO& io = ImGui::GetIO();
 
-  // - If no fonts are loaded, dear imgui will use the default font. You can
-  // also load multiple fonts and use ImGui::PushFont()/PopFont() to select
-  // them.
+  // If no fonts are loaded, dear imgui will use the default font.
+  // io.Fonts->AddFontDefault();
+
+  // - You can also load multiple fonts and use ImGui::PushFont()/PopFont() to
+  // select them.
   // - AddFontFromFileTTF() will return the ImFont* so you can store it if you
   // need to select the font among multiple.
   // - If the file cannot be loaded, the function will return a nullptr. Please
@@ -177,158 +219,177 @@ void ImGuiLayer::imgui_load_fonts() {
   // literal you need to write a double backslash \\ !
   // - Our Emscripten build process allows embedding fonts to be accessible at
   // runtime from the "fonts/" folder. See Makefile.emscripten for details.
-  io.Fonts->AddFontDefault();
-  // ImFont* font =
-  // io.Fonts->AddFontFromFileTTF("../fonts/DroidSans.ttf", 16.0f);
-  // XUZY_CHECK_(nullptr != font) << "Could not load font!";
-  // ImGui::PushFont(font);
 
-  // io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\segoeui.ttf", 18.0f);
-  // io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
-  // io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
-  // ImFont* font =
-  // io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f,
-  // nullptr, io.Fonts->GetGlyphRangesJapanese());
-  // IM_ASSERT(font != nullptr);
+  m_fonts_["SimKai"] = io.Fonts->AddFontFromFileTTF(
+      "../fonts/SimKai.ttf", m_font_size_pixels_, nullptr,
+      io.Fonts->GetGlyphRangesChineseSimplifiedCommon());
+  XUZY_CHECK_(nullptr != m_fonts_["SimKai"]) << "Could not load font!";
+
+  m_fonts_["DroidSans"] = io.Fonts->AddFontFromFileTTF(
+      "../fonts/DroidSans.ttf", m_font_size_pixels_, nullptr,
+      io.Fonts->GetGlyphRangesChineseSimplifiedCommon());
+  XUZY_CHECK_(nullptr != m_fonts_["DroidSans"]) << "Could not load font!";
+
+  m_fonts_["Roboto-Medium"] = io.Fonts->AddFontFromFileTTF(
+      "../fonts/Roboto-Medium.ttf", m_font_size_pixels_, nullptr,
+      io.Fonts->GetGlyphRangesChineseSimplifiedCommon());
+  XUZY_CHECK_(nullptr != m_fonts_["Roboto-Medium"]) << "Could not load font!";
+
+  m_fonts_["Cousine-Regular"] = io.Fonts->AddFontFromFileTTF(
+      "../fonts/Cousine-Regular.ttf", m_font_size_pixels_, nullptr,
+      io.Fonts->GetGlyphRangesChineseSimplifiedCommon());
+  XUZY_CHECK_(nullptr != m_fonts_["Cousine-Regular"]) << "Could not load font!";
+
+  ImFontConfig config;
+  config.OversampleH = 7;
+  config.OversampleV = 1;
+  config.GlyphExtraSpacing.x = 1.0f;
+  m_fonts_["ProggyClean"] = io.Fonts->AddFontFromFileTTF(
+      "../fonts/ProggyClean.ttf", m_font_size_pixels_, &config);
+  XUZY_CHECK_(nullptr != m_fonts_["ProggyClean"]) << "Could not load font!";
+
+  m_fonts_["LiberationSans-Regular"] = io.Fonts->AddFontFromFileTTF(
+      "../fonts/LiberationSans-Regular.ttf", m_font_size_pixels_, nullptr,
+      io.Fonts->GetGlyphRangesChineseSimplifiedCommon());
+  XUZY_CHECK_(nullptr != m_fonts_["LiberationSans-Regular"])
+      << "Could not load font!";
 }
 
-// void ImGuiLayer::on_event(Ref<Event> event, bool& handled) {
-//   handled = false;
+void ImGuiLayer::on_event(Ref<Event> event, bool& handled) {
+  handled = false;
 
-//   // Handle global event, e.g. WindowCloseEvent
-//   switch (event->get_event_id()) {
-//     case EventId::WindowResize:
-//       handled = on_window_resize_event(
-//           std::static_pointer_cast<WindowResizeEvent>(event));
-//       break;
+  // Handle global event, e.g. WindowCloseEvent
+  switch (event->get_event_id()) {
+    case EventId::WindowResize:
+      handled = on_window_resize_event(
+          std::static_pointer_cast<WindowResizeEvent>(event));
+      break;
 
-//     case EventId::KeyPressed:
-//       handled = on_key_pressed_event(
-//           std::static_pointer_cast<KeyPressedEvent>(event));
-//       break;
+    case EventId::KeyPressed:
+      handled = on_key_pressed_event(
+          std::static_pointer_cast<KeyPressedEvent>(event));
+      break;
 
-//     case EventId::KeyTyped:
-//       handled =
-//           on_key_typed_event(std::static_pointer_cast<KeyTypedEvent>(event));
-//       break;
+    case EventId::KeyTyped:
+      handled =
+          on_key_typed_event(std::static_pointer_cast<KeyTypedEvent>(event));
+      break;
 
-//     case EventId::KeyReleased:
-//       handled = on_key_released_event(
-//           std::static_pointer_cast<KeyReleasedEvent>(event));
-//       break;
+    case EventId::KeyReleased:
+      handled = on_key_released_event(
+          std::static_pointer_cast<KeyReleasedEvent>(event));
+      break;
 
-//     case EventId::MouseButtonPressed:
-//       handled = on_mouse_button_pressed_event(
-//           std::static_pointer_cast<MouseButtonPressedEvent>(event));
-//       break;
+    case EventId::MouseButtonPressed:
+      handled = on_mouse_button_pressed_event(
+          std::static_pointer_cast<MouseButtonPressedEvent>(event));
+      break;
 
-//     case EventId::MouseButtonReleased:
-//       handled = on_mouse_button_released_event(
-//           std::static_pointer_cast<MouseButtonReleasedEvent>(event));
-//       break;
+    case EventId::MouseButtonReleased:
+      handled = on_mouse_button_released_event(
+          std::static_pointer_cast<MouseButtonReleasedEvent>(event));
+      break;
 
-//     case EventId::MouseMoved:
-//       handled = on_mouse_moved_event(
-//           std::static_pointer_cast<MouseMovedEvent>(event));
-//       break;
+    case EventId::MouseMoved:
+      handled = on_mouse_moved_event(
+          std::static_pointer_cast<MouseMovedEvent>(event));
+      break;
 
-//     case EventId::MouseScrolled:
-//       handled = on_mouse_scrolled_event(
-//           std::static_pointer_cast<MouseScrolledEvent>(event));
-//       break;
+    case EventId::MouseScrolled:
+      handled = on_mouse_scrolled_event(
+          std::static_pointer_cast<MouseScrolledEvent>(event));
+      break;
 
-//     default:
-//       LOG(INFO) << "Other Event: " << *event << std::endl;
-//       break;
-//   }
-// }
+    default:
+      LOG(INFO) << "Other Event: " << *event << std::endl;
+      break;
+  }
+}
 
-// bool ImGuiLayer::on_window_resize_event(Ref<WindowResizeEvent> e) {
-//   LOG(INFO) << "Window Resize Event: " << *e << std::endl;
+bool ImGuiLayer::on_window_resize_event(Ref<WindowResizeEvent> e) {
+  LOG(INFO) << "Window Resize Event: " << *e << std::endl;
 
-//   ImGuiIO& io = ImGui::GetIO();
-//   io.DisplaySize = ImVec2(e->get_width(), e->get_height());
-//   io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
-//   glViewport(0, 0, e->get_width(), e->get_height());
+  ImGuiIO& io = ImGui::GetIO();
+  io.DisplaySize = ImVec2(e->get_width(), e->get_height());
+  io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
+  glViewport(0, 0, e->get_width(), e->get_height());
 
-//   return true;
-// }
+  return true;
+}
 
-// bool ImGuiLayer::on_key_pressed_event(Ref<KeyPressedEvent> e) {
-//   LOG(INFO) << "Key Pressed Event: " << *e << std::endl;
+bool ImGuiLayer::on_key_pressed_event(Ref<KeyPressedEvent> e) {
+  LOG(INFO) << "Key Pressed Event: " << *e << std::endl;
 
-//   ImGuiIO& io = ImGui::GetIO();
-//   io.KeysDown[e->get_key_code()] = true;
+  ImGuiIO& io = ImGui::GetIO();
+  io.KeysDown[e->get_key_code()] = true;
 
-//   io.KeyCtrl =
-//       io.KeysDown[GLFW_KEY_LEFT_CONTROL] ||
-//       io.KeysDown[GLFW_KEY_RIGHT_CONTROL];
-//   io.KeyShift =
-//       io.KeysDown[GLFW_KEY_LEFT_SHIFT] || io.KeysDown[GLFW_KEY_RIGHT_SHIFT];
-//   io.KeyAlt = io.KeysDown[GLFW_KEY_LEFT_ALT] ||
-//   io.KeysDown[GLFW_KEY_RIGHT_ALT]; io.KeySuper =
-//       io.KeysDown[GLFW_KEY_LEFT_SUPER] || io.KeysDown[GLFW_KEY_RIGHT_SUPER];
+  io.KeyCtrl =
+      io.KeysDown[GLFW_KEY_LEFT_CONTROL] || io.KeysDown[GLFW_KEY_RIGHT_CONTROL];
+  io.KeyShift =
+      io.KeysDown[GLFW_KEY_LEFT_SHIFT] || io.KeysDown[GLFW_KEY_RIGHT_SHIFT];
+  io.KeyAlt = io.KeysDown[GLFW_KEY_LEFT_ALT] || io.KeysDown[GLFW_KEY_RIGHT_ALT];
+  io.KeySuper =
+      io.KeysDown[GLFW_KEY_LEFT_SUPER] || io.KeysDown[GLFW_KEY_RIGHT_SUPER];
 
-//   return true;
-// }
+  return true;
+}
 
-// bool ImGuiLayer::on_key_released_event(Ref<KeyReleasedEvent> e) {
-//   LOG(INFO) << "Key Released Event: " << *e << std::endl;
+bool ImGuiLayer::on_key_released_event(Ref<KeyReleasedEvent> e) {
+  LOG(INFO) << "Key Released Event: " << *e << std::endl;
 
-//   ImGuiIO& io = ImGui::GetIO();
-//   io.KeysDown[e->get_key_code()] = false;
+  ImGuiIO& io = ImGui::GetIO();
+  io.KeysDown[e->get_key_code()] = false;
 
-//   return true;
-// }
+  return true;
+}
 
-// bool ImGuiLayer::on_key_typed_event(Ref<KeyTypedEvent> e) {
-//   LOG(INFO) << "Key Typed Event: " << *e << std::endl;
+bool ImGuiLayer::on_key_typed_event(Ref<KeyTypedEvent> e) {
+  LOG(INFO) << "Key Typed Event: " << *e << std::endl;
 
-//   ImGuiIO& io = ImGui::GetIO();
-//   int keycode = e->get_key_code();
-//   if (keycode > 0 && keycode < 0x10000)
-//     io.AddInputCharacter((unsigned short)keycode);
+  ImGuiIO& io = ImGui::GetIO();
+  int keycode = e->get_key_code();
+  if (keycode > 0 && keycode < 0x10000)
+    io.AddInputCharacter((unsigned short)keycode);
 
-//   return true;
-// }
+  return true;
+}
 
-// bool ImGuiLayer::on_mouse_button_pressed_event(Ref<MouseButtonPressedEvent>
-// e) {
-//   LOG(INFO) << "Mouse Button Pressed Event: " << *e << std::endl;
+bool ImGuiLayer::on_mouse_button_pressed_event(Ref<MouseButtonPressedEvent> e) {
+  LOG(INFO) << "Mouse Button Pressed Event: " << *e << std::endl;
 
-//   ImGuiIO& io = ImGui::GetIO();
-//   io.MouseDown[e->get_mouse_button()] = true;
+  ImGuiIO& io = ImGui::GetIO();
+  io.MouseDown[e->get_mouse_button()] = true;
 
-//   return true;
-// }
+  return true;
+}
 
-// bool ImGuiLayer::on_mouse_button_released_event(
-//     Ref<MouseButtonReleasedEvent> e) {
-//   LOG(INFO) << "Mouse Button Released Event: " << *e << std::endl;
+bool ImGuiLayer::on_mouse_button_released_event(
+    Ref<MouseButtonReleasedEvent> e) {
+  LOG(INFO) << "Mouse Button Released Event: " << *e << std::endl;
 
-//   ImGuiIO& io = ImGui::GetIO();
-//   io.MouseDown[e->get_mouse_button()] = false;
+  ImGuiIO& io = ImGui::GetIO();
+  io.MouseDown[e->get_mouse_button()] = false;
 
-//   return true;
-// }
+  return true;
+}
 
-// bool ImGuiLayer::on_mouse_moved_event(Ref<MouseMovedEvent> e) {
-//   LOG(INFO) << "Mouse Moved Event: " << *e << std::endl;
+bool ImGuiLayer::on_mouse_moved_event(Ref<MouseMovedEvent> e) {
+  LOG(INFO) << "Mouse Moved Event: " << *e << std::endl;
 
-//   ImGuiIO& io = ImGui::GetIO();
-//   io.MousePos = ImVec2(e->get_x(), e->get_y());
+  ImGuiIO& io = ImGui::GetIO();
+  io.MousePos = ImVec2(e->get_x(), e->get_y());
 
-//   return true;
-// }
+  return true;
+}
 
-// bool ImGuiLayer::on_mouse_scrolled_event(Ref<MouseScrolledEvent> e) {
-//   LOG(INFO) << "Mouse Scrolled Event: " << *e << std::endl;
+bool ImGuiLayer::on_mouse_scrolled_event(Ref<MouseScrolledEvent> e) {
+  LOG(INFO) << "Mouse Scrolled Event: " << *e << std::endl;
 
-//   ImGuiIO& io = ImGui::GetIO();
-//   io.MouseWheelH += e->get_x_offset();
-//   io.MouseWheel += e->get_y_offset();
+  ImGuiIO& io = ImGui::GetIO();
+  io.MouseWheelH += e->get_x_offset();
+  io.MouseWheel += e->get_y_offset();
 
-//   return true;
-// }
+  return true;
+}
 
 }  // namespace xuzy

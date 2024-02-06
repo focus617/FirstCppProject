@@ -14,6 +14,8 @@ App::App(const std::string& t_app_name, const std::string& t_version)
     : m_app_name_{t_app_name}, m_version_{t_version}, p_cli_parser_{nullptr} {
   XUZY_CHECK_(nullptr == s_instance_) << "Application already exists!";
   s_instance_ = this;
+
+  LOG(INFO) << m_app_name_ << " version: " << m_version_ << std::endl;
 }
 
 App::~App() {
@@ -23,9 +25,7 @@ App::~App() {
   s_instance_ = nullptr;
 }
 
-void App::version_check(int argc, char* argv[]) {
-  LOG(INFO) << m_app_name_ << " version: " << m_version_ << std::endl;
-}
+void App::version_check(int argc, char* argv[]) {}
 
 void App::dumpError(std::string error) {
   LOG(ERROR) << m_app_name_ << " error: " << error << std::endl;

@@ -25,9 +25,12 @@ static void GLFWErrorCallback(int error, const char* description) {
   LOG(ERROR) << "GLFW Error (" << error << ": " << description << ")";
 }
 
-WindowImpl::WindowImpl(const WindowProps& props) { Init(props); }
+WindowImpl::WindowImpl(const WindowProps& props) {
+  LOG(INFO) << "GLFW version: " << glfwGetVersionString();
+  window_init(props);
+}
 
-WindowImpl::~WindowImpl() { Shutdown(); }
+WindowImpl::~WindowImpl() { window_shutdown(); }
 
 void WindowImpl::set_vsync(bool enabled) {
   if (enabled)
@@ -40,7 +43,7 @@ void WindowImpl::set_vsync(bool enabled) {
 
 bool WindowImpl::is_vsync() const { return m_data_.VSync; }
 
-void WindowImpl::Init(const WindowProps& props) {
+void WindowImpl::window_init(const WindowProps& props) {
   m_data_.Title = props.Title;
   m_data_.Width = props.Width;
   m_data_.Height = props.Height;
@@ -65,12 +68,13 @@ void WindowImpl::Init(const WindowProps& props) {
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);  // Required on Mac
 #else
-  // GL 3.0 + GLSL 130
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-  // glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+
-  // only
-  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);  // 3.0+ only
+  // GL 4.6 + GLSL 460
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+  // 3.2+ only 使用核心模式
+  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+  // 3.0+ only
+  // glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
   // Create window with graphics context
@@ -79,6 +83,7 @@ void WindowImpl::Init(const WindowProps& props) {
   XUZY_CHECK_(nullptr != p_glfw_window_) << "Could not create GLFW Window!";
   glfwMakeContextCurrent(p_glfw_window_);
 
+  // 为GLAD传入了用来加载系统相关的OpenGL函数指针地址的函数。
   // int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
   // XUZY_CHECK_(status) << "Failed to initialize Glad!";
 
@@ -185,25 +190,18 @@ void WindowImpl::Init(const WindowProps& props) {
   });
 }
 
-void WindowImpl::Shutdown() {
+void WindowImpl::window_shutdown() {
   glfwDestroyWindow(p_glfw_window_);
   // We may have more than one GLFW windows
   // TODO: glfwTerminate on system shutdown
 }
 
 void WindowImpl::on_update() {
-  // Poll and handle events (inputs, window resize, etc.)
-  // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell
-  // if dear imgui wants to use your inputs.
-  // - When io.WantCaptureMouse is true, do not dispatch mouse input data to
-  // your main application, or clear/overwrite your copy of the mouse data.
-  // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data
-  // to your main application, or clear/overwrite your copy of the keyboard
-  // data. Generally you may always pass all inputs to dear imgui, and hide them
-  // from your application based on those two flags.
-  glfwPollEvents();
-
+  // Swap the back buffer with the front buffer
   glfwSwapBuffers(p_glfw_window_);
+
+  // Poll and handle all GLFW events (inputs, window resize, etc.)
+  glfwPollEvents();
 }
 
 }  // namespace xuzy
