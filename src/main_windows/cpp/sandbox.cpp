@@ -10,11 +10,15 @@ class ExampleLayer : public Layer {
 
   void on_attach() override {}
   void on_detach() override {}
-  void on_imgui_render() override {}
 
   void on_update() override {
+    LOG(INFO) << "ExampleLayer OnUpdate";
     if (Input::is_key_pressed(Key::Tab))
       LOG(INFO) << "Tab key is pressed (poll)!";
+  }
+
+  void on_imgui_render() override {
+    LOG(INFO) << "ExampleLayer OnRender";
   }
 
   void on_event(Ref<Event> event, bool& handled) override {
@@ -34,15 +38,6 @@ class Sandbox : public WindowApp {
   Sandbox(const std::string& t_app_name, const std::string& t_version)
       : WindowApp{std::move(t_app_name), std::move(t_version)} {
     push_layer<ExampleLayer>();
-
-    set_menubar_callback([this]() {
-      if (ImGui::BeginMenu("File")) {
-        if (ImGui::MenuItem("Exit")) {
-          this->close();
-        }
-        ImGui::EndMenu();
-      }
-    });
   }
 
   ~Sandbox() {}

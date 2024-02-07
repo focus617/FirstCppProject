@@ -2,15 +2,14 @@
 
 #include "imgui_layer.hpp"
 
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
-
 #include "imgui_impl_opengl3_loader.h"
 #include <GLFW/glfw3.h>  // Will drag system OpenGL headers
 
 #include "app/window_app.hpp"
 #include "glfw/window_impl.hpp"
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 
 namespace xuzy {
 
@@ -19,6 +18,7 @@ ImGuiLayer::ImGuiLayer() : Layer("ImGuiLayer") {}
 ImGuiLayer::~ImGuiLayer() {}
 
 void ImGuiLayer::on_attach() {
+  LOG(INFO) << "ImGuiLayer OnAttach";
   // Setup Dear ImGui
   imgui_init();
   // Load Fonts
@@ -26,6 +26,7 @@ void ImGuiLayer::on_attach() {
 }
 
 void ImGuiLayer::on_detach() {
+  LOG(INFO) << "ImGuiLayer OnDetach";
   // Cleanup imgui
   ImGui_ImplOpenGL3_Shutdown();
   ImGui_ImplGlfw_Shutdown();
@@ -33,8 +34,7 @@ void ImGuiLayer::on_detach() {
 }
 
 void ImGuiLayer::on_update() {
-  begin_render();
-
+  LOG(INFO) << "ImGuiLayer OnUpdate";
   // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to
   // tell if dear imgui wants to use your inputs.
   // - When io.WantCaptureMouse is true, do not dispatch mouse input data
@@ -47,12 +47,10 @@ void ImGuiLayer::on_update() {
   ImGuiIO& io = ImGui::GetIO();
   if (!io.WantCaptureMouse) {
   }
-
-  on_imgui_render();
-  end_render();
 }
 
 void ImGuiLayer::begin_render() {
+  LOG(INFO) << "ImGuiLayer Begin Render";
   // Start a new frame
   ImGui_ImplOpenGL3_NewFrame();
   ImGui_ImplGlfw_NewFrame();
@@ -60,6 +58,7 @@ void ImGuiLayer::begin_render() {
 }
 
 void ImGuiLayer::end_render() {
+  LOG(INFO) << "ImGuiLayer End Render";
   // Setup display size
   ImGuiIO& io = ImGui::GetIO();
   WindowApp& app = (WindowApp&)(App::get());
@@ -86,6 +85,7 @@ void ImGuiLayer::end_render() {
 }
 
 void ImGuiLayer::on_imgui_render() {
+  LOG(INFO) << "ImGuiLayer OnRender";
   // Our state
   static bool show_demo_window = true;
   static bool show_another_window = true;
@@ -164,45 +164,45 @@ void ImGuiLayer::on_imgui_render() {
     ImGui::PopFont();
   }
 
-  // 3. Show another simple window to occupy all screen
-  ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Pos);
-  ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size);
+  // // 3. Show another simple window to occupy all screen
+  // ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Pos);
+  // ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size);
 
-  if (show_another_window) {
-    // Switch font
-    ImGui::PushFont(m_fonts_["LiberationSans-Regular"]);
-    // Pass a pointer to our bool variable (the window will have a closing
-    // button that will clear the bool when clicked)
-    ImGui::Begin("Window", &show_another_window, ImGuiWindowFlags_MenuBar);
-    {
-      // Menu Bar
-      if (ImGui::BeginMenuBar()) {
-        if (ImGui::BeginMenu("File")) {
-          if (ImGui::MenuItem("Open..", "Ctrl+O")) {
-            /* Do stuff */
-          }
-          if (ImGui::MenuItem("Save", "Ctrl+S")) {
-            /* Do stuff */
-          }
-          if (ImGui::MenuItem("Close", "Ctrl+W")) {
-            show_another_window = false;
-          }
-          ImGui::EndMenu();
-        }
-        ImGui::EndMenuBar();
-      }
+  // if (show_another_window) {
+  //   // Switch font
+  //   ImGui::PushFont(m_fonts_["LiberationSans-Regular"]);
+  //   // Pass a pointer to our bool variable (the window will have a closing
+  //   // button that will clear the bool when clicked)
+  //   ImGui::Begin("Window", &show_another_window, ImGuiWindowFlags_MenuBar);
+  //   {
+  //     // Menu Bar
+  //     if (ImGui::BeginMenuBar()) {
+  //       if (ImGui::BeginMenu("File")) {
+  //         if (ImGui::MenuItem("Open..", "Ctrl+O")) {
+  //           /* Do stuff */
+  //         }
+  //         if (ImGui::MenuItem("Save", "Ctrl+S")) {
+  //           /* Do stuff */
+  //         }
+  //         if (ImGui::MenuItem("Close", "Ctrl+W")) {
+  //           show_another_window = false;
+  //         }
+  //         ImGui::EndMenu();
+  //       }
+  //       ImGui::EndMenuBar();
+  //     }
 
-      ImGui::TextDisabled("(?)");
-      if (ImGui::BeginItemTooltip()) {
-        ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
-        ImGui::TextUnformatted("desc");
-        ImGui::PopTextWrapPos();
-        ImGui::EndTooltip();
-      }
-    }
-    ImGui::End();
-    ImGui::PopFont();
-  }
+  //     ImGui::TextDisabled("(?)");
+  //     if (ImGui::BeginItemTooltip()) {
+  //       ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+  //       ImGui::TextUnformatted("desc");
+  //       ImGui::PopTextWrapPos();
+  //       ImGui::EndTooltip();
+  //     }
+  //   }
+  //   ImGui::End();
+  //   ImGui::PopFont();
+  // }
 }
 
 void ImGuiLayer::imgui_init() {
