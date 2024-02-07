@@ -14,12 +14,16 @@ namespace xuzy {
  */
 struct WindowProps {
   std::string Title;
+  int xPos;
+  int yPos;
   unsigned int Width;
   unsigned int Height;
 
-  WindowProps(const std::string& title = "Xuzy's App",
-              unsigned int width = 1280, unsigned int height = 720)
-      : Title(title), Width(width), Height(height) {}
+  WindowProps(const std::string& title = "Xuzy's App", 
+              int xpos = 0, int ypos = 0, 
+              unsigned int width = 1280,
+              unsigned int height = 720)
+      : Title(title), xPos(xpos), yPos(ypos), Width(width), Height(height) {}
 };
 
 /**

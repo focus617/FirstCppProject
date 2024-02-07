@@ -55,9 +55,12 @@ class XUZY_API App {
   XUZY_API virtual void dumpError(std::string error);
 
  private:
-  std::string m_app_name_;
-  std::string m_version_;
-
+  struct ApplicationSpecification {
+    std::string m_app_name_;
+    std::string m_version_;
+  };
+  
+  ApplicationSpecification m_specification_;
   ArgsParser* p_cli_parser_;
 
   static App* s_instance_;

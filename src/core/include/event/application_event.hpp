@@ -4,6 +4,26 @@
 
 namespace xuzy {
 
+class WindowMovedEvent : public Event {
+ public:
+  WindowMovedEvent(int xpos, int ypos)
+      : m_xpos(xpos), m_ypos(ypos) {}
+
+  unsigned int get_xpos() const { return m_xpos; }
+  unsigned int get_ypos() const { return m_ypos; }
+
+  std::string to_string() const override {
+    std::stringstream ss;
+    ss << "WindowMovedEvent: " << m_xpos << ", " << m_ypos;
+    return ss.str();
+  }
+
+  EVENT_CLASS_ID(WindowMoved)
+  EVENT_CLASS_CATEGORY(EventCategoryApplication)
+ private:
+  int m_xpos, m_ypos;
+};
+
 class WindowResizeEvent : public Event {
  public:
   WindowResizeEvent(unsigned int width, unsigned int height)

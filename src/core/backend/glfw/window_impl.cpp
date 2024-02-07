@@ -18,19 +18,26 @@ Window* Window::Create(const WindowProps& props) {
 }
 #endif  // defined(XUZY_OS_LINUX)
 
-static bool s_GLFWInitialized = false;
+static bool s_glfw_initialized = false;
 
 // Error Callback needed by GLFW
-static void GLFWErrorCallback(int error, const char* description) {
+static void glfw_error_callback(int error, const char* description) {
   LOG(ERROR) << "GLFW Error (" << error << ": " << description << ")";
 }
 
 WindowImpl::WindowImpl(const WindowProps& props) {
   LOG(INFO) << "GLFW version: " << glfwGetVersionString();
-  window_init(props);
+
+  m_data_.Title = props.Title;
+  m_data_.xPos = props.xPos;
+  m_data_.yPos = props.yPos;
+  m_data_.Width = props.Width;
+  m_data_.Height = props.Height;
+
+  glfw_window_init();
 }
 
-WindowImpl::~WindowImpl() { window_shutdown(); }
+WindowImpl::~WindowImpl() { glfw_window_shutdown(); }
 
 void WindowImpl::set_vsync(bool enabled) {
   if (enabled)
@@ -43,16 +50,12 @@ void WindowImpl::set_vsync(bool enabled) {
 
 bool WindowImpl::is_vsync() const { return m_data_.VSync; }
 
-void WindowImpl::window_init(const WindowProps& props) {
-  m_data_.Title = props.Title;
-  m_data_.Width = props.Width;
-  m_data_.Height = props.Height;
-
-  if (!s_GLFWInitialized) {
+void WindowImpl::glfw_window_init() {
+  if (!s_glfw_initialized) {
     int success = glfwInit();
     XUZY_CHECK_(GLFW_TRUE == success) << "Could not intialize GLFW!";
-    glfwSetErrorCallback(GLFWErrorCallback);
-    s_GLFWInitialized = true;
+    glfwSetErrorCallback(glfw_error_callback);
+    s_glfw_initialized = true;
   }
 
   // Decide GL+GLSL versions
@@ -78,21 +81,35 @@ void WindowImpl::window_init(const WindowProps& props) {
 #endif
 
   // Create window with graphics context
-  p_glfw_window_ = glfwCreateWindow((int)props.Width, (int)props.Height,
-                                    m_data_.Title.c_str(), nullptr, nullptr);
-  XUZY_CHECK_(nullptr != p_glfw_window_) << "Could not create GLFW Window!";
-  glfwMakeContextCurrent(p_glfw_window_);
+  p_glfw_window_handle_ =
+      glfwCreateWindow((int)m_data_.Width, (int)m_data_.Height,
+                       m_data_.Title.c_str(), nullptr, nullptr);
+  XUZY_CHECK_(nullptr != p_glfw_window_handle_)
+      << "Could not create GLFW Window!";
+  glfwMakeContextCurrent(p_glfw_window_handle_);
 
   // 为GLAD传入了用来加载系统相关的OpenGL函数指针地址的函数。
   // int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
   // XUZY_CHECK_(status) << "Failed to initialize Glad!";
 
-  glfwSetWindowUserPointer(p_glfw_window_, &m_data_);
+  glfwSetWindowUserPointer(p_glfw_window_handle_, &m_data_);
   set_vsync(true);  // Enable vsync
 
   // Set GLFW callbacks
-  glfwSetWindowSizeCallback(p_glfw_window_, [](GLFWwindow* window, int width,
-                                               int height) {
+  glfwSetWindowPosCallback(
+      p_glfw_window_handle_, [](GLFWwindow* window, int xpos, int ypos) {
+        WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+        data.xPos = xpos;
+        data.yPos = ypos;
+
+        auto event = CreateRef<WindowMovedEvent>(WindowMovedEvent(xpos, ypos));
+        data.eventDispatcher.publish_event(event);
+
+        data.eventDispatcher.dispatch();
+      });
+
+  glfwSetWindowSizeCallback(p_glfw_window_handle_, [](GLFWwindow* window,
+                                                      int width, int height) {
     WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
     data.Width = width;
     data.Height = height;
@@ -103,7 +120,7 @@ void WindowImpl::window_init(const WindowProps& props) {
     data.eventDispatcher.dispatch();
   });
 
-  glfwSetWindowCloseCallback(p_glfw_window_, [](GLFWwindow* window) {
+  glfwSetWindowCloseCallback(p_glfw_window_handle_, [](GLFWwindow* window) {
     WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
     auto event = CreateRef<WindowCloseEvent>(WindowCloseEvent());
@@ -112,32 +129,33 @@ void WindowImpl::window_init(const WindowProps& props) {
     data.eventDispatcher.dispatch();
   });
 
-  glfwSetKeyCallback(p_glfw_window_, [](GLFWwindow* window, int key,
-                                        int scancode, int action, int mods) {
-    WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+  glfwSetKeyCallback(
+      p_glfw_window_handle_,
+      [](GLFWwindow* window, int key, int scancode, int action, int mods) {
+        WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
-    switch (action) {
-      case GLFW_PRESS: {
-        auto event = CreateRef<KeyPressedEvent>(KeyPressedEvent(key, 0));
-        data.eventDispatcher.publish_event(event);
-        break;
-      }
-      case GLFW_RELEASE: {
-        auto event = CreateRef<KeyReleasedEvent>(KeyReleasedEvent(key));
-        data.eventDispatcher.publish_event(event);
-        break;
-      }
-      case GLFW_REPEAT: {
-        auto event = CreateRef<KeyPressedEvent>(KeyPressedEvent(key, 1));
-        data.eventDispatcher.publish_event(event);
-        break;
-      }
-    }
-    data.eventDispatcher.dispatch();
-  });
+        switch (action) {
+          case GLFW_PRESS: {
+            auto event = CreateRef<KeyPressedEvent>(KeyPressedEvent(key, 0));
+            data.eventDispatcher.publish_event(event);
+            break;
+          }
+          case GLFW_RELEASE: {
+            auto event = CreateRef<KeyReleasedEvent>(KeyReleasedEvent(key));
+            data.eventDispatcher.publish_event(event);
+            break;
+          }
+          case GLFW_REPEAT: {
+            auto event = CreateRef<KeyPressedEvent>(KeyPressedEvent(key, 1));
+            data.eventDispatcher.publish_event(event);
+            break;
+          }
+        }
+        data.eventDispatcher.dispatch();
+      });
 
   glfwSetCharCallback(
-      p_glfw_window_, [](GLFWwindow* window, unsigned int keycode) {
+      p_glfw_window_handle_, [](GLFWwindow* window, unsigned int keycode) {
         WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
         auto event = CreateRef<KeyTypedEvent>(KeyTypedEvent(keycode));
@@ -146,8 +164,9 @@ void WindowImpl::window_init(const WindowProps& props) {
         data.eventDispatcher.dispatch();
       });
 
-  glfwSetMouseButtonCallback(p_glfw_window_, [](GLFWwindow* window, int button,
-                                                int action, int mods) {
+  glfwSetMouseButtonCallback(p_glfw_window_handle_, [](GLFWwindow* window,
+                                                       int button, int action,
+                                                       int mods) {
     WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
     switch (action) {
@@ -168,7 +187,8 @@ void WindowImpl::window_init(const WindowProps& props) {
   });
 
   glfwSetScrollCallback(
-      p_glfw_window_, [](GLFWwindow* window, double xOffset, double yOffset) {
+      p_glfw_window_handle_,
+      [](GLFWwindow* window, double xOffset, double yOffset) {
         WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
         auto event = CreateRef<MouseScrolledEvent>(
@@ -178,8 +198,8 @@ void WindowImpl::window_init(const WindowProps& props) {
         data.eventDispatcher.dispatch();
       });
 
-  glfwSetCursorPosCallback(p_glfw_window_, [](GLFWwindow* window, double xPos,
-                                              double yPos) {
+  glfwSetCursorPosCallback(p_glfw_window_handle_, [](GLFWwindow* window,
+                                                     double xPos, double yPos) {
     WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
     auto event =
@@ -190,15 +210,16 @@ void WindowImpl::window_init(const WindowProps& props) {
   });
 }
 
-void WindowImpl::window_shutdown() {
-  glfwDestroyWindow(p_glfw_window_);
-  // We may have more than one GLFW windows
+void WindowImpl::glfw_window_shutdown() {
+  glfwDestroyWindow(p_glfw_window_handle_);
+  glfwTerminate();
+  // We may have more than one GLFW windows in future
   // TODO: glfwTerminate on system shutdown
 }
 
 void WindowImpl::on_update() {
   // Swap the back buffer with the front buffer
-  glfwSwapBuffers(p_glfw_window_);
+  glfwSwapBuffers(p_glfw_window_handle_);
 
   // Poll and handle all GLFW events (inputs, window resize, etc.)
   glfwPollEvents();

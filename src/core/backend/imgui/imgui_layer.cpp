@@ -2,6 +2,13 @@
 
 #include "imgui_layer.hpp"
 
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+
+#include "imgui_impl_opengl3_loader.h"
+#include <GLFW/glfw3.h>  // Will drag system OpenGL headers
+
 #include "app/window_app.hpp"
 #include "glfw/window_impl.hpp"
 
@@ -28,17 +35,17 @@ void ImGuiLayer::on_detach() {
 void ImGuiLayer::on_update() {
   begin_render();
 
-  // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to 
+  // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to
   // tell if dear imgui wants to use your inputs.
-  // - When io.WantCaptureMouse is true, do not dispatch mouse input data 
-  // to your main application, or clear/overwrite your copy of the mouse 
+  // - When io.WantCaptureMouse is true, do not dispatch mouse input data
+  // to your main application, or clear/overwrite your copy of the mouse
   // data.
-  // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input 
-  // data to your main application, or clear/overwrite your copy of the 
+  // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input
+  // data to your main application, or clear/overwrite your copy of the
   // keyboard data. Generally you may always pass all inputs to dear imgui,
   // and hide them from your application based on those two flags.
   ImGuiIO& io = ImGui::GetIO();
-  if(!io.WantCaptureMouse){
+  if (!io.WantCaptureMouse) {
   }
 
   on_imgui_render();
@@ -63,13 +70,15 @@ void ImGuiLayer::end_render() {
   ImGui::Render();
   glClearColor(m_clear_color_.x * m_clear_color_.w,
                m_clear_color_.y * m_clear_color_.w,
-               m_clear_color_.z * m_clear_color_.w, 
-               m_clear_color_.w);   // 设置清除颜色
-  glClear(GL_COLOR_BUFFER_BIT);     // 执行清除
+               m_clear_color_.z * m_clear_color_.w,
+               m_clear_color_.w);  // 设置清除颜色
+  glClear(GL_COLOR_BUFFER_BIT);    // 执行清除
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
   if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
     GLFWwindow* backup_current_context = glfwGetCurrentContext();
+    // Request by multi-viewports
+    // Update and Render additional Platform Windows
     ImGui::UpdatePlatformWindows();
     ImGui::RenderPlatformWindowsDefault();
     glfwMakeContextCurrent(backup_current_context);
@@ -81,13 +90,10 @@ void ImGuiLayer::on_imgui_render() {
   static bool show_demo_window = true;
   static bool show_another_window = true;
 
-  // ImGui::SetNextWindowPos();
-  // ImGui::SetNextWindowSize();
-
   // 1. Show the big demo window
   ImGui::ShowDemoWindow(&show_demo_window);
 
-  // 2. Show a simple window that we create ourselves.
+  // 2. Show a window that using Chinese.
   // We use a Begin/End pair to create a named window.
   {
     static float f = 0.0f;
@@ -103,6 +109,7 @@ void ImGuiLayer::on_imgui_render() {
 
     // Create a window called "Hello, world!" and append into it.
     ImGui::Begin("你好，世界!");
+
     // Display some text (you can use a format strings too)
     ImGui::Text("这是第一个中文提示。");
     ImGui::Text("输入:");
@@ -111,13 +118,26 @@ void ImGuiLayer::on_imgui_render() {
     ImGui::SameLine();
     if (ImGui::Button("确认")) strcpy(buf, "已确认。");
 
+    // Button to control another window
+    if (show_another_window) {
+      if (ImGui::Button("关闭另一个窗口")) {
+        show_another_window = false;
+      }
+    } else {
+      if (ImGui::Button("打开另一个窗口")) {
+        show_another_window = true;
+      }
+    }
+
     // Edit bools storing our window open/close state
     ImGui::Checkbox("Demo Window", &show_demo_window);
     ImGui::Checkbox("Another Window", &show_another_window);
+
     // Edit 1 float using a slider from 0.0f to 1.0f
     ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
     // Edit 3 floats representing a color
-    ImGui::ColorEdit3("clear color", (float*)&m_clear_color_);
+    ImGui::ColorEdit4("clear color", (float*)&m_clear_color_);
+
     // Buttons return true when clicked
     // (most widgets return true when edited/activated)
     if (ImGui::Button("Button")) counter++;
@@ -131,6 +151,12 @@ void ImGuiLayer::on_imgui_render() {
     ImGui::SeparatorText("CORRECT");
     ImGui::DebugTextEncoding((const char*)u8"中文");
 
+    // Generate samples and plot them
+    float samples[100];
+    for (int n = 0; n < 100; n++)
+      samples[n] = sinf(n * 0.2f + ImGui::GetTime() * 1.5f);
+    ImGui::PlotLines("Samples", samples, 100);
+
     ImGui::End();
 
     delete[] buf;
@@ -138,17 +164,42 @@ void ImGuiLayer::on_imgui_render() {
     ImGui::PopFont();
   }
 
-  // 3. Show another simple window.
+  // 3. Show another simple window to occupy all screen
+  ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Pos);
+  ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size);
+
   if (show_another_window) {
     // Switch font
     ImGui::PushFont(m_fonts_["LiberationSans-Regular"]);
-    ImGui::Begin(
-        "Another Window",
-        &show_another_window);  // Pass a pointer to our bool variable (the
-                                // window will have a closing button that will
-                                // clear the bool when clicked)
-    ImGui::Text("Hello from another window!");
-    if (ImGui::Button("Close Me")) show_another_window = false;
+    // Pass a pointer to our bool variable (the window will have a closing
+    // button that will clear the bool when clicked)
+    ImGui::Begin("Window", &show_another_window, ImGuiWindowFlags_MenuBar);
+    {
+      // Menu Bar
+      if (ImGui::BeginMenuBar()) {
+        if (ImGui::BeginMenu("File")) {
+          if (ImGui::MenuItem("Open..", "Ctrl+O")) {
+            /* Do stuff */
+          }
+          if (ImGui::MenuItem("Save", "Ctrl+S")) {
+            /* Do stuff */
+          }
+          if (ImGui::MenuItem("Close", "Ctrl+W")) {
+            show_another_window = false;
+          }
+          ImGui::EndMenu();
+        }
+        ImGui::EndMenuBar();
+      }
+
+      ImGui::TextDisabled("(?)");
+      if (ImGui::BeginItemTooltip()) {
+        ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+        ImGui::TextUnformatted("desc");
+        ImGui::PopTextWrapPos();
+        ImGui::EndTooltip();
+      }
+    }
     ImGui::End();
     ImGui::PopFont();
   }
@@ -164,11 +215,12 @@ void ImGuiLayer::imgui_init() {
 
   ImGuiIO& io = ImGui::GetIO();
   (void)io;
-  io.ConfigFlags |=
-      ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
-                                           // io.ConfigFlags |=
-  //     ImGuiConfigFlags_NavEnableGamepad;  // Enable Gamepad Controls
-  io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;  // EnableDocking
+  // Enable Keyboard Controls
+  io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+  // Enable Gamepad Controls
+  // io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+  // EnableDocking
+  io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
   // EnableMulti-Viewport / Platform Windows
   io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
   // io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
