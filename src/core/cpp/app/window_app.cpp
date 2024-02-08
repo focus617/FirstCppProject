@@ -55,8 +55,8 @@ void WindowApp::on_event(Ref<Event> event, bool& handled) {
 
   // 如果不是全局事件，转交LayerStack，按从后往前的层顺序处理事件
   if (!handled) {
-    for (auto it = m_layerstack_.end(); it != m_layerstack_.begin();) {
-      (*--it)->on_event(event, handled);
+    for (auto it = m_layerstack_.rbegin(); it != m_layerstack_.rend(); ++it) {
+      (*it)->on_event(event, handled);
       if (handled) break;
     }
   }

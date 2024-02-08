@@ -1,15 +1,10 @@
 #include "pch.h"
 
-#include "imgui_layer.hpp"
-
-#include "imgui_impl_opengl3_loader.h"
-#include <GLFW/glfw3.h>  // Will drag system OpenGL headers
+#include "window/glfw_imgui/imgui_layer.hpp"
 
 #include "app/window_app.hpp"
-#include "glfw/window_impl.hpp"
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
+#include "window/glfw_imgui/window_impl.hpp"
+#include "imgui_include.h"
 
 namespace xuzy {
 
@@ -18,7 +13,8 @@ ImGuiLayer::ImGuiLayer() : Layer("ImGuiLayer") {}
 ImGuiLayer::~ImGuiLayer() {}
 
 void ImGuiLayer::on_attach() {
-  LOG(INFO) << "ImGuiLayer OnAttach";
+  // LOG(INFO) << "ImGuiLayer OnAttach";
+
   // Setup Dear ImGui
   imgui_init();
   // Load Fonts
@@ -26,7 +22,8 @@ void ImGuiLayer::on_attach() {
 }
 
 void ImGuiLayer::on_detach() {
-  LOG(INFO) << "ImGuiLayer OnDetach";
+  // LOG(INFO) << "ImGuiLayer OnDetach";
+
   // Cleanup imgui
   ImGui_ImplOpenGL3_Shutdown();
   ImGui_ImplGlfw_Shutdown();
@@ -34,7 +31,8 @@ void ImGuiLayer::on_detach() {
 }
 
 void ImGuiLayer::on_update() {
-  LOG(INFO) << "ImGuiLayer OnUpdate";
+  // LOG(INFO) << "ImGuiLayer OnUpdate";
+
   // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to
   // tell if dear imgui wants to use your inputs.
   // - When io.WantCaptureMouse is true, do not dispatch mouse input data
@@ -50,7 +48,8 @@ void ImGuiLayer::on_update() {
 }
 
 void ImGuiLayer::begin_render() {
-  LOG(INFO) << "ImGuiLayer Begin Render";
+  // LOG(INFO) << "ImGuiLayer Begin Render";
+
   // Start a new frame
   ImGui_ImplOpenGL3_NewFrame();
   ImGui_ImplGlfw_NewFrame();
@@ -58,7 +57,8 @@ void ImGuiLayer::begin_render() {
 }
 
 void ImGuiLayer::end_render() {
-  LOG(INFO) << "ImGuiLayer End Render";
+  // LOG(INFO) << "ImGuiLayer End Render";
+
   // Setup display size
   ImGuiIO& io = ImGui::GetIO();
   WindowApp& app = (WindowApp&)(App::get());
@@ -85,7 +85,10 @@ void ImGuiLayer::end_render() {
 }
 
 void ImGuiLayer::on_imgui_render() {
-  LOG(INFO) << "ImGuiLayer OnRender";
+  // LOG(INFO) << "ImGuiLayer OnRender";
+
+  if (show_app_main_menu_bar) show_app_main_menubar();
+
   // Our state
   static bool show_demo_window = true;
   static bool show_another_window = true;
@@ -209,9 +212,6 @@ void ImGuiLayer::imgui_init() {
   // Setup Dear ImGui context
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
-  // Setup Dear ImGui style
-  ImGui::StyleColorsDark();
-  // ImGui::StyleColorsLight();
 
   ImGuiIO& io = ImGui::GetIO();
   (void)io;
@@ -226,6 +226,10 @@ void ImGuiLayer::imgui_init() {
   // io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
   // io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
 
+  // Setup Dear ImGui style
+  ImGui::StyleColorsDark();
+  // ImGui::StyleColorsLight();
+
   // When viewports are enabled we tweak WindowRounding/WindowBg
   // so platform windows can look identical to regular ones.
   ImGuiStyle& style = ImGui::GetStyle();
@@ -233,6 +237,8 @@ void ImGuiLayer::imgui_init() {
     style.WindowRounding = 0.0f;
     style.Colors[ImGuiCol_WindowBg].w = 1.0f;
   }
+
+  set_dark_theme_colors();
 
   // Setup Platform/Renderer backends
   WindowApp& app = (WindowApp&)(App::get());
@@ -305,6 +311,38 @@ void ImGuiLayer::imgui_load_fonts() {
       io.Fonts->GetGlyphRangesChineseSimplifiedCommon());
   XUZY_CHECK_(nullptr != m_fonts_["LiberationSans-Regular"])
       << "Could not load font!";
+}
+
+void ImGuiLayer::set_dark_theme_colors() {
+  auto& colors = ImGui::GetStyle().Colors;
+  colors[ImGuiCol_WindowBg] = ImVec4{0.1f, 0.105f, 0.11f, 1.0f};
+
+  // Headers
+  colors[ImGuiCol_Header] = ImVec4{0.2f, 0.205f, 0.21f, 1.0f};
+  colors[ImGuiCol_HeaderHovered] = ImVec4{0.3f, 0.305f, 0.31f, 1.0f};
+  colors[ImGuiCol_HeaderActive] = ImVec4{0.15f, 0.1505f, 0.151f, 1.0f};
+
+  // Buttons
+  colors[ImGuiCol_Button] = ImVec4{0.2f, 0.205f, 0.21f, 1.0f};
+  colors[ImGuiCol_ButtonHovered] = ImVec4{0.3f, 0.305f, 0.31f, 1.0f};
+  colors[ImGuiCol_ButtonActive] = ImVec4{0.15f, 0.1505f, 0.151f, 1.0f};
+
+  // Frame BG
+  colors[ImGuiCol_FrameBg] = ImVec4{0.2f, 0.205f, 0.21f, 1.0f};
+  colors[ImGuiCol_FrameBgHovered] = ImVec4{0.3f, 0.305f, 0.31f, 1.0f};
+  colors[ImGuiCol_FrameBgActive] = ImVec4{0.15f, 0.1505f, 0.151f, 1.0f};
+
+  // Tabs
+  colors[ImGuiCol_Tab] = ImVec4{0.15f, 0.1505f, 0.151f, 1.0f};
+  colors[ImGuiCol_TabHovered] = ImVec4{0.38f, 0.3805f, 0.381f, 1.0f};
+  colors[ImGuiCol_TabActive] = ImVec4{0.28f, 0.2805f, 0.281f, 1.0f};
+  colors[ImGuiCol_TabUnfocused] = ImVec4{0.15f, 0.1505f, 0.151f, 1.0f};
+  colors[ImGuiCol_TabUnfocusedActive] = ImVec4{0.2f, 0.205f, 0.21f, 1.0f};
+
+  // Title
+  colors[ImGuiCol_TitleBg] = ImVec4{0.15f, 0.1505f, 0.151f, 1.0f};
+  colors[ImGuiCol_TitleBgActive] = ImVec4{0.15f, 0.1505f, 0.151f, 1.0f};
+  colors[ImGuiCol_TitleBgCollapsed] = ImVec4{0.15f, 0.1505f, 0.151f, 1.0f};
 }
 
 void ImGuiLayer::on_event(Ref<Event> event, bool& handled) {

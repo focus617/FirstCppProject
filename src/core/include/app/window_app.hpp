@@ -4,9 +4,9 @@
 
 #include "app/app.hpp"
 #include "event/application_event.hpp"
-#include "imgui/imgui_layer.hpp"
-#include "window/layerstack.hpp"
-#include "window/window.hpp"
+#include "window/glfw_imgui/imgui_layer.hpp"
+#include "window/core/layerstack.hpp"
+#include "window/core/window.hpp"
 
 namespace xuzy {
 
@@ -20,6 +20,7 @@ class XUZY_API WindowApp : public App {
   XUZY_API ~WindowApp();
 
   inline XUZY_API Window& get_window() { return *p_window_; }
+  // inline XUZY_API Ref<ImGuiLayer> get_imgui() { return p_imgui_layer; }
 
   template <typename T>
   void push_layer() {
@@ -32,18 +33,12 @@ class XUZY_API WindowApp : public App {
     m_layerstack_.push_layer(layer);
   }
 
-  XUZY_API virtual void on_event(Ref<Event> evt, bool& handled);
-
  protected:
   XUZY_API void launch_tasks() override;
   XUZY_API void main_loop() override;
   XUZY_API void close() { m_running_ = false; }
 
-  XUZY_API void set_menubar_callback(
-      const std::function<void()>& menubar_callback) {
-    m_menubar_callback_ = menubar_callback;
-  }
-
+  XUZY_API virtual void on_event(Ref<Event> evt, bool& handled);
   XUZY_API virtual bool OnWindowClose(Ref<WindowCloseEvent> e);
   XUZY_API virtual bool OnWindowResize(Ref<WindowResizeEvent> e);
 

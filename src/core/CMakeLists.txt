@@ -16,7 +16,7 @@ aux_source_directory(. _SOURCES)
 
 # 添加子目录
 add_subdirectory(cpp)
-add_subdirectory(backend)
+add_subdirectory(window)
 add_subdirectory(include/resource)
 
 # 生成动态链接库
@@ -68,8 +68,8 @@ set(IMGUI_INCLUDE_DIR
 # 指定头文件路径
 target_include_directories(core
   PUBLIC 
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/backend>
     $<INSTALL_INTERFACE:include/core>
   PRIVATE
     ${PROJECT_BINARY_DIR}/src

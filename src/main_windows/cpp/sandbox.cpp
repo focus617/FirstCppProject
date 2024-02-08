@@ -1,6 +1,6 @@
 #include "app/window_app.hpp"
 #include "core.h"
-#include "core/backend/imgui/imgui_layer.hpp"
+#include "core/window/glfw_imgui/imgui_layer.hpp"
 
 using namespace xuzy;
 
@@ -12,13 +12,14 @@ class ExampleLayer : public Layer {
   void on_detach() override {}
 
   void on_update() override {
-    LOG(INFO) << "ExampleLayer OnUpdate";
+    // LOG(INFO) << "ExampleLayer OnUpdate";
+
     if (Input::is_key_pressed(Key::Tab))
       LOG(INFO) << "Tab key is pressed (poll)!";
   }
 
   void on_imgui_render() override {
-    LOG(INFO) << "ExampleLayer OnRender";
+    // LOG(INFO) << "ExampleLayer OnRender";
   }
 
   void on_event(Ref<Event> event, bool& handled) override {

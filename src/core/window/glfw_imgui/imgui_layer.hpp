@@ -1,11 +1,10 @@
 #pragma once
 
-#include "imgui.h"
-
+#include "window/core/layer.hpp"
 #include "event/application_event.hpp"
 #include "event/key_event.hpp"
 #include "event/mouse_event.hpp"
-#include "window/layer.hpp"
+#include "imgui.h"
 
 namespace xuzy {
 
@@ -22,6 +21,9 @@ class XUZY_API ImGuiLayer : public Layer {
 
   void begin_render();
   void end_render();
+
+  void set_dark_theme_colors();
+  void show_app_main_menubar();
 
  private:
   bool on_mouse_button_pressed_event(Ref<MouseButtonPressedEvent> e);
@@ -42,6 +44,8 @@ class XUZY_API ImGuiLayer : public Layer {
   ImVec4 m_clear_color_ = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
   std::map<std::string, ImFont*> m_fonts_;
   float m_font_size_pixels_ = 18.0f;
+
+  bool show_app_main_menu_bar = true;
 };
 
 }  // namespace xuzy

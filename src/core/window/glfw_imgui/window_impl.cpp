@@ -5,7 +5,6 @@
 #include "event/application_event.hpp"
 #include "event/key_event.hpp"
 #include "event/mouse_event.hpp"
-#include "imgui/imgui_impl_opengl3_loader.h"
 
 #define GL_SILENCE_DEPRECATION
 
@@ -164,27 +163,36 @@ void WindowImpl::glfw_window_init() {
         data.eventDispatcher.dispatch();
       });
 
-  glfwSetMouseButtonCallback(p_glfw_window_handle_, [](GLFWwindow* window,
-                                                       int button, int action,
-                                                       int mods) {
-    WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+  glfwSetMouseButtonCallback(
+      p_glfw_window_handle_,
+      [](GLFWwindow* window, int button, int action, int mods) {
+        // Always forward mouse data to ImGui.
+        // This should be automatic with default backends,
+        ImGuiIO& io = ImGui::GetIO();
+        (void)io;
+        // io.AddMouseButtonEvent(button, action);
 
-    switch (action) {
-      case GLFW_PRESS: {
-        auto event =
-            CreateRef<MouseButtonPressedEvent>(MouseButtonPressedEvent(button));
-        data.eventDispatcher.publish_event(event);
-        break;
-      }
-      case GLFW_RELEASE: {
-        auto event = CreateRef<MouseButtonReleasedEvent>(
-            MouseButtonReleasedEvent(button));
-        data.eventDispatcher.publish_event(event);
-        break;
-      }
-    }
-    data.eventDispatcher.dispatch();
-  });
+        // Only forward mouse data to my underlying app
+        if (!io.WantCaptureMouse) {
+          WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+          switch (action) {
+            case GLFW_PRESS: {
+              auto event = CreateRef<MouseButtonPressedEvent>(
+                  MouseButtonPressedEvent(button));
+              data.eventDispatcher.publish_event(event);
+              break;
+            }
+            case GLFW_RELEASE: {
+              auto event = CreateRef<MouseButtonReleasedEvent>(
+                  MouseButtonReleasedEvent(button));
+              data.eventDispatcher.publish_event(event);
+              break;
+            }
+          }
+          data.eventDispatcher.dispatch();
+        }
+      });
 
   glfwSetScrollCallback(
       p_glfw_window_handle_,
@@ -200,13 +208,21 @@ void WindowImpl::glfw_window_init() {
 
   glfwSetCursorPosCallback(p_glfw_window_handle_, [](GLFWwindow* window,
                                                      double xPos, double yPos) {
-    WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+    // Always forward mouse data to ImGui.
+    // This should be automatic with default backends,
+    ImGuiIO& io = ImGui::GetIO();
+    (void)io;
 
-    auto event =
-        CreateRef<MouseMovedEvent>(MouseMovedEvent((float)xPos, (float)yPos));
-    data.eventDispatcher.publish_event(event);
+    // Only forward mouse data to my underlying app
+    if (!io.WantCaptureMouse) {
+      WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
-    data.eventDispatcher.dispatch();
+      auto event =
+          CreateRef<MouseMovedEvent>(MouseMovedEvent((float)xPos, (float)yPos));
+      data.eventDispatcher.publish_event(event);
+
+      data.eventDispatcher.dispatch();
+    }
   });
 }
 
