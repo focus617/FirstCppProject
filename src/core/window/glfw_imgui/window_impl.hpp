@@ -40,6 +40,7 @@ class XUZY_API WindowImpl : public Window {
  private:
   void glfw_window_init();
   void glfw_window_shutdown();
+  void glfw_setup_callback();
 
  private:
   GLFWwindow* p_glfw_window_handle_ = nullptr;

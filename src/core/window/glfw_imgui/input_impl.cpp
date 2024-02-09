@@ -2,7 +2,7 @@
 
 #include "input_impl.hpp"
 
-#include "app/window_app.hpp"
+#include "window/core/window_app.hpp"
 #include "window_impl.hpp"
 
 namespace xuzy {
@@ -15,15 +15,15 @@ GLFWwindow* InputImpl::get_window() {
   return static_cast<GLFWwindow*>(win.get_native_window());
 }
 
-bool InputImpl::is_key_pressed_impl(int keycode) {
+bool InputImpl::is_key_pressed_impl(KeyCode key) {
   auto window = get_window();
-  auto state = glfwGetKey(window, keycode);
+  auto state = glfwGetKey(window, static_cast<int32_t>(key));
   return state == GLFW_PRESS || state == GLFW_REPEAT;
 }
 
-bool InputImpl::is_mouse_button_pressed_impl(int button) {
+bool InputImpl::is_mouse_button_pressed_impl(MouseCode button) {
   auto window = get_window();
-  auto state = glfwGetMouseButton(window, button);
+  auto state = glfwGetMouseButton(window, static_cast<int32_t>(button));
   return state == GLFW_PRESS;
 }
 

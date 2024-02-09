@@ -1,4 +1,6 @@
-#include "app/window_app.hpp"
+#include "window_app.hpp"
+
+#include "window/glfw_imgui/example_layer.hpp"
 
 namespace xuzy {
 
@@ -13,6 +15,8 @@ WindowApp::WindowApp(const std::string& t_app_name,
 
   p_imgui_layer = CreateRef<ImGuiLayer>();
   m_layerstack_.push_overlay(p_imgui_layer);
+
+  push_layer<ExampleLayer>();
 }
 
 WindowApp::~WindowApp() { close(); }

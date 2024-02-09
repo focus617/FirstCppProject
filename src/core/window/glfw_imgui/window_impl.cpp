@@ -94,16 +94,20 @@ void WindowImpl::glfw_window_init() {
   glfwSetWindowUserPointer(p_glfw_window_handle_, &m_data_);
   set_vsync(true);  // Enable vsync
 
+  glfw_setup_callback();
+}
+
+void WindowImpl::glfw_setup_callback() {
   // Set GLFW callbacks
   glfwSetWindowPosCallback(
       p_glfw_window_handle_, [](GLFWwindow* window, int xpos, int ypos) {
         WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
         data.xPos = xpos;
         data.yPos = ypos;
-
+        // Produce event
         auto event = CreateRef<WindowMovedEvent>(WindowMovedEvent(xpos, ypos));
         data.eventDispatcher.publish_event(event);
-
+        // Publish to application
         data.eventDispatcher.dispatch();
       });
 
@@ -112,10 +116,10 @@ void WindowImpl::glfw_window_init() {
     WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
     data.Width = width;
     data.Height = height;
-
+    // Produce event
     auto event = CreateRef<WindowResizeEvent>(WindowResizeEvent(width, height));
     data.eventDispatcher.publish_event(event);
-
+    // Publish to application
     data.eventDispatcher.dispatch();
   });
 
@@ -131,36 +135,52 @@ void WindowImpl::glfw_window_init() {
   glfwSetKeyCallback(
       p_glfw_window_handle_,
       [](GLFWwindow* window, int key, int scancode, int action, int mods) {
-        WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+        // Always forward keyboard data to ImGui.
+        // This should be automatic with default backends,
+        ImGuiIO& io = ImGui::GetIO();
+        (void)io;
 
-        switch (action) {
-          case GLFW_PRESS: {
-            auto event = CreateRef<KeyPressedEvent>(KeyPressedEvent(key, 0));
-            data.eventDispatcher.publish_event(event);
-            break;
+        // Only forward keyboard data to my underlying app
+        if (!io.WantCaptureKeyboard) {
+          WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+          switch (action) {
+            case GLFW_PRESS: {
+              auto event = CreateRef<KeyPressedEvent>(KeyPressedEvent(key, 0));
+              data.eventDispatcher.publish_event(event);
+              break;
+            }
+            case GLFW_RELEASE: {
+              auto event = CreateRef<KeyReleasedEvent>(KeyReleasedEvent(key));
+              data.eventDispatcher.publish_event(event);
+              break;
+            }
+            case GLFW_REPEAT: {
+              auto event = CreateRef<KeyPressedEvent>(KeyPressedEvent(key, 1));
+              data.eventDispatcher.publish_event(event);
+              break;
+            }
           }
-          case GLFW_RELEASE: {
-            auto event = CreateRef<KeyReleasedEvent>(KeyReleasedEvent(key));
-            data.eventDispatcher.publish_event(event);
-            break;
-          }
-          case GLFW_REPEAT: {
-            auto event = CreateRef<KeyPressedEvent>(KeyPressedEvent(key, 1));
-            data.eventDispatcher.publish_event(event);
-            break;
-          }
+          data.eventDispatcher.dispatch();
         }
-        data.eventDispatcher.dispatch();
       });
 
   glfwSetCharCallback(
       p_glfw_window_handle_, [](GLFWwindow* window, unsigned int keycode) {
-        WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+        // Always forward keyboard data to ImGui.
+        // This should be automatic with default backends,
+        ImGuiIO& io = ImGui::GetIO();
+        (void)io;
 
-        auto event = CreateRef<KeyTypedEvent>(KeyTypedEvent(keycode));
-        data.eventDispatcher.publish_event(event);
+        // Only forward keyboard data to my underlying app
+        if (!io.WantCaptureKeyboard) {
+          WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
-        data.eventDispatcher.dispatch();
+          auto event = CreateRef<KeyTypedEvent>(KeyTypedEvent(keycode));
+          data.eventDispatcher.publish_event(event);
+
+          data.eventDispatcher.dispatch();
+        }
       });
 
   glfwSetMouseButtonCallback(
@@ -170,7 +190,6 @@ void WindowImpl::glfw_window_init() {
         // This should be automatic with default backends,
         ImGuiIO& io = ImGui::GetIO();
         (void)io;
-        // io.AddMouseButtonEvent(button, action);
 
         // Only forward mouse data to my underlying app
         if (!io.WantCaptureMouse) {
@@ -197,13 +216,21 @@ void WindowImpl::glfw_window_init() {
   glfwSetScrollCallback(
       p_glfw_window_handle_,
       [](GLFWwindow* window, double xOffset, double yOffset) {
-        WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+        // Always forward mouse data to ImGui.
+        // This should be automatic with default backends,
+        ImGuiIO& io = ImGui::GetIO();
+        (void)io;
 
-        auto event = CreateRef<MouseScrolledEvent>(
-            MouseScrolledEvent((float)xOffset, (float)yOffset));
-        data.eventDispatcher.publish_event(event);
+        // Only forward mouse data to my underlying app
+        if (!io.WantCaptureMouse) {
+          WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
-        data.eventDispatcher.dispatch();
+          auto event = CreateRef<MouseScrolledEvent>(
+              MouseScrolledEvent((float)xOffset, (float)yOffset));
+          data.eventDispatcher.publish_event(event);
+
+          data.eventDispatcher.dispatch();
+        }
       });
 
   glfwSetCursorPosCallback(p_glfw_window_handle_, [](GLFWwindow* window,

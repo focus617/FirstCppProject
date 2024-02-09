@@ -2,9 +2,9 @@
 
 #include "window/glfw_imgui/imgui_layer.hpp"
 
-#include "app/window_app.hpp"
-#include "window/glfw_imgui/window_impl.hpp"
 #include "imgui_include.h"
+#include "window/core/window_app.hpp"
+#include "window/glfw_imgui/window_impl.hpp"
 
 namespace xuzy {
 
@@ -13,7 +13,7 @@ ImGuiLayer::ImGuiLayer() : Layer("ImGuiLayer") {}
 ImGuiLayer::~ImGuiLayer() {}
 
 void ImGuiLayer::on_attach() {
-  // LOG(INFO) << "ImGuiLayer OnAttach";
+  LOG(INFO) << "ImGuiLayer OnAttach";
 
   // Setup Dear ImGui
   imgui_init();
@@ -22,7 +22,7 @@ void ImGuiLayer::on_attach() {
 }
 
 void ImGuiLayer::on_detach() {
-  // LOG(INFO) << "ImGuiLayer OnDetach";
+  LOG(INFO) << "ImGuiLayer OnDetach";
 
   // Cleanup imgui
   ImGui_ImplOpenGL3_Shutdown();
@@ -31,8 +31,6 @@ void ImGuiLayer::on_detach() {
 }
 
 void ImGuiLayer::on_update() {
-  // LOG(INFO) << "ImGuiLayer OnUpdate";
-
   // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to
   // tell if dear imgui wants to use your inputs.
   // - When io.WantCaptureMouse is true, do not dispatch mouse input data
@@ -48,16 +46,31 @@ void ImGuiLayer::on_update() {
 }
 
 void ImGuiLayer::begin_render() {
-  // LOG(INFO) << "ImGuiLayer Begin Render";
-
   // Start a new frame
   ImGui_ImplOpenGL3_NewFrame();
   ImGui_ImplGlfw_NewFrame();
   ImGui::NewFrame();
+
+  // Switch font
+  ImGui::PushFont(m_fonts_["SimKai"]);
+  // 调整窗口内边距以适应中文文字
+  ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8.0f, 8.0f));
+
+  // Most "big" widgets share a common width settings by default. See
+  // 'Demo->Layout->Widgets Width' for details.
+  // e.g. Use 2/3 of the space for widgets and 1/3 for labels (right align)
+  // ImGui::PushItemWidth(-ImGui::GetWindowWidth() * 0.35f);
+  // e.g. Leave a fixed amount of width for labels (by passing a negative
+  // value), the rest goes to widgets.
+  ImGui::PushItemWidth(ImGui::GetFontSize() * -12);
+
+  // ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Pos);
+  // ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size);
 }
 
 void ImGuiLayer::end_render() {
-  // LOG(INFO) << "ImGuiLayer End Render";
+  ImGui::PopStyleVar(1);
+  ImGui::PopFont();
 
   // Setup display size
   ImGuiIO& io = ImGui::GetIO();
@@ -85,127 +98,39 @@ void ImGuiLayer::end_render() {
 }
 
 void ImGuiLayer::on_imgui_render() {
-  // LOG(INFO) << "ImGuiLayer OnRender";
+  // Create an explicit docking node within an existing window.
+  // - Drag from window title bar or their tab to dock/undock. Hold SHIFT to
+  // disable docking.
+  // - Drag from window menu button (upper-left button) to undock an entire node
+  // (all windows).
+  ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 
   if (show_app_main_menu_bar) show_app_main_menubar();
 
-  // Our state
-  static bool show_demo_window = true;
-  static bool show_another_window = true;
+  if (show_app_toolbar) imgui_toolbar();
+}
 
-  // 1. Show the big demo window
-  ImGui::ShowDemoWindow(&show_demo_window);
+void ImGuiLayer::imgui_toolbar() {
+  ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 2));
+  ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0, 0));
+  ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+  auto& colors = ImGui::GetStyle().Colors;
+  const auto& buttonHovered = colors[ImGuiCol_ButtonHovered];
+  ImGui::PushStyleColor(
+      ImGuiCol_ButtonHovered,
+      ImVec4(buttonHovered.x, buttonHovered.y, buttonHovered.z, 0.5f));
+  const auto& buttonActive = colors[ImGuiCol_ButtonActive];
+  ImGui::PushStyleColor(
+      ImGuiCol_ButtonActive,
+      ImVec4(buttonActive.x, buttonActive.y, buttonActive.z, 0.5f));
 
-  // 2. Show a window that using Chinese.
-  // We use a Begin/End pair to create a named window.
-  {
-    static float f = 0.0f;
-    static int counter = 0;
-    const int buffer_size = 1024;
-    char* buf = new char[buffer_size];
-    strcpy(buf, "默认字符串");
+  ImGui::Begin("##toolbar", nullptr,
+               ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar |
+                   ImGuiWindowFlags_NoScrollWithMouse);
 
-    // Switch font
-    ImGui::PushFont(m_fonts_["SimKai"]);
-    // 调整窗口内边距以适应中文文字
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8.0f, 8.0f));
-
-    // Create a window called "Hello, world!" and append into it.
-    ImGui::Begin("你好，世界!");
-
-    // Display some text (you can use a format strings too)
-    ImGui::Text("这是第一个中文提示。");
-    ImGui::Text("输入:");
-    ImGui::SameLine();
-    ImGui::InputText("OK", buf, buffer_size);
-    ImGui::SameLine();
-    if (ImGui::Button("确认")) strcpy(buf, "已确认。");
-
-    // Button to control another window
-    if (show_another_window) {
-      if (ImGui::Button("关闭另一个窗口")) {
-        show_another_window = false;
-      }
-    } else {
-      if (ImGui::Button("打开另一个窗口")) {
-        show_another_window = true;
-      }
-    }
-
-    // Edit bools storing our window open/close state
-    ImGui::Checkbox("Demo Window", &show_demo_window);
-    ImGui::Checkbox("Another Window", &show_another_window);
-
-    // Edit 1 float using a slider from 0.0f to 1.0f
-    ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
-    // Edit 3 floats representing a color
-    ImGui::ColorEdit4("clear color", (float*)&m_clear_color_);
-
-    // Buttons return true when clicked
-    // (most widgets return true when edited/activated)
-    if (ImGui::Button("Button")) counter++;
-    ImGui::SameLine();
-    ImGui::Text("counter = %d", counter);
-
-    ImGuiIO& io = ImGui::GetIO();
-    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
-                1000.0f / io.Framerate, io.Framerate);
-
-    ImGui::SeparatorText("CORRECT");
-    ImGui::DebugTextEncoding((const char*)u8"中文");
-
-    // Generate samples and plot them
-    float samples[100];
-    for (int n = 0; n < 100; n++)
-      samples[n] = sinf(n * 0.2f + ImGui::GetTime() * 1.5f);
-    ImGui::PlotLines("Samples", samples, 100);
-
-    ImGui::End();
-
-    delete[] buf;
-    ImGui::PopStyleVar(1);
-    ImGui::PopFont();
-  }
-
-  // // 3. Show another simple window to occupy all screen
-  // ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Pos);
-  // ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size);
-
-  // if (show_another_window) {
-  //   // Switch font
-  //   ImGui::PushFont(m_fonts_["LiberationSans-Regular"]);
-  //   // Pass a pointer to our bool variable (the window will have a closing
-  //   // button that will clear the bool when clicked)
-  //   ImGui::Begin("Window", &show_another_window, ImGuiWindowFlags_MenuBar);
-  //   {
-  //     // Menu Bar
-  //     if (ImGui::BeginMenuBar()) {
-  //       if (ImGui::BeginMenu("File")) {
-  //         if (ImGui::MenuItem("Open..", "Ctrl+O")) {
-  //           /* Do stuff */
-  //         }
-  //         if (ImGui::MenuItem("Save", "Ctrl+S")) {
-  //           /* Do stuff */
-  //         }
-  //         if (ImGui::MenuItem("Close", "Ctrl+W")) {
-  //           show_another_window = false;
-  //         }
-  //         ImGui::EndMenu();
-  //       }
-  //       ImGui::EndMenuBar();
-  //     }
-
-  //     ImGui::TextDisabled("(?)");
-  //     if (ImGui::BeginItemTooltip()) {
-  //       ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
-  //       ImGui::TextUnformatted("desc");
-  //       ImGui::PopTextWrapPos();
-  //       ImGui::EndTooltip();
-  //     }
-  //   }
-  //   ImGui::End();
-  //   ImGui::PopFont();
-  // }
+  ImGui::PopStyleVar(2);
+  ImGui::PopStyleColor(3);
+  ImGui::End();
 }
 
 void ImGuiLayer::imgui_init() {

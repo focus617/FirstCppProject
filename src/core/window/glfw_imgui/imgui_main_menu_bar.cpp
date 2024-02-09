@@ -1,15 +1,22 @@
 #include "imgui.h"
 #include "imgui_layer.hpp"
+#include "window/core/window_app.hpp"
 
 namespace xuzy {
 
 // Helper to wire demo markers located in code to an interactive browser
-typedef void (*ImGuiDemoMarkerCallback)(const char* file, int line, const char* section, void* user_data);
-extern ImGuiDemoMarkerCallback      GImGuiDemoMarkerCallback;
-extern void*                        GImGuiDemoMarkerCallbackUserData;
-ImGuiDemoMarkerCallback             GImGuiDemoMarkerCallback = NULL;
-void*                               GImGuiDemoMarkerCallbackUserData = NULL;
-#define IMGUI_DEMO_MARKER(section)  do { if (GImGuiDemoMarkerCallback != NULL) GImGuiDemoMarkerCallback(__FILE__, __LINE__, section, GImGuiDemoMarkerCallbackUserData); } while (0)
+typedef void (*ImGuiDemoMarkerCallback)(const char* file, int line,
+                                        const char* section, void* user_data);
+extern ImGuiDemoMarkerCallback GImGuiDemoMarkerCallback;
+extern void* GImGuiDemoMarkerCallbackUserData;
+ImGuiDemoMarkerCallback GImGuiDemoMarkerCallback = NULL;
+void* GImGuiDemoMarkerCallbackUserData = NULL;
+#define IMGUI_DEMO_MARKER(section)                                \
+  do {                                                            \
+    if (GImGuiDemoMarkerCallback != NULL)                         \
+      GImGuiDemoMarkerCallback(__FILE__, __LINE__, section,       \
+                               GImGuiDemoMarkerCallbackUserData); \
+  } while (0)
 
 // Forward Declarations
 static void ShowMenuFile();
@@ -20,7 +27,7 @@ static void ShowMenuFile();
 void ImGuiLayer::show_app_main_menubar() {
   if (ImGui::BeginMainMenuBar()) {
     if (ImGui::BeginMenu("File")) {
-        ShowMenuFile();
+      ShowMenuFile();
       ImGui::EndMenu();
     }
     if (ImGui::BeginMenu("Edit")) {
@@ -122,6 +129,7 @@ static void ShowMenuFile() {
   }
   ImGui::Separator();
   if (ImGui::MenuItem("Quit", "Alt+F4")) {
+    ((WindowApp&)(App::get())).close();
   }
 }
 

@@ -38,6 +38,8 @@ class XUZY_API ImGuiLayer : public Layer {
   void imgui_init();
   void imgui_load_fonts();
 
+  void imgui_toolbar();
+
  private:
   float m_time_ = 0.0f;
 
@@ -46,6 +48,7 @@ class XUZY_API ImGuiLayer : public Layer {
   float m_font_size_pixels_ = 18.0f;
 
   bool show_app_main_menu_bar = true;
+  bool show_app_toolbar = true;
 };
 
 }  // namespace xuzy

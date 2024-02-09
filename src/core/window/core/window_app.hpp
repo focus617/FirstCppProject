@@ -33,10 +33,11 @@ class XUZY_API WindowApp : public App {
     m_layerstack_.push_layer(layer);
   }
 
+  XUZY_API void close() { m_running_ = false; }
+  
  protected:
   XUZY_API void launch_tasks() override;
   XUZY_API void main_loop() override;
-  XUZY_API void close() { m_running_ = false; }
 
   XUZY_API virtual void on_event(Ref<Event> evt, bool& handled);
   XUZY_API virtual bool OnWindowClose(Ref<WindowCloseEvent> e);
