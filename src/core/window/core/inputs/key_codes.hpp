@@ -1,11 +1,14 @@
 #pragma once
 
-namespace xuzy
+namespace xuzy::Window::Inputs
 {
 	using KeyCode = uint16_t;
 	
 	namespace Key
 	{
+		/**
+		 * Keyboard keys
+		 */
 		enum : KeyCode
 		{
 			// From glfw3.h
@@ -143,4 +146,4 @@ namespace xuzy
 
 	} // namespace Key
 	
-} // namespace xuzy
+} // namespace xuzy::Window:Inputs

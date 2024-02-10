@@ -59,9 +59,9 @@ class Example {
   }
 };
 
-#define EXAMPLE_BIND_EVENT_FN(entity) \
-  std::bind(&Example::EventHandler, entity, \
-  std::placeholders::_1, std::placeholders::_2)
+#define EXAMPLE_BIND_EVENT_FN(entity)                              \
+  std::bind(&Example::EventHandler, entity, std::placeholders::_1, \
+            std::placeholders::_2)
 
 ////////////////////////////////////////////////////////
 
@@ -79,7 +79,8 @@ class EventDispatcher_Test_Fixture : public testing::Test {
 
 // 生产KeyPressed事件
 void EventDispatcher_Test_Fixture::SetUp() {
-  event = CreateRef<KeyPressedEvent>(KeyPressedEvent(Key::Space, 1));
+  event = CreateRef<KeyPressedEvent>(
+      KeyPressedEvent(Window::Inputs::Key::Space, 1));
   button.eventDispatcher.publish_event(event);
 }
 

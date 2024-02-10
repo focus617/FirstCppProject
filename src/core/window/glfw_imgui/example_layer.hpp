@@ -1,7 +1,7 @@
 #pragma once
 
 #include "imgui.h"
-#include "input_impl.hpp"
+#include "input_manager_impl.hpp"
 #include "window/core/layer.hpp"
 
 namespace xuzy::Window {
@@ -16,14 +16,14 @@ class ExampleLayer : public Layer {
   void on_update() override {
     // LOG(INFO) << "ExampleLayer OnUpdate";
 
-    if (Input::is_key_pressed(Key::Tab))
+    if (Inputs::InputManager::is_key_pressed(Inputs::Key::Tab))
       LOG(INFO) << "Tab key is pressed (poll)!";
   }
 
   void on_event(Ref<Event> event, bool& handled) override {
     if (event->get_event_id() == EventId::KeyPressed) {
       Ref<KeyPressedEvent> e = std::static_pointer_cast<KeyPressedEvent>(event);
-      if (e->get_key_code() == Key::Tab) {
+      if (e->get_key_code() == Inputs::Key::Tab) {
         LOG(INFO) << "Tab key is pressed (event)!";
         handled = true;
       }

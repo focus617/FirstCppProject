@@ -1,6 +1,6 @@
 #pragma once
 
-namespace xuzy
+namespace xuzy::Window::Inputs
 {
 	using MouseCode = uint16_t;
 
@@ -24,4 +24,4 @@ namespace xuzy
 			ButtonMiddle           = Button2
 		};
 	}
-}
+} // namespace xuzy::Window::Inputs

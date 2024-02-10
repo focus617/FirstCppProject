@@ -2,11 +2,11 @@
 
 #include <GLFW/glfw3.h>
 
-#include "io/input.hpp"
+#include "window/core/inputs/input_manager.hpp"
 
-namespace xuzy {
+namespace xuzy::Window::Inputs {
 
-class InputImpl : public Input {
+class InputManagerImpl : public InputManager {
  protected:
   bool is_key_pressed_impl(KeyCode key) override;
 
@@ -19,4 +19,4 @@ class InputImpl : public Input {
   GLFWwindow* get_window();
 };
 
-}  // namespace xuzy
+}  // namespace xuzy::Window::Inputs

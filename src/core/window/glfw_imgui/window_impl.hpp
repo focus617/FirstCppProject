@@ -53,6 +53,17 @@ class XUZY_API WindowImpl : public Window {
   void set_title(const std::string& p_title);
 
   /**
+   * @brief Set the should close flag of the window to true
+   * @param p_value
+   */
+  void set_should_close(bool p_value) const;
+
+  /**
+   * @brief Return true if the window should close
+   */
+  bool should_close() const;
+
+  /**
    * @brief Set the window in fullscreen or windowed mode
    * @param p_value (True for fullscreen mode, false for windowed)
    */
@@ -63,6 +74,11 @@ class XUZY_API WindowImpl : public Window {
    * on the current state
    */
   void toggle_fullscreen();
+
+  /**
+   * Return the current position of the window
+   */
+  std::pair<int16_t, int16_t> get_position() const;
 
   /**
    * @brief Define a position for the window
@@ -142,7 +158,7 @@ class XUZY_API WindowImpl : public Window {
   /**
    * @brief Return true if the window is hidden
    */
-  bool is_Hidden() const;
+  bool is_hidden() const;
 
   /**
    * @brief Return true if the window is visible
@@ -168,6 +184,17 @@ class XUZY_API WindowImpl : public Window {
    * @brief Return true if the windows is decorated
    */
   bool is_decorated() const;
+
+  /**
+   * @brief Makes the context of the specified window current for the calling
+   *  thread.
+   */
+  void make_current_context_to_thread() const;
+
+  /**
+   * @brief Return the framebuffer size (Viewport size)
+   */
+  std::pair<uint16_t, uint16_t> get_framebuffer_size() const;
 
   /**
    * @brief Return the current refresh rate (Only applied to the fullscreen
@@ -226,18 +253,17 @@ class XUZY_API WindowImpl : public Window {
 
  private:
   /* GLFW Window initialization */
-  void glfw_window_init();
+  void glfw_window_init(const WindowProps& props);
   /* GLFW Window cleanup */
   void glfw_window_shutdown();
   /* GLFW event callback initialization */
   void glfw_setup_callback();
   /* GLFW Cursor initialization */
-  void glfw_cursor_init();
-  
-  void glfw_update_size_limit() const;
+  void glfw_cursors_init();
+  void glfw_cursors_create();
+  void glfw_cursors_destroy();
 
-  void glfw_create_cursors();
-  void glfw_destroy_cursors();
+  void glfw_update_size_limit() const;
 
  private:
   GLFWwindow* m_glfw_window_ = nullptr;
@@ -251,8 +277,8 @@ class XUZY_API WindowImpl : public Window {
     std::pair<int16_t, int16_t> m_minimum_size;
     std::pair<int16_t, int16_t> m_maximum_size;
     bool m_fullscreen;
+    bool m_vsync;
     int32_t m_refresh_rate;
-    bool VSync;
     Cursor::CursorMode m_cursor_mode;
     Cursor::CursorShape m_cursor_shape;
 
@@ -260,6 +286,15 @@ class XUZY_API WindowImpl : public Window {
   };
 
   WindowData m_data_;
+
+  /* GLFW Context */
+  struct GlfwContext {
+    uint8_t m_major_version;
+    uint8_t m_minor_version;
+    bool m_debug_profile;
+  };
+
+  GlfwContext m_glfw_context_;
 };
 
 }  // namespace xuzy::Window

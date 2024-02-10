@@ -2,8 +2,8 @@
 
 #include <sstream>
 
-#include "io/mouse_codes.hpp"
 #include "event/event.hpp"
+#include "window/core/inputs/mouse_codes.hpp"
 
 namespace xuzy {
 
@@ -50,20 +50,22 @@ class MouseScrolledEvent : public Event {
 
 class MouseButtonEvent : public Event {
  public:
-  MouseCode get_mouse_button() const { return m_button; }
+  xuzy::Window::Inputs::MouseCode get_mouse_button() const { return m_button; }
 
   EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput |
                        EventCategoryMouseButton)
 
  protected:
-  MouseButtonEvent(const MouseCode button) : m_button(button) {}
+  MouseButtonEvent(const xuzy::Window::Inputs::MouseCode button)
+      : m_button(button) {}
 
-  MouseCode m_button;
+  xuzy::Window::Inputs::MouseCode m_button;
 };
 
 class MouseButtonPressedEvent : public MouseButtonEvent {
  public:
-  MouseButtonPressedEvent(const MouseCode button) : MouseButtonEvent(button) {}
+  MouseButtonPressedEvent(const xuzy::Window::Inputs::MouseCode button)
+      : MouseButtonEvent(button) {}
 
   std::string to_string() const override {
     std::stringstream ss;
@@ -76,7 +78,8 @@ class MouseButtonPressedEvent : public MouseButtonEvent {
 
 class MouseButtonReleasedEvent : public MouseButtonEvent {
  public:
-  MouseButtonReleasedEvent(const MouseCode button) : MouseButtonEvent(button) {}
+  MouseButtonReleasedEvent(const xuzy::Window::Inputs::MouseCode button)
+      : MouseButtonEvent(button) {}
 
   std::string to_string() const override {
     std::stringstream ss;

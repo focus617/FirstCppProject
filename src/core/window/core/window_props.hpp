@@ -2,6 +2,7 @@
 #pragma once
 
 #include <string>
+
 #include "window/core/cursor/cursor_mode.h"
 #include "window/core/cursor/cursor_shape.h"
 
@@ -79,6 +80,44 @@ struct WindowProps {
   bool decorated = true;
 
   /**
+   * Specifies whether the windowed mode window will be given input focus when
+   * created. This hint is ignored for full screen and initially hidden windows.
+   */
+  bool focused = true;
+
+  /**
+   * Specifies whether the windowed mode window will be maximized when created.
+   * This hint is ignored for full screen windows.
+   */
+  bool maximized = false;
+
+  /**
+   * Specifies whether the windowed mode window will be floating above other
+   * regular windows, also called topmost or always-on-top. This is intended
+   * primarily for debugging purposes and cannot be used to implement proper
+   * full screen windows. This hint is ignored for full screen windows.
+   */
+  bool floating = false;
+
+  /**
+   * Specifies whether the windowed mode window will be initially visible. This
+   * hint is ignored for full screen windows.
+   */
+  bool visible = true;
+
+  /**
+   * Specifies whether the full screen window will automatically iconify and
+   * restore the previous video mode on input focus loss. This hint is ignored
+   * for windowed mode windows
+   */
+  bool auto_iconify = true;
+
+  /**
+   * @brief Specifies vsync mode.
+   */
+  bool enable_vsync = true;
+
+  /**
    * @brief Specifies the desired refresh rate for full screen windows.
    * If set to WindowSettings::DontCare, the highest available refresh rate will
    * be used. This hint is ignored for windowed mode windows.
@@ -94,6 +133,32 @@ struct WindowProps {
    * @brief Specifies the default cursor shape of the window
    */
   Cursor::CursorShape cursor_shape = Cursor::CursorShape::ARROW;
+
+  /**
+   * Defines the number of samples to use (For anti-aliasing)
+   */
+  uint32_t samples = 4;
+
+  /**
+   * Specify the client API major version that the created context must be
+   * compatible with. The exact behavior of these hints depend on the requested
+   * client API
+   */
+  uint8_t context_major_version = 4;
+
+  /**
+   * Specify the client API minor version that the created context must be
+   * compatible with. The exact behavior of these hints depend on the requested
+   * client API
+   */
+  uint8_t context_minor_version = 6;
+
+  /**
+   * specifies whether to create a debug OpenGL context, which may have
+   * additional error and performance issue reporting functionality. If OpenGL
+   * ES is requested, this hint is ignored
+   */
+  bool debug_profile = false;
 
   WindowProps(const std::string& t = "Xuzy's App", uint16_t w = 1280,
               uint16_t h = 720)

@@ -3,15 +3,15 @@
 #include "key_codes.hpp"
 #include "mouse_codes.hpp"
 
-namespace xuzy {
+namespace xuzy::Window::Inputs {
 
 /**
- * @brief Input class is global input manager, which enable customer to poll and
- * catch current key and mouse status
+ * @brief The InputManager is global in system, which enable customer to poll
+ * and catch current key and mouse status
  */
-class XUZY_API Input {
+class XUZY_API InputManager {
  public:
-  virtual ~Input() {}
+  virtual ~InputManager() {}
 
   static bool is_key_pressed(KeyCode key) {
     return s_instance_->is_key_pressed_impl(key);
@@ -35,7 +35,7 @@ class XUZY_API Input {
   virtual float get_mouse_y_impl() = 0;
 
  private:
-  static Input* s_instance_;
+  static InputManager* s_instance_;
 };
 
-}  // namespace xuzy
+}  // namespace xuzy::Window::Inputs

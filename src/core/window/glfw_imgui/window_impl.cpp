@@ -22,11 +22,6 @@ Window* Window::Create(const WindowProps& p_props) {
 
 static bool s_glfw_initialized = false;
 
-// Error Callback needed by GLFW
-static void glfw_error_callback(int error, const char* description) {
-  LOG(ERROR) << "GLFW Error (" << error << ": " << description << ")";
-}
-
 WindowImpl::WindowImpl(const WindowProps& props) {
   LOG(INFO) << "GLFW version: " << glfwGetVersionString();
 
@@ -38,29 +33,40 @@ WindowImpl::WindowImpl(const WindowProps& props) {
   m_data_.m_minimum_size = std::pair<unsigned int, unsigned int>(
       props.minimum_width, props.minimum_height);
   m_data_.m_fullscreen = props.fullscreen;
+  m_data_.m_vsync = props.enable_vsync;
   m_data_.m_refresh_rate = props.refresh_rate;
   m_data_.m_cursor_mode = props.cursor_mode;
   m_data_.m_cursor_shape = props.cursor_shape;
 
+  m_glfw_context_.m_major_version = props.context_major_version;
+  m_glfw_context_.m_minor_version = props.context_minor_version;
+  m_glfw_context_.m_debug_profile = props.debug_profile;
+
+  // Initialize GLFW library
   if (!s_glfw_initialized) {
     int success = glfwInit();
     XUZY_CHECK_(GLFW_TRUE == success) << "Could not intialize GLFW!";
+
+    // Error Callback needed by GLFW
+    auto glfw_error_callback = [](int p_error, const char* p_description) {
+      LOG(ERROR) << "GLFW Error (" << p_error << ": " << p_description << ")";
+    };
     glfwSetErrorCallback(glfw_error_callback);
     s_glfw_initialized = true;
   }
 
   /* GLFW Window initialization */
-  glfw_window_init();
+  glfw_window_init(props);
 
   /* GLFW Cursor initialization */
-  glfw_cursor_init();
+  glfw_cursors_init();
 
   /* Callback binding */
   glfw_setup_callback();
 }
 
 WindowImpl::~WindowImpl() {
-  glfw_destroy_cursors();
+  glfw_cursors_destroy();
   glfw_window_shutdown();
 }
 
@@ -95,6 +101,14 @@ void WindowImpl::set_title(const std::string& p_title) {
   glfwSetWindowTitle(m_glfw_window_, p_title.c_str());
 }
 
+void WindowImpl::set_should_close(bool p_value) const {
+  glfwSetWindowShouldClose(m_glfw_window_, p_value);
+}
+
+bool WindowImpl::should_close() const {
+  return glfwWindowShouldClose(m_glfw_window_);
+}
+
 void WindowImpl::set_fullscreen(bool p_value) {
   if (p_value) m_data_.m_fullscreen = true;
 
@@ -123,6 +137,12 @@ void WindowImpl::hide() const { glfwHideWindow(m_glfw_window_); }
 void WindowImpl::show() const { glfwShowWindow(m_glfw_window_); }
 
 void WindowImpl::focus() const { glfwFocusWindow(m_glfw_window_); }
+
+std::pair<int16_t, int16_t> WindowImpl::get_position() const {
+  int x, y;
+  glfwGetWindowPos(m_glfw_window_, &x, &y);
+  return std::make_pair(static_cast<int16_t>(x), static_cast<int16_t>(y));
+}
 
 void WindowImpl::set_position(int16_t p_x, int16_t p_y) {
   glfwSetWindowPos(m_glfw_window_, static_cast<int>(p_x),
@@ -160,6 +180,17 @@ void WindowImpl::set_maximum_size(int16_t p_maximumWidth,
   glfw_update_size_limit();
 }
 
+void WindowImpl::make_current_context_to_thread() const {
+  glfwMakeContextCurrent(m_glfw_window_);
+}
+
+std::pair<uint16_t, uint16_t> WindowImpl::get_framebuffer_size() const {
+  int width, height;
+  glfwGetFramebufferSize(m_glfw_window_, &width, &height);
+  return std::make_pair(static_cast<uint16_t>(width),
+                        static_cast<uint16_t>(height));
+}
+
 int32_t WindowImpl::get_refreshRate() const { return m_data_.m_refresh_rate; }
 
 void WindowImpl::set_refreshRate(int32_t p_refresh_rate) {
@@ -172,10 +203,10 @@ void WindowImpl::set_vsync(bool enabled) {
   else
     glfwSwapInterval(0);
 
-  m_data_.VSync = enabled;
+  m_data_.m_vsync = enabled;
 }
 
-void WindowImpl::glfw_create_cursors() {
+void WindowImpl::glfw_cursors_create() {
   m_cursors_[Cursor::CursorShape::ARROW] =
       glfwCreateStandardCursor(static_cast<int>(Cursor::CursorShape::ARROW));
   m_cursors_[Cursor::CursorShape::IBEAM] =
@@ -190,7 +221,7 @@ void WindowImpl::glfw_create_cursors() {
       glfwCreateStandardCursor(static_cast<int>(Cursor::CursorShape::VRESIZE));
 }
 
-void WindowImpl::glfw_destroy_cursors() {
+void WindowImpl::glfw_cursors_destroy() {
   glfwDestroyCursor(m_cursors_[Cursor::CursorShape::ARROW]);
   glfwDestroyCursor(m_cursors_[Cursor::CursorShape::IBEAM]);
   glfwDestroyCursor(m_cursors_[Cursor::CursorShape::CROSSHAIR]);
@@ -219,7 +250,7 @@ void WindowImpl::set_cursor_position(int16_t p_x, int16_t p_y) {
                    static_cast<double>(p_y));
 }
 
-bool WindowImpl::is_vsync() const { return m_data_.VSync; }
+bool WindowImpl::is_vsync() const { return m_data_.m_vsync; }
 
 bool WindowImpl::is_resizable() const {
   return glfwGetWindowAttrib(m_glfw_window_, GLFW_RESIZABLE) == GLFW_TRUE;
@@ -227,7 +258,7 @@ bool WindowImpl::is_resizable() const {
 
 bool WindowImpl::is_fullscreen() const { return m_data_.m_fullscreen; }
 
-bool WindowImpl::is_Hidden() const {
+bool WindowImpl::is_hidden() const {
   return glfwGetWindowAttrib(m_glfw_window_, GLFW_VISIBLE) == GLFW_FALSE;
 }
 
@@ -252,12 +283,22 @@ bool WindowImpl::is_decorated() const {
   ;
 }
 
-void WindowImpl::glfw_window_init() {
+void WindowImpl::glfw_window_init(const WindowProps& props) {
   GLFWmonitor* selected_monitor = nullptr;
-
+  // 如果要创造全屏窗口，就需要一个控制器
   if (m_data_.m_fullscreen) selected_monitor = glfwGetPrimaryMonitor();
 
-    // Decide GL+GLSL versions
+  glfwWindowHint(GLFW_RESIZABLE, props.resizable);
+  glfwWindowHint(GLFW_DECORATED, props.decorated);
+  glfwWindowHint(GLFW_FOCUSED, props.focused);
+  glfwWindowHint(GLFW_MAXIMIZED, props.maximized);
+  glfwWindowHint(GLFW_FLOATING, props.floating);
+  glfwWindowHint(GLFW_VISIBLE, props.visible);
+  glfwWindowHint(GLFW_AUTO_ICONIFY, props.auto_iconify);
+  glfwWindowHint(GLFW_REFRESH_RATE, props.refresh_rate);
+  glfwWindowHint(GLFW_SAMPLES, props.samples);
+
+  // Decide GL+GLSL versions
 #if defined(IMGUI_IMPL_OPENGL_ES2)
   // GL ES 2.0 + GLSL 100
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
@@ -271,13 +312,16 @@ void WindowImpl::glfw_window_init() {
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);  // Required on Mac
 #else
   // GL 4.6 + GLSL 460
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,
+                 static_cast<int>(m_glfw_context_.m_major_version));
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR,
+                 static_cast<int>(m_glfw_context_.m_minor_version));
   // 3.2+ only 使用核心模式
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-  // 3.0+ only
-  // glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
+  // If OpenGL debug mode is open
+  if (m_glfw_context_.m_debug_profile)
+    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 
   // Create window with graphics context
   m_glfw_window_ =
@@ -286,13 +330,18 @@ void WindowImpl::glfw_window_init() {
                        m_data_.m_title.c_str(), selected_monitor, nullptr);
   XUZY_CHECK_(nullptr != m_glfw_window_) << "Could not create GLFW Window!";
   glfwMakeContextCurrent(m_glfw_window_);
+  glfw_update_size_limit();
+
+  auto [x, y] = get_position();
+  m_data_.m_position.first = x;
+  m_data_.m_position.second = y;
 
   // 为GLAD传入了用来加载系统相关的OpenGL函数指针地址的函数。
   // int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
   // XUZY_CHECK_(status) << "Failed to initialize Glad!";
 
   glfwSetWindowUserPointer(m_glfw_window_, &m_data_);
-  set_vsync(true);  // Enable vsync
+  set_vsync(m_data_.m_vsync);  // Enable vsync
 }
 
 void WindowImpl::glfw_window_shutdown() {
@@ -302,8 +351,8 @@ void WindowImpl::glfw_window_shutdown() {
   // TODO: glfwTerminate on system shutdown
 }
 
-void WindowImpl::glfw_cursor_init() {
-  glfw_create_cursors();
+void WindowImpl::glfw_cursors_init() {
+  glfw_cursors_create();
   set_cursor_mode(m_data_.m_cursor_mode);
   set_cursor_shape(m_data_.m_cursor_shape);
 }
