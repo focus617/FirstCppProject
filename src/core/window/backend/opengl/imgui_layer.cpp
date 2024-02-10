@@ -6,7 +6,7 @@
 #include "window/core/window_app.hpp"
 #include "window/glfw_imgui/window_impl.hpp"
 
-namespace xuzy {
+namespace xuzy::Window {
 
 ImGuiLayer::ImGuiLayer() : Layer("ImGuiLayer") {}
 
@@ -75,8 +75,8 @@ void ImGuiLayer::end_render() {
   // Setup display size
   ImGuiIO& io = ImGui::GetIO();
   WindowApp& app = (WindowApp&)(App::get());
-  io.DisplaySize =
-      ImVec2(app.get_window().get_width(), app.get_window().get_height());
+  io.DisplaySize = ImVec2(app.get_window().get_size().first,
+                          app.get_window().get_size().second);
 
   // Rendering
   ImGui::Render();
@@ -407,4 +407,4 @@ bool ImGuiLayer::on_mouse_scrolled_event(Ref<MouseScrolledEvent> e) {
   return true;
 }
 
-}  // namespace xuzy
+}  // namespace xuzy::Window

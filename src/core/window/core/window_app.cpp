@@ -10,13 +10,14 @@ namespace xuzy {
 WindowApp::WindowApp(const std::string& t_app_name,
                      const std::string& t_version)
     : App{std::move(t_app_name), std::move(t_version)} {
-  p_window_ = std::unique_ptr<Window>(Window::Create(WindowProps(t_app_name)));
+  p_window_ = std::unique_ptr<Window::Window>(
+      Window::Window::Create(Window::WindowProps(t_app_name)));
   p_window_->set_event_callback(BIND_EVENT_FN(on_event));
 
-  p_imgui_layer = CreateRef<ImGuiLayer>();
+  p_imgui_layer = CreateRef<Window::ImGuiLayer>();
   m_layerstack_.push_overlay(p_imgui_layer);
 
-  push_layer<ExampleLayer>();
+  push_layer<Window::ExampleLayer>();
 }
 
 WindowApp::~WindowApp() { close(); }
@@ -26,10 +27,10 @@ void WindowApp::launch_tasks() {}
 void WindowApp::main_loop() {
   while (m_running_) {
     if (!m_minimized_) {
-      for (Ref<Layer> layer : m_layerstack_) layer->on_update();
+      for (Ref<Window::Layer> layer : m_layerstack_) layer->on_update();
 
       p_imgui_layer->begin_render();
-      for (Ref<Layer> layer : m_layerstack_) layer->on_imgui_render();
+      for (Ref<Window::Layer> layer : m_layerstack_) layer->on_imgui_render();
       p_imgui_layer->end_render();
     }
     p_window_->on_update();

@@ -2,7 +2,7 @@
 #include "imgui_layer.hpp"
 #include "window/core/window_app.hpp"
 
-namespace xuzy {
+namespace xuzy::Window {
 
 // Helper to wire demo markers located in code to an interactive browser
 typedef void (*ImGuiDemoMarkerCallback)(const char* file, int line,
@@ -133,4 +133,4 @@ static void ShowMenuFile() {
   }
 }
 
-}  // namespace xuzy
+}  // namespace xuzy::Window

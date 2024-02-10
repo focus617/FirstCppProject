@@ -65,6 +65,11 @@ set(IMGUI_INCLUDE_DIR
   CACHE PATH "IMGUI include directory"
 )
 
+set(STBIMAGE_INCLUDE_DIR
+  ${PROJECT_SOURCE_DIR}/extern/stb_image
+  CACHE PATH "STB IMAGE include directory"
+)
+
 # 指定头文件路径
 target_include_directories(core
   PUBLIC 
@@ -77,6 +82,7 @@ target_include_directories(core
     ${GLFW_INCLUDE_DIR}
     # ${GLAD_INCLUDE_DIR}
     ${IMGUI_INCLUDE_DIR}
+    ${STBIMAGE_INCLUDE_DIR}
 )
 
 # Precompiled headers

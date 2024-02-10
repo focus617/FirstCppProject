@@ -11,7 +11,7 @@ Input* Input::s_instance_ = new InputImpl();
 
 GLFWwindow* InputImpl::get_window() {
   WindowApp& app = (WindowApp&)(App::get());
-  WindowImpl& win = (WindowImpl&)(app.get_window());
+  Window::WindowImpl& win = (Window::WindowImpl&)(app.get_window());
   return static_cast<GLFWwindow*>(win.get_native_window());
 }
 

@@ -2,7 +2,7 @@
 
 #include "event/event.hpp"
 
-namespace xuzy {
+namespace xuzy::Window {
 
 class XUZY_API Layer {
  public:
@@ -21,4 +21,4 @@ class XUZY_API Layer {
   std::string m_debug_name_;
 };
 
-}  // namespace xuzy
+}  // namespace xuzy::Window

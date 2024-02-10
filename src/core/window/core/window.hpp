@@ -6,25 +6,9 @@
 #include "pch.h"
 
 #include "event/event_dispatcher.hpp"
+#include "window/core/window_props.hpp"
 
-namespace xuzy {
-
-/**
- * @brief Properties of Window
- */
-struct WindowProps {
-  std::string Title;
-  int xPos;
-  int yPos;
-  unsigned int Width;
-  unsigned int Height;
-
-  WindowProps(const std::string& title = "Xuzy's App", 
-              int xpos = 0, int ypos = 0, 
-              unsigned int width = 1280,
-              unsigned int height = 720)
-      : Title(title), xPos(xpos), yPos(ypos), Width(width), Height(height) {}
-};
+namespace xuzy::Window {
 
 /**
  * @brief Platform independent interface representing a desktop system based
@@ -35,16 +19,21 @@ class XUZY_API Window {
   // EventHandler Signature:  void(*func)(Ref<Event>, bool&)
   using EventCallbackFn = std::function<void(Ref<Event>, bool&)>;
 
+  /**
+   * @brief Destructor of the window
+   */
   virtual ~Window() {}
 
-  virtual void on_update() = 0;
-
-  virtual unsigned int get_width() const = 0;
-  virtual unsigned int get_height() const = 0;
+  /**
+   * @brief Return the current size of the window
+   */
+  virtual std::pair<uint16_t, uint16_t> get_size() const = 0;
 
   // Window attributes
   virtual void set_vsync(bool enabled) = 0;
   virtual bool is_vsync() const = 0;
+
+  virtual void on_update() = 0;
 
   virtual void set_event_callback(const EventCallbackFn& callback) = 0;
 
@@ -56,4 +45,4 @@ class XUZY_API Window {
 
 // To be defined in concrete window class
 
-}  // namespace xuzy
+}  // namespace xuzy::Window

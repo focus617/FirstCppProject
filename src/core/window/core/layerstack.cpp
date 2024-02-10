@@ -2,7 +2,7 @@
 
 #include "layerstack.hpp"
 
-namespace xuzy {
+namespace xuzy::Window {
 
 LayerStack::~LayerStack() {
   for (Ref<Layer> layer : m_layers_) {
@@ -41,4 +41,4 @@ void LayerStack::pop_overlay(const Ref<Layer>& overlay) {
   }
 }
 
-}  // namespace xuzy
+}  // namespace xuzy::Window

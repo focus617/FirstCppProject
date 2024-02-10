@@ -6,7 +6,7 @@
 #include "event/mouse_event.hpp"
 #include "imgui.h"
 
-namespace xuzy {
+namespace xuzy::Window {
 
 class XUZY_API ImGuiLayer : public Layer {
  public:
@@ -51,4 +51,4 @@ class XUZY_API ImGuiLayer : public Layer {
   bool show_app_toolbar = true;
 };
 
-}  // namespace xuzy
+}  // namespace xuzy::Window

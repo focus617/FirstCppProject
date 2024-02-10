@@ -2,10 +2,10 @@
 
 #include "layer.hpp"
 
-namespace xuzy {
+namespace xuzy::Window {
 
 Layer::Layer(const std::string& debugName) : m_debug_name_(debugName) {}
 
 Layer::~Layer() {}
 
-}  // namespace xuzy
+}  // namespace xuzy::Window

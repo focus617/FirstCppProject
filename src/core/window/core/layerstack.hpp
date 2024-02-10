@@ -4,7 +4,7 @@
 
 #include "layer.hpp"
 
-namespace xuzy {
+namespace xuzy::Window {
 
 class XUZY_API LayerStack {
  public:
@@ -30,4 +30,4 @@ class XUZY_API LayerStack {
   unsigned int m_Layer_insert_index_ = 0;
 };
 
-}  // namespace xuzy
+}  // namespace xuzy::Window

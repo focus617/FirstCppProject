@@ -4,7 +4,7 @@
 #include "input_impl.hpp"
 #include "window/core/layer.hpp"
 
-namespace xuzy {
+namespace xuzy::Window {
 
 class ExampleLayer : public Layer {
  public:
@@ -138,4 +138,4 @@ class ExampleLayer : public Layer {
   }
 };
 
-}  // namespace xuzy
+}  // namespace xuzy::Window
