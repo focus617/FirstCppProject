@@ -1,8 +1,8 @@
-#include "event/event_dispatcher.hpp"
+#include "tools/event/event_dispatcher.hpp"
 
 #include <gtest/gtest.h>
 
-#include "event/key_event.hpp"
+#include "tools/event/key_event.hpp"
 
 static bool checker = false;
 
@@ -81,7 +81,6 @@ class EventDispatcher_Test_Fixture : public testing::Test {
 void EventDispatcher_Test_Fixture::SetUp() {
   event = CreateRef<KeyPressedEvent>(
       KeyPressedEvent(Window::Inputs::Key::Space, 1));
-  button.eventDispatcher.publish_event(event);
 }
 
 void EventDispatcher_Test_Fixture::TearDown() {}
@@ -96,7 +95,7 @@ TEST_F(EventDispatcher_Test_Fixture, event_on_static_func) {
   EXPECT_EQ(false, event->m_handled);
 
   // Then
-  button.eventDispatcher.dispatch();
+  button.eventDispatcher.dispatch(event);
   EXPECT_EQ(true, checker);
   EXPECT_EQ(true, event->m_handled);
 }
@@ -112,7 +111,7 @@ TEST_F(EventDispatcher_Test_Fixture, event_on_class_member_func) {
   EXPECT_EQ(false, event->m_handled);
 
   // Then
-  button.eventDispatcher.dispatch();
+  button.eventDispatcher.dispatch(event);
   EXPECT_EQ(true, checker);
   EXPECT_EQ(true, event->m_handled);
 }
@@ -140,7 +139,7 @@ TEST_F(EventDispatcher_Test_Fixture, event_on_lambda_func) {
   EXPECT_EQ(false, event->m_handled);
 
   // Then
-  button.eventDispatcher.dispatch();
+  button.eventDispatcher.dispatch(event);
   EXPECT_EQ(true, checker);
   EXPECT_EQ(true, event->m_handled);
 }
@@ -208,7 +207,7 @@ TEST_F(EventDispatcher_Test_Fixture, clear_handler) {
   EXPECT_EQ(3, button.eventDispatcher.handler_count());
 
   // When
-  button.eventDispatcher.clear_handler();
+  button.eventDispatcher.clear_handlers();
   // Then
   EXPECT_EQ(0, button.eventDispatcher.handler_count());
 }

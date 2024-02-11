@@ -6,6 +6,9 @@ namespace xuzy::Window::Inputs
 
 	namespace Mouse
 	{
+		/**
+		 * Mouse buttons
+		 */
 		enum : MouseCode
 		{
 			// From glfw3.h
@@ -23,5 +26,6 @@ namespace xuzy::Window::Inputs
 			ButtonRight            = Button1,
 			ButtonMiddle           = Button2
 		};
-	}
+	} // namespace Mouse
+
 } // namespace xuzy::Window::Inputs

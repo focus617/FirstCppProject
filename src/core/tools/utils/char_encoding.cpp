@@ -1,6 +1,6 @@
 #include "pch.h"
 
-#include "helper/char_encoding.h"
+#include "char_encoding.h"
 
 namespace xuzy::internal {
 

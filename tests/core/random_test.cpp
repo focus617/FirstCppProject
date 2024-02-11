@@ -1,4 +1,4 @@
-#include "resource/random.hpp"
+#include "tools/math/random.hpp"
 
 #include <gtest/gtest.h>
 

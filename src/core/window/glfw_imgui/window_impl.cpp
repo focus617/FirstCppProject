@@ -2,9 +2,9 @@
 
 #include "window_impl.hpp"
 
-#include "event/application_event.hpp"
-#include "event/key_event.hpp"
-#include "event/mouse_event.hpp"
+#include "tools/event/application_event.hpp"
+#include "tools/event/key_event.hpp"
+#include "tools/event/mouse_event.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -366,9 +366,8 @@ void WindowImpl::glfw_setup_callback() {
         data.m_position.second = ypos;
         // Produce event
         auto event = CreateRef<WindowMovedEvent>(WindowMovedEvent(xpos, ypos));
-        data.eventDispatcher.publish_event(event);
         // Publish to application
-        data.eventDispatcher.dispatch();
+        data.eventDispatcher.dispatch(event);
       });
 
   glfwSetWindowSizeCallback(m_glfw_window_, [](GLFWwindow* window, int width,
@@ -378,18 +377,16 @@ void WindowImpl::glfw_setup_callback() {
     data.m_size.second = height;
     // Produce event
     auto event = CreateRef<WindowResizeEvent>(WindowResizeEvent(width, height));
-    data.eventDispatcher.publish_event(event);
     // Publish to application
-    data.eventDispatcher.dispatch();
+    data.eventDispatcher.dispatch(event);
   });
 
   glfwSetWindowCloseCallback(m_glfw_window_, [](GLFWwindow* window) {
     WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
     auto event = CreateRef<WindowCloseEvent>(WindowCloseEvent());
-    data.eventDispatcher.publish_event(event);
-
-    data.eventDispatcher.dispatch();
+    // Publish to application
+    data.eventDispatcher.dispatch(event);
   });
 
   glfwSetKeyCallback(m_glfw_window_, [](GLFWwindow* window, int key,
@@ -406,21 +403,23 @@ void WindowImpl::glfw_setup_callback() {
       switch (action) {
         case GLFW_PRESS: {
           auto event = CreateRef<KeyPressedEvent>(KeyPressedEvent(key, 0));
-          data.eventDispatcher.publish_event(event);
+          // Publish to application
+          data.eventDispatcher.dispatch(event);
           break;
         }
         case GLFW_RELEASE: {
           auto event = CreateRef<KeyReleasedEvent>(KeyReleasedEvent(key));
-          data.eventDispatcher.publish_event(event);
+          // Publish to application
+          data.eventDispatcher.dispatch(event);
           break;
         }
         case GLFW_REPEAT: {
           auto event = CreateRef<KeyPressedEvent>(KeyPressedEvent(key, 1));
-          data.eventDispatcher.publish_event(event);
+          // Publish to application
+          data.eventDispatcher.dispatch(event);
           break;
         }
       }
-      data.eventDispatcher.dispatch();
     }
   });
 
@@ -436,9 +435,8 @@ void WindowImpl::glfw_setup_callback() {
           WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
           auto event = CreateRef<KeyTypedEvent>(KeyTypedEvent(keycode));
-          data.eventDispatcher.publish_event(event);
-
-          data.eventDispatcher.dispatch();
+          // Publish to application
+          data.eventDispatcher.dispatch(event);
         }
       });
 
@@ -457,17 +455,18 @@ void WindowImpl::glfw_setup_callback() {
             case GLFW_PRESS: {
               auto event = CreateRef<MouseButtonPressedEvent>(
                   MouseButtonPressedEvent(button));
-              data.eventDispatcher.publish_event(event);
+              // Publish to application
+              data.eventDispatcher.dispatch(event);
               break;
             }
             case GLFW_RELEASE: {
               auto event = CreateRef<MouseButtonReleasedEvent>(
                   MouseButtonReleasedEvent(button));
-              data.eventDispatcher.publish_event(event);
+              // Publish to application
+              data.eventDispatcher.dispatch(event);
               break;
             }
           }
-          data.eventDispatcher.dispatch();
         }
       });
 
@@ -484,9 +483,8 @@ void WindowImpl::glfw_setup_callback() {
 
           auto event = CreateRef<MouseScrolledEvent>(
               MouseScrolledEvent((float)xOffset, (float)yOffset));
-          data.eventDispatcher.publish_event(event);
-
-          data.eventDispatcher.dispatch();
+          // Publish to application
+          data.eventDispatcher.dispatch(event);
         }
       });
 
@@ -503,9 +501,8 @@ void WindowImpl::glfw_setup_callback() {
 
       auto event =
           CreateRef<MouseMovedEvent>(MouseMovedEvent((float)xPos, (float)yPos));
-      data.eventDispatcher.publish_event(event);
-
-      data.eventDispatcher.dispatch();
+      // Publish to application
+      data.eventDispatcher.dispatch(event);
     }
   });
 }

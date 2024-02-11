@@ -2,8 +2,8 @@
 
 #include <algorithm>
 
-#include "resource/random.hpp"
 #include "core/base.hpp"
+#include "tools/math/random.hpp"
 
 namespace xuzy {
 

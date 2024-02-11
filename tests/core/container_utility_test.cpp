@@ -1,7 +1,7 @@
-#include "helper/container_utility.hpp"
+#include "tools/utils/container_utility.hpp"
 
 #include <gtest/gtest.h>
-#include "resource/random.hpp"
+#include "tools/math/random.hpp"
 
 using namespace xuzy;
 

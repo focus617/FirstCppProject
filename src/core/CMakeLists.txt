@@ -16,6 +16,7 @@ aux_source_directory(. _SOURCES)
 
 # 添加子目录
 add_subdirectory(cpp)
+add_subdirectory(tools)
 add_subdirectory(window)
 add_subdirectory(include/resource)
 

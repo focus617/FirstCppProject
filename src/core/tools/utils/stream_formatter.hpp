@@ -33,7 +33,7 @@
 #include <version>
 
 #include "core/visibility_control.hpp"
-#include "helper/char_encoding.h"
+#include "char_encoding.h"
 
 namespace xuzy {
 

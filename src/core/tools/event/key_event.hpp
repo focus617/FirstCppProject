@@ -2,8 +2,8 @@
 
 #include <sstream>
 
-#include "event/event.hpp"
-#include "window/core/inputs/key_codes.hpp"
+#include "event.hpp"
+#include "window/core/inputs/key_codes.h"
 
 namespace xuzy {
 

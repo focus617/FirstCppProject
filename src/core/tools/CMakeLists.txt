@@ -1,8 +1,9 @@
 # 添加子目录
-add_subdirectory(core)
-add_subdirectory(app)
-add_subdirectory(classloader)
-add_subdirectory(plugin)
+add_subdirectory(event)
+add_subdirectory(file_system)
+add_subdirectory(math)
+add_subdirectory(time)
+add_subdirectory(utils)
 
 #添加子目录的源文件给_SUB_SOURCES
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}  _SUB_SOURCES)

@@ -3,10 +3,10 @@
 #include "pch.h"
 
 #include "app/app.hpp"
-#include "event/application_event.hpp"
-#include "window/glfw_imgui/imgui_layer.hpp"
+#include "tools/event/application_event.hpp"
 #include "window/core/layerstack.hpp"
 #include "window/core/window.hpp"
+#include "window/glfw_imgui/imgui_layer.hpp"
 
 namespace xuzy {
 
@@ -34,7 +34,7 @@ class XUZY_API WindowApp : public App {
   }
 
   XUZY_API void close() { m_running_ = false; }
-  
+
  protected:
   XUZY_API void launch_tasks() override;
   XUZY_API void main_loop() override;

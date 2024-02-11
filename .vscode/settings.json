@@ -83,11 +83,12 @@
         "ranges": "cpp",
         "csetjmp": "cpp",
         "shared_mutex": "cpp",
+        "*.hpp": "cpp",
         "*.inc": "cpp",
         "*.in": "cpp",
         "version": "cpp",
         "source_location": "cpp",
-        "char_encoding.h": "c"
+        "*.h": "c"
     },
     "editor.wordWrap": "wordWrapColumn",
     "editor.wrappingIndent": "same",

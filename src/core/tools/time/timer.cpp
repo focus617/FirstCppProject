@@ -1,6 +1,6 @@
 #include "pch.h"
 
-#include "helper/timer.hpp"
+#include "timer.hpp"
 
 std::ostream& xuzy::operator<<(std::ostream& stream, const xuzy::Timer& timer) {
   stream << timer.m_duration.count() * 1000.0f << "ms";
