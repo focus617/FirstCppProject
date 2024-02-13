@@ -16,7 +16,7 @@ class Button {
 
  public:
   // EventHandler:  void(*func)(oid(Ref<Event>, bool&)
-  xuzy::EventDispatcher<void()> eventDispatcher;
+  xuzy::EventDispatcher<void()> event_dispatcher;
 };
 
 // 一个能够处理事件的静态函数
@@ -90,12 +90,12 @@ TEST_F(EventDispatcher_Test_Fixture, event_on_static_func) {
   checker = false;
 
   // When: 静态函数做委托函数
-  button.eventDispatcher += EventHandler;
+  button.event_dispatcher += EventHandler;
   EXPECT_EQ(false, checker);
   EXPECT_EQ(false, event->m_handled);
 
   // Then
-  button.eventDispatcher.dispatch(event);
+  button.event_dispatcher.dispatch(event);
   EXPECT_EQ(true, checker);
   EXPECT_EQ(true, event->m_handled);
 }
@@ -106,12 +106,12 @@ TEST_F(EventDispatcher_Test_Fixture, event_on_class_member_func) {
 
   // When: 成员函数做委托函数
   Example example;
-  button.eventDispatcher += EXAMPLE_BIND_EVENT_FN(example);
+  button.event_dispatcher += EXAMPLE_BIND_EVENT_FN(example);
   EXPECT_EQ(false, checker);
   EXPECT_EQ(false, event->m_handled);
 
   // Then
-  button.eventDispatcher.dispatch(event);
+  button.event_dispatcher.dispatch(event);
   EXPECT_EQ(true, checker);
   EXPECT_EQ(true, event->m_handled);
 }
@@ -121,7 +121,7 @@ TEST_F(EventDispatcher_Test_Fixture, event_on_lambda_func) {
   checker = false;
 
   // When: 匿名函数做委托函数
-  button.eventDispatcher += [](Ref<Event> evt, bool& handled) {
+  button.event_dispatcher += [](Ref<Event> evt, bool& handled) {
     checker = true;  // modify global static variable
 
     handled = false;
@@ -139,7 +139,7 @@ TEST_F(EventDispatcher_Test_Fixture, event_on_lambda_func) {
   EXPECT_EQ(false, event->m_handled);
 
   // Then
-  button.eventDispatcher.dispatch(event);
+  button.event_dispatcher.dispatch(event);
   EXPECT_EQ(true, checker);
   EXPECT_EQ(true, event->m_handled);
 }
@@ -148,19 +148,19 @@ TEST_F(EventDispatcher_Test_Fixture, handler_count) {
   // Given
 
   // When: 静态函数做委托函数
-  button.eventDispatcher += EventHandler;
+  button.event_dispatcher += EventHandler;
   // Then
-  EXPECT_EQ(1, button.eventDispatcher.handler_count());
+  EXPECT_EQ(1, button.event_dispatcher.handler_count());
 
   // When: 成员函数做委托函数
   Example example;
-  button.eventDispatcher += EXAMPLE_BIND_EVENT_FN(example);
+  button.event_dispatcher += EXAMPLE_BIND_EVENT_FN(example);
 
   // Then
-  EXPECT_EQ(2, button.eventDispatcher.handler_count());
+  EXPECT_EQ(2, button.event_dispatcher.handler_count());
 
   // When: 匿名函数做委托函数
-  button.eventDispatcher += [](Ref<Event> evt, bool& handled) {
+  button.event_dispatcher += [](Ref<Event> evt, bool& handled) {
     checker = true;  // modify global static variable
 
     handled = false;
@@ -176,21 +176,21 @@ TEST_F(EventDispatcher_Test_Fixture, handler_count) {
   };
 
   // Then
-  EXPECT_EQ(3, button.eventDispatcher.handler_count());
+  EXPECT_EQ(3, button.event_dispatcher.handler_count());
 }
 
 TEST_F(EventDispatcher_Test_Fixture, clear_handler) {
   // Given
 
   // 静态函数做委托函数
-  button.eventDispatcher += EventHandler;
+  button.event_dispatcher += EventHandler;
 
   // 成员函数做委托函数
   Example example;
-  button.eventDispatcher += EXAMPLE_BIND_EVENT_FN(example);
+  button.event_dispatcher += EXAMPLE_BIND_EVENT_FN(example);
 
   // 匿名函数做委托函数
-  button.eventDispatcher += [](Ref<Event> evt, bool& handled) {
+  button.event_dispatcher += [](Ref<Event> evt, bool& handled) {
     checker = true;  // modify global static variable
 
     handled = false;
@@ -204,10 +204,10 @@ TEST_F(EventDispatcher_Test_Fixture, clear_handler) {
         break;
     }
   };
-  EXPECT_EQ(3, button.eventDispatcher.handler_count());
+  EXPECT_EQ(3, button.event_dispatcher.handler_count());
 
   // When
-  button.eventDispatcher.clear_handlers();
+  button.event_dispatcher.clear_handlers();
   // Then
-  EXPECT_EQ(0, button.eventDispatcher.handler_count());
+  EXPECT_EQ(0, button.event_dispatcher.handler_count());
 }

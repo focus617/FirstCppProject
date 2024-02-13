@@ -17,15 +17,12 @@ using TimeInMillis = int64_t;  // Represents time in milliseconds.
  * @brief A helper class for measuring elapsed times.
  */
 class XUZY_API Timer {
-  friend std::ostream& operator<<(std::ostream& stream, const Timer& timer);
-
- private:
-  std::chrono::time_point<std::chrono::system_clock> m_start, m_end;
-  std::chrono::duration<float> m_duration;
-
  public:
   XUZY_API Timer() { m_start = std::chrono::high_resolution_clock::now(); }
 
+  /**
+   * @brief Return the time elapsed since clock creation
+   */
   XUZY_API ~Timer() {
     peek();
 
@@ -33,13 +30,13 @@ class XUZY_API Timer {
   }
 
   /**
-   * @brief reset the timer and  restart
+   * @brief Reset the timer and restart
    */
   XUZY_API
   void mark() { m_start = std::chrono::high_resolution_clock::now(); }
 
   /**
-   * @brief measure time elapsed since timer was created or marked
+   * @brief Measure time elapsed since timer was created or marked
    */
   XUZY_API
   void peek() {
@@ -48,11 +45,17 @@ class XUZY_API Timer {
   }
 
   /**
-   * @brief return elapse time in millisecond
+   * @brief Return elapse time in millisecond
    */
   float count_in_ms() { return m_duration.count() * 1000.0f; }
 
   static const std::string get_current_timestamp();
+
+  friend std::ostream& operator<<(std::ostream& stream, const Timer& timer);
+
+ private:
+  std::chrono::time_point<std::chrono::system_clock> m_start, m_end;
+  std::chrono::duration<float> m_duration;
 };
 
 std::ostream& operator<<(std::ostream& stream, const Timer& timer);

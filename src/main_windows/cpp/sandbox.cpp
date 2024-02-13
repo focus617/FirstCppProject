@@ -1,5 +1,4 @@
 #include "core.h"
-#include "core/window/glfw_imgui/imgui_layer.hpp"
 #include "window/core/window_app.hpp"
 
 using namespace xuzy;
@@ -8,7 +7,6 @@ class Sandbox : public WindowApp {
  public:
   Sandbox(const std::string& t_app_name, const std::string& t_version)
       : WindowApp{std::move(t_app_name), std::move(t_version)} {
-    // push_layer<ExampleLayer>();
   }
 
   ~Sandbox() {}

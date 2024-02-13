@@ -1,7 +1,7 @@
 # 添加子目录
 add_subdirectory(event)
 add_subdirectory(file_system)
-add_subdirectory(math)
+add_subdirectory(maths)
 add_subdirectory(time)
 add_subdirectory(utils)
 

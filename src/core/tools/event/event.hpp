@@ -30,6 +30,10 @@ enum class EventId {
   MouseButtonReleased,
   MouseMoved,
   MouseScrolled,
+  DrawableClicked = 60,
+  DrawableOpened,
+  DrawableClosed,
+  MenuValueChanged,
   EventIdCount
 };
 
@@ -43,7 +47,8 @@ enum EventCategory {
   EventCategoryInput = BIT(1),
   EventCategoryKeyboard = BIT(2),
   EventCategoryMouse = BIT(3),
-  EventCategoryMouseButton = BIT(4)
+  EventCategoryMouseButton = BIT(4),
+  EventCategoryDrawable = BIT(5)
 };
 
 // get_event_id() is used for dispatching

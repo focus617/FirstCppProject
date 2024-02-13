@@ -2,8 +2,6 @@ set(CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/install")
 # Import extern Libraries
 find_package(glog REQUIRED)
 find_package(glfw3 REQUIRED)
-# find_package(glad REQUIRED)
-find_package(imgui REQUIRED)
 
 # Import nlohmann_json
 find_package(nlohmann_json 3.11.3 REQUIRED)
@@ -18,6 +16,7 @@ aux_source_directory(. _SOURCES)
 add_subdirectory(cpp)
 add_subdirectory(tools)
 add_subdirectory(window)
+add_subdirectory(ui)
 add_subdirectory(include/resource)
 
 # 生成动态链接库
@@ -30,11 +29,11 @@ target_compile_definitions(core PRIVATE NDEBUG _DEBUG)
 
 # 添加编译选项
 if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
-  set(MY_DEBUG_OPTIONS -Wall -Werror -Wextra -Wshadow -pedantic -Wfloat-equal -Wno-unused-parameter -Wmain -fstack-usage -g3)
+  set(MY_DEBUG_OPTIONS -Wall -Werror -Wextra -Wshadow -pedantic -Wno-unused-parameter -Wmain -fstack-usage -g3)
   set(MY_RELEASE_OPTIONS -O2)
 
 elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
-  set(MY_DEBUG_OPTIONS -Wall -Wconversion -Wdouble-promotion -Weffc++ -Wextra -Wfloat-equal -Wmain -Wshadow -pedantic -g3)
+  set(MY_DEBUG_OPTIONS -Wall -Wconversion -Wdouble-promotion -Weffc++ -Wextra  -Wmain -Wshadow -pedantic -g3)
   set(MY_RELEASE_OPTIONS -O2)
 
 elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
@@ -56,16 +55,6 @@ set(GLFW_INCLUDE_DIR
   CACHE PATH "GLFW include directory"
 )
 
-# set(GLAD_INCLUDE_DIR
-#   ${PROJECT_SOURCE_DIR}/extern/glad/include
-#   CACHE PATH "GLAD include directory"
-# )
-
-set(IMGUI_INCLUDE_DIR
-  ${PROJECT_SOURCE_DIR}/extern/imgui-docking
-  CACHE PATH "IMGUI include directory"
-)
-
 set(STBIMAGE_INCLUDE_DIR
   ${PROJECT_SOURCE_DIR}/extern/stb_image
   CACHE PATH "STB IMAGE include directory"
@@ -81,8 +70,6 @@ target_include_directories(core
     ${PROJECT_BINARY_DIR}/src
     ${NLOHMANN_JSON_INCLUDE_DIR}
     ${GLFW_INCLUDE_DIR}
-    # ${GLAD_INCLUDE_DIR}
-    ${IMGUI_INCLUDE_DIR}
     ${STBIMAGE_INCLUDE_DIR}
 )
 
@@ -98,8 +85,6 @@ target_link_libraries(core
     nlohmann_json::nlohmann_json
     resource
     glfw
-    # glad
-    imgui
     ${GL_LIBRARY}  #opengl lib
 )
 

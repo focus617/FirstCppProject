@@ -14,7 +14,7 @@ namespace xuzy::Window {
  * @brief Platform independent interface representing a desktop system based
  * Window
  */
-class XUZY_API Window {
+class XUZY_API AWindow {
  public:
   // EventHandler Signature:  void(*func)(Ref<Event>, bool&)
   using EventCallbackFn = std::function<void(Ref<Event>, bool&)>;
@@ -22,7 +22,7 @@ class XUZY_API Window {
   /**
    * @brief Destructor of the window
    */
-  virtual ~Window() {}
+  virtual ~AWindow() {}
 
   /**
    * @brief Return the current size of the window
@@ -38,11 +38,10 @@ class XUZY_API Window {
   virtual void set_event_callback(const EventCallbackFn& callback) = 0;
 
   // EventDispatcher for Window
-  xuzy::EventDispatcher<void()> eventDispatcher;
+  xuzy::EventDispatcher<void()> event_dispatcher;
 
-  static Window* Create(const WindowProps& props = WindowProps());
+  // To be defined in concrete window class
+  static AWindow* Create(const WindowProps& props = WindowProps());
 };
-
-// To be defined in concrete window class
 
 }  // namespace xuzy::Window

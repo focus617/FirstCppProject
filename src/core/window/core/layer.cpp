@@ -4,8 +4,8 @@
 
 namespace xuzy::Window {
 
-Layer::Layer(const std::string& debugName) : m_debug_name_(debugName) {}
+ALayer::ALayer(const std::string& debugName) : m_debug_name_(debugName) {}
 
-Layer::~Layer() {}
+ALayer::~ALayer() {}
 
 }  // namespace xuzy::Window

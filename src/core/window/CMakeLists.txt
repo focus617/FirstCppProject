@@ -1,7 +1,6 @@
 # 添加子目录
 add_subdirectory(core)
-add_subdirectory(glfw_imgui)
-add_subdirectory(backend)
+add_subdirectory(backend_glfw)
 
 #添加子目录的源文件给_SUB_SOURCES
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}  _SUB_SOURCES)

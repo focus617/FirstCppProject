@@ -1,6 +1,8 @@
 #include "window_app.hpp"
 
-#include "window/glfw_imgui/example_layer.hpp"
+#include "ui/core/canvas.hpp"
+#include "ui/panels/panel_menubar.hpp"
+#include "window/backend_glfw/window_impl.hpp"
 
 namespace xuzy {
 
@@ -10,14 +12,24 @@ namespace xuzy {
 WindowApp::WindowApp(const std::string& t_app_name,
                      const std::string& t_version)
     : App{std::move(t_app_name), std::move(t_version)} {
-  p_window_ = std::unique_ptr<Window::Window>(
-      Window::Window::Create(Window::WindowProps(t_app_name)));
-  p_window_->set_event_callback(BIND_EVENT_FN(on_event));
+  m_window_ = std::unique_ptr<Window::AWindow>(
+      Window::AWindow::Create(Window::WindowProps(t_app_name)));
 
-  p_imgui_layer = CreateRef<Window::ImGuiLayer>();
-  m_layerstack_.push_overlay(p_imgui_layer);
+  m_window_->set_event_callback(BIND_EVENT_FN(on_event));
 
-  push_layer<Window::ExampleLayer>();
+  GLFWwindow* window =
+      ((Window::WindowImpl&)(get_window())).get_native_window();
+
+  // Decide GL+GLSL versions
+  std::string glsl_version = "#version 460";  // GL 4.6
+
+  m_ui_manager_ = CreateRef<UI::UIManager>(window, glsl_version,
+                                              UI::Style::IMGUI_DARK_STYLE);
+  m_layerstack_.push_overlay(m_ui_manager_);
+
+  Ref<UI::Canvas> canvas = CreateRef<UI::Canvas>();
+
+  m_layerstack_.push_layer(canvas);
 }
 
 WindowApp::~WindowApp() { close(); }
@@ -27,13 +39,13 @@ void WindowApp::launch_tasks() {}
 void WindowApp::main_loop() {
   while (m_running_) {
     if (!m_minimized_) {
-      for (Ref<Window::Layer> layer : m_layerstack_) layer->on_update();
+      for (Ref<Window::ALayer> layer : m_layerstack_) layer->on_update();
 
-      p_imgui_layer->begin_render();
-      for (Ref<Window::Layer> layer : m_layerstack_) layer->on_imgui_render();
-      p_imgui_layer->end_render();
+      m_ui_manager_->begin_render();
+      for (Ref<Window::ALayer> layer : m_layerstack_) layer->on_draw();
+      m_ui_manager_->end_render();
     }
-    p_window_->on_update();
+    m_window_->on_update();
   }
 }
 
