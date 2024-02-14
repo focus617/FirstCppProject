@@ -9,7 +9,7 @@ namespace xuzy::UI::Panels {
  */
 class PanelMenuBar : public APanel {
  protected:
-  void _draw_impl() override;
+  void _on_draw_impl() override;
 };
 
 }  // namespace xuzy::UI::Panels

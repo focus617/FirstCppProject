@@ -29,10 +29,6 @@ class XUZY_API AWindow {
    */
   virtual std::pair<uint16_t, uint16_t> get_size() const = 0;
 
-  // Window attributes
-  virtual void set_vsync(bool enabled) = 0;
-  virtual bool is_vsync() const = 0;
-
   virtual void on_update() = 0;
 
   virtual void set_event_callback(const EventCallbackFn& callback) = 0;

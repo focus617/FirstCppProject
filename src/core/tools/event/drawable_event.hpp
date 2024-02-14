@@ -33,6 +33,20 @@ class DrawableClickedEvent : public DrawableEvent {
   EVENT_CLASS_ID(DrawableClicked)
 };
 
+class DrawableDoubleClickedEvent : public DrawableEvent {
+ public:
+  DrawableDoubleClickedEvent(Ref<Window::API::IDrawable> publisher)
+      : DrawableEvent(publisher) {}
+
+  std::string to_string() const override {
+    std::stringstream ss;
+    ss << "DrawableDoubleClickedEvent";
+    return ss.str();
+  }
+
+  EVENT_CLASS_ID(DrawableDoubleClicked)
+};
+
 class DrawableOpenedEvent : public DrawableEvent {
  public:
   DrawableOpenedEvent(Ref<Window::API::IDrawable> publisher)

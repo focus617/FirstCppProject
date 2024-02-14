@@ -5,6 +5,7 @@
 #include <nlohmann/json.hpp>
 
 #include "argsparser.hpp"
+#include "context.hpp"
 
 using json = nlohmann::json;
 
@@ -19,7 +20,16 @@ class XUZY_LOCAL AppImpl;
  */
 class XUZY_API App {
  public:
-  App(const std::string& t_app_name, const std::string& t_version);
+  /**
+   * @brief Constructor
+   * @param p_app_name
+   * @param p_version
+   */
+  App(const std::string& p_app_name, const std::string& p_version);
+
+  /**
+   * @brief Destructor
+   */
   virtual ~App();
 
   /**
@@ -34,10 +44,14 @@ class XUZY_API App {
    */
   void main(int argc, char* argv[]);
 
-  // Accessors for singleton instance.
+  /**
+   * @brief Accessors for singleton instance.
+   */
   inline static App& get() { return *s_instance_; }
 
-  // Accessors for the implementation object.
+  /**
+   * @brief Accessors for the implementation object.
+   */
   inline static internal::AppImpl* get_impl() { return p_impl_; }
 
  protected:
@@ -50,17 +64,16 @@ class XUZY_API App {
   XUZY_API virtual void load_conf(const std::string& filename);
   XUZY_API virtual void setup();
   XUZY_API virtual void launch_tasks() = 0;
+
+  /**
+   * Run the app main loop
+   */
   XUZY_API virtual void main_loop() = 0;
 
   XUZY_API virtual void dumpError(std::string error);
 
  private:
-  struct ApplicationSpecification {
-    std::string m_app_name_;
-    std::string m_version_;
-  };
-  
-  ApplicationSpecification m_specification_;
+  Core::Context m_context_;
   ArgsParser* p_cli_parser_;
 
   static App* s_instance_;

@@ -5,6 +5,7 @@
 #include "window/core/cursor/cursor_mode.h"
 #include "window/core/cursor/cursor_shape.h"
 #include "window/core/window.hpp"
+#include "window/backend_glfw/monitor.hpp"
 
 namespace xuzy::Window {
 
@@ -194,22 +195,6 @@ class XUZY_API WindowImpl : public AWindow {
   std::pair<uint16_t, uint16_t> get_framebuffer_size() const;
 
   /**
-   * @brief Return the current refresh rate (Only applied to the fullscreen
-   * mode). If the value is -1 (WindowSettings::DontCare) the highest refresh
-   * rate will be used
-   */
-  int32_t get_refreshRate() const;
-
-  /**
-   * @brief Defines a refresh rate (Use WindowSettings::DontCare to use the
-   * highest available refresh rate)
-   * @param p_refresh_rate
-   * @note You need to switch to fullscreen mode to apply this effect (Or leave
-   * fullscreen and re-apply)
-   */
-  void set_refreshRate(int32_t p_refresh_rate);
-
-  /**
    * @brief Return an instance of GLFWcursor corresponding to the given shape
    * @param p_cursorShape
    */
@@ -231,10 +216,6 @@ class XUZY_API WindowImpl : public AWindow {
    * @brief Move the cursor to the given position
    */
   void set_cursor_position(int16_t p_x, int16_t p_y);
-
-  // Window attributes
-  virtual void set_vsync(bool enabled) override;
-  virtual bool is_vsync() const override;
 
   virtual void on_update() override;
 
@@ -262,6 +243,9 @@ class XUZY_API WindowImpl : public AWindow {
 
   void glfw_update_size_limit() const;
 
+ public:
+  Monitor m_monitor;
+
  private:
   GLFWwindow* m_glfw_window_ = nullptr;
   std::unordered_map<Cursor::CursorShape, GLFWcursor*> m_cursors_;
@@ -274,8 +258,6 @@ class XUZY_API WindowImpl : public AWindow {
     std::pair<int16_t, int16_t> m_minimum_size;
     std::pair<int16_t, int16_t> m_maximum_size;
     bool m_fullscreen;
-    bool m_vsync;
-    int32_t m_refresh_rate;
     Cursor::CursorMode m_cursor_mode;
     Cursor::CursorShape m_cursor_shape;
 
@@ -284,14 +266,6 @@ class XUZY_API WindowImpl : public AWindow {
 
   WindowData m_data_;
 
-  /* GLFW Context */
-  struct GlfwContext {
-    uint8_t m_major_version;
-    uint8_t m_minor_version;
-    bool m_debug_profile;
-  };
-
-  GlfwContext m_glfw_context_;
 };
 
 }  // namespace xuzy::Window

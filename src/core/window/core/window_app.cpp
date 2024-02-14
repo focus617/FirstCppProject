@@ -17,13 +17,13 @@ WindowApp::WindowApp(const std::string& t_app_name,
 
   m_window_->set_event_callback(BIND_EVENT_FN(on_event));
 
-  GLFWwindow* window =
-      ((Window::WindowImpl&)(get_window())).get_native_window();
+  Window::WindowImpl& window = (Window::WindowImpl&)get_window();
+  GLFWwindow* glfw_window = window.get_native_window();
 
   // Decide GL+GLSL versions
   std::string glsl_version = "#version 460";  // GL 4.6
 
-  m_ui_manager_ = CreateRef<UI::UIManager>(window, glsl_version,
+  m_ui_manager_ = CreateRef<UI::UIManager>(glfw_window, glsl_version,
                                               UI::Style::IMGUI_DARK_STYLE);
   m_layerstack_.push_overlay(m_ui_manager_);
 

@@ -1,4 +1,4 @@
-#include "ui/widgets/layout/group_collapsable.h"
+#include "ui/widgets/layout/group_collapsable.hpp"
 #include "ui/imgui/imgui_internal.h"
 #include "tools/event/drawable_event.hpp"
 

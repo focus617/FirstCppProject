@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "tools/event/event_dispatcher.hpp"
-#include "ui/widgets/layout/group.h"
+#include "ui/widgets/layout/group.hpp"
 
 namespace xuzy::UI::Widgets::Layout
 {
@@ -31,8 +31,6 @@ namespace xuzy::UI::Widgets::Layout
 		std::string name;
 		bool closable = false;
 		bool opened = true;
-		// OvTools::Eventing::Event<> CloseEvent;
-		// OvTools::Eventing::Event<> OpenEvent;
 		EventDispatcher<void()> event_dispatcher;
 	};
 }

@@ -31,7 +31,7 @@ class APanel : public xuzy::Window::API::IDrawable,
   const std::string& get_panel_id() const;
 
  protected:
-  virtual void _draw_impl() = 0;
+  virtual void _on_draw_impl() = 0;
 
  public:
   bool m_enabled = true;

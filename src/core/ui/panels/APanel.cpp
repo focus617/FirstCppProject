@@ -11,7 +11,7 @@ APanel::APanel() {
 }
 
 void APanel::on_draw() {
-  if (m_enabled) _draw_impl();
+  if (m_enabled) _on_draw_impl();
 }
 
 const std::string& APanel::get_panel_id() const {

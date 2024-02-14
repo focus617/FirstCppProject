@@ -31,6 +31,7 @@ enum class EventId {
   MouseMoved,
   MouseScrolled,
   DrawableClicked = 60,
+  DrawableDoubleClicked,
   DrawableOpened,
   DrawableClosed,
   MenuValueChanged,

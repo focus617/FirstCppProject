@@ -4,7 +4,7 @@
 
 namespace xuzy::UI::Panels {
 
-void PanelMenuBar::_draw_impl()
+void PanelMenuBar::_on_draw_impl()
 {
 	if (!m_widgets.empty() && ImGui::BeginMainMenuBar())
 	{

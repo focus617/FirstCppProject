@@ -1,9 +1,11 @@
 #include <core.h>
 
 #include "app/app.hpp"
+#include "tools/file_system/path_parser.hpp"
 
 extern xuzy::App* xuzy::CreateApplication();
 
+void update_working_directory(const std::string& p_executable_path);
 void init_logger(const char* argv0);
 void close_logger();
 
@@ -25,6 +27,16 @@ int main(int argc, char* argv[]) {
   return EXIT_SUCCESS;
 }
 
+/**
+ * @brief When launching from a executable file, we should consider the
+ * executable path as the current working directory.
+ * @param p_executablePath
+ */
+void update_working_directory(const std::string& p_executable_path) {
+  std::filesystem::current_path(
+      xuzy::Tools::FileSystem::PathParser::get_containing_folder(
+          p_executable_path));
+}
 
 void init_logger(const char* argv0) {
   // Initialize Google’s logging library.
