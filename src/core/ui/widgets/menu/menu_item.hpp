@@ -29,13 +29,15 @@ class MenuItem : public DataWidget<bool>,
  protected:
   virtual void _on_draw_impl() override;
 
+ public:
+  EventDispatcher<void()> event_dispatcher;
+  
  private:
   std::string name;
   std::string shortcut;
   bool checkable;
   bool checked;
   bool selected;
-  EventDispatcher<void()> event_dispatcher;
 };
 
 }  // namespace xuzy::UI::Widgets::Menu

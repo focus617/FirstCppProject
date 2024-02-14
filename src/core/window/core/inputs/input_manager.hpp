@@ -16,19 +16,19 @@ class XUZY_API InputManager {
   virtual ~InputManager() {}
 
   /**
-   * Return the current state of the given key
+   * @brief Return the current state of the given key
    * @param p_key
    */
-  Key::KeyState get_key_state(KeyCode p_key) const {
-    return s_instance_->get_key_state(p_key);
+  static Key::KeyState get_key_state(KeyCode p_key) {
+    return s_instance_->get_key_state_impl(p_key);
   }
 
   /**
-   * Return the current state of the given mouse button
+   * @brief Return the current state of the given mouse button
    * @param p_button
    */
-  Mouse::MouseButtonState get_mouse_button_state(MouseCode p_button) const {
-    return s_instance_->get_mouse_button_state(p_button);
+  static Mouse::MouseButtonState get_mouse_button_state(MouseCode p_button) {
+    return s_instance_->get_mouse_button_state_impl(p_button);
   }
   /**
    * @brief Return true if the given p_key has been pressed during the frame

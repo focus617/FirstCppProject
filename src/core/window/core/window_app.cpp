@@ -1,6 +1,6 @@
 #include "window_app.hpp"
 
-#include "ui/core/canvas.hpp"
+#include "ui/core/panel_manager.hpp"
 #include "ui/panels/panel_menubar.hpp"
 #include "window/backend_glfw/window_impl.hpp"
 
@@ -24,12 +24,13 @@ WindowApp::WindowApp(const std::string& t_app_name,
   std::string glsl_version = "#version 460";  // GL 4.6
 
   m_ui_manager_ = CreateRef<UI::UIManager>(glfw_window, glsl_version,
-                                              UI::Style::IMGUI_DARK_STYLE);
+                                           UI::Style::IMGUI_DARK_STYLE);
   m_layerstack_.push_overlay(m_ui_manager_);
 
-  Ref<UI::Canvas> canvas = CreateRef<UI::Canvas>();
+  Ref<UI::PanelManager> panel_manager = CreateRef<UI::PanelManager>();
+  panel_manager->CreatePanel<UI::Panels::PanelMenuBar>("MainMenuBar");
 
-  m_layerstack_.push_layer(canvas);
+  m_layerstack_.push_layer(panel_manager);
 }
 
 WindowApp::~WindowApp() { close(); }
@@ -42,7 +43,8 @@ void WindowApp::main_loop() {
       for (Ref<Window::ALayer> layer : m_layerstack_) layer->on_update();
 
       m_ui_manager_->begin_render();
-      for (Ref<Window::ALayer> layer : m_layerstack_) layer->on_draw();
+      // for (Ref<Window::ALayer> layer : m_layerstack_) layer->on_draw();
+      m_layerstack_.on_draw();
       m_ui_manager_->end_render();
     }
     m_window_->on_update();

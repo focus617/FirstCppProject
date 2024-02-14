@@ -6,6 +6,7 @@
 #include "tools/event/key_event.hpp"
 #include "tools/event/mouse_event.hpp"
 #include "ui/imgui/imgui.h"
+#include "ui/core/canvas.hpp"
 #include "ui/style/style.h"
 #include "window/core/layer.hpp"
 
@@ -40,14 +41,12 @@ class XUZY_API UIManager : public xuzy::Window::ALayer {
    */
   virtual void on_detach() override;
 
-  virtual void on_draw() override {}
+  virtual void on_draw() override;
   virtual void on_update() override;
   virtual void on_event(Ref<Event> event, bool& handled) override;
 
   void begin_render();
   void end_render();
-
-  void show_app_main_menubar();
 
  private:
   bool on_mouse_button_pressed_event(Ref<MouseButtonPressedEvent> e);
@@ -144,18 +143,20 @@ class XUZY_API UIManager : public xuzy::Window::ALayer {
   float get_layout_auto_save_frequency(float p_frequeny);
 
  private:
+  std::string m_layout_config_filename = "imgui.ini";
+
   GLFWwindow* m_glfw_window_;
   std::string m_glsl_version_;
   UI::Style m_style_;
 
+  UI::Canvas m_canvas_;
+
   std::unordered_map<std::string, ImFont*> m_fonts_;
   float m_font_size_pixels_ = 18.0f;
 
-  std::string m_layout_config_filename = "imgui.ini";
-
   ImVec4 m_clear_color_ = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-  bool m_enable_docking = true;
+  bool m_enable_docking = false;
 
   float m_time_ = 0.0f;
 };

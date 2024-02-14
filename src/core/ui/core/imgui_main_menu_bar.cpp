@@ -24,7 +24,7 @@ static void ShowMenuFile();
 // Demonstrate creating a "main" fullscreen menu bar and populating it.
 // BeginMainMenuBar() = helper to create menu-bar-sized window at the
 // top of the main viewport + call BeginMenuBar() into it.
-void UIManager::show_app_main_menubar() {
+void show_app_main_menubar() {
   if (ImGui::BeginMainMenuBar()) {
     if (ImGui::BeginMenu("File")) {
       ShowMenuFile();

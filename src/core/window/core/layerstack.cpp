@@ -41,4 +41,10 @@ void LayerStack::pop_overlay(const Ref<ALayer>& overlay) {
   }
 }
 
+void LayerStack::on_draw(){
+  for (auto it = rbegin(); it != rend(); ++it) {
+      (*it)->on_draw();
+  }
+}
+
 }  // namespace xuzy::Window

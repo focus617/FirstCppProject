@@ -9,6 +9,8 @@ void EventDispatcher<ReturnType(Args...)>::dispatch(Ref<Event> event,
                                                     Args... args) {
   std::lock_guard<std::mutex> guard_mutex(m_mutex_);
 
+  if (m_handlers_.empty()) return;
+
   for (const auto& [key, handler] : m_handlers_) {
     bool handled = false;
     handler->invoke(event, handled, args...);

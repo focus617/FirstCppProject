@@ -3,8 +3,8 @@
 namespace xuzy::UI::Settings
 {
 	/**
-	* Data structure to send to the panel window constructor to
-	* define its settings
+	* @brief Data structure to send to the panel window constructor
+	* to define its settings
 	*/
 	struct PanelWindowSettings
 	{
@@ -13,15 +13,15 @@ namespace xuzy::UI::Settings
 		bool movable					= true;
 		bool dockable					= false;
 		bool scrollable					= true;
-		bool hideBackground				= false;
-		bool forceHorizontalScrollbar	= false;
-		bool forceVerticalScrollbar		= false;
-		bool allowHorizontalScrollbar	= false;
-		bool bringToFrontOnFocus		= true;
+		bool hide_background			= false;
+		bool force_horizontal_scrollbar	= false;
+		bool force_vertical_scrollbar	= false;
+		bool allow_horizontal_scrollbar	= false;
+		bool bring_to_front_on_focus	= true;
 		bool collapsable				= false;
-		bool allowInputs				= true;
-		bool titleBar					= true;
-		bool autoSize					= false;
+		bool allow_inputs				= true;
+		bool title_bar					= true;
+		bool auto_size					= false;
 	};
 	
 }

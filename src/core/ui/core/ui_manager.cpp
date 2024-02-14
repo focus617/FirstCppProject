@@ -42,16 +42,10 @@ void UIManager::on_detach() {
   ImGui::DestroyContext();
 }
 
-void UIManager::on_update() {
-  // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to
-  // tell if dear imgui wants to use your inputs.
-  // - When io.WantCaptureMouse is true, do not dispatch mouse input data
-  // to your main application, or clear/overwrite your copy of the mouse
-  // data.
-  // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input
-  // data to your main application, or clear/overwrite your copy of the
-  // keyboard data. Generally you may always pass all inputs to dear imgui,
-  // and hide them from your application based on those two flags.
+void UIManager::on_update() {}
+
+void UIManager::on_draw() {
+  m_canvas_.on_draw();
 }
 
 void UIManager::begin_render() {
@@ -258,12 +252,13 @@ void UIManager::apply_style(UI::Style p_style) {
 bool UIManager::is_docking_enabled() const { return m_enable_docking; }
 
 void UIManager::enable_docking(bool p_value) {
-  m_enable_docking = p_value;
-
   if (p_value)
     ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
   else
     ImGui::GetIO().ConfigFlags &= ~ImGuiConfigFlags_DockingEnable;
+
+  m_enable_docking = p_value;
+  m_canvas_.make_dockspace(p_value);
 }
 
 void UIManager::enable_layout_save(bool p_value) {

@@ -70,7 +70,7 @@ class WidgetContainer {
   T& CreateWidget(Args&&... p_args) {
     m_widgets.emplace_back(new T(p_args...), MemoryMode::INTERNAL_MANAGMENT);
     T& instance = *reinterpret_cast<T*>(m_widgets.back().first);
-    instance.SetParent(this);
+    instance.set_parent(this);
     return instance;
   }
 

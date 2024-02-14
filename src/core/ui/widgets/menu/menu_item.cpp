@@ -29,7 +29,8 @@ void MenuItem::_on_draw_impl() {
     auto event = CreateRef<MenuValueChangedEvent>(
         MenuValueChangedEvent(getptr(), checked));
     event_dispatcher.dispatch(event);
-	// Notify plugins
+	
+    // Notify plugins
     this->notify_change();
   }
 }

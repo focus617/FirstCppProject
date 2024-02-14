@@ -3,13 +3,19 @@
 #include <vector>
 
 #include "layer.hpp"
+#include "window/API/IDrawable.h"
 
 namespace xuzy::Window {
 
-class XUZY_API LayerStack {
+class XUZY_API LayerStack : public API::IDrawable {
  public:
   LayerStack() = default;
   ~LayerStack();
+
+  /**
+   * @brief Draw the canvas and its panels
+   */
+  virtual void on_draw() override;
 
   void push_layer(const Ref<ALayer>& layer);
   void pop_layer(const Ref<ALayer>& layer);
