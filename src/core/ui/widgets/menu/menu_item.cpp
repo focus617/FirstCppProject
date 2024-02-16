@@ -26,8 +26,8 @@ void MenuItem::_on_draw_impl() {
 
   if (checked != previousValue) {
     // Invoke ValueChangedEvent.Invoke(checked);
-    auto event = CreateRef<MenuValueChangedEvent>(
-        MenuValueChangedEvent(getptr(), checked));
+    auto event = CreateRef<DrawableValueChangedEvent>(
+        DrawableValueChangedEvent(getptr(), checked));
     event_dispatcher.dispatch(event);
 	
     // Notify plugins

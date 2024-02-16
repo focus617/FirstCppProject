@@ -104,7 +104,7 @@ void PanelWindow::event_handler(Ref<Event> evt, bool& handled) {
       set_opened(true);
       handled = true;
       break;
-    case EventId::MenuValueChanged:
+    case EventId::DrawableValueChanged:
       handled = true;
       break;
     default:

@@ -75,18 +75,46 @@ class DrawableClosedEvent : public DrawableEvent {
   EVENT_CLASS_ID(DrawableClosed)
 };
 
-class MenuValueChangedEvent : public DrawableEvent {
+class DrawableSelectedEvent : public DrawableEvent {
  public:
-  MenuValueChangedEvent(Ref<Window::API::IDrawable> publisher, bool p_checked)
+  DrawableSelectedEvent(Ref<Window::API::IDrawable> publisher)
+      : DrawableEvent(publisher) {}
+
+  std::string to_string() const override {
+    std::stringstream ss;
+    ss << "DrawableSelectedEvent";
+    return ss.str();
+  }
+
+  EVENT_CLASS_ID(DrawableSelected)
+};
+
+class DrawableUnselectedEvent : public DrawableEvent {
+ public:
+  DrawableUnselectedEvent(Ref<Window::API::IDrawable> publisher)
+      : DrawableEvent(publisher) {}
+
+  std::string to_string() const override {
+    std::stringstream ss;
+    ss << "DrawableUnselectedEvent";
+    return ss.str();
+  }
+
+  EVENT_CLASS_ID(DrawableUnselected)
+};
+
+class DrawableValueChangedEvent : public DrawableEvent {
+ public:
+  DrawableValueChangedEvent(Ref<Window::API::IDrawable> publisher, bool p_checked)
       : DrawableEvent(publisher), m_checked(p_checked) {}
 
   std::string to_string() const override {
     std::stringstream ss;
-    ss << "MenuValueChangedEvent(checked: " << m_checked << ")";
+    ss << "DrawableValueChangedEvent(checked: " << m_checked << ")";
     return ss.str();
   }
 
-  EVENT_CLASS_ID(MenuValueChanged)
+  EVENT_CLASS_ID(DrawableValueChanged)
 
  private:
   bool m_checked;

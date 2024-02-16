@@ -34,7 +34,9 @@ enum class EventId {
   DrawableDoubleClicked,
   DrawableOpened,
   DrawableClosed,
-  MenuValueChanged,
+  DrawableSelected,
+  DrawableUnselected,
+  DrawableValueChanged,
   EventIdCount
 };
 
