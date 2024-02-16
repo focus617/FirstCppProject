@@ -2,7 +2,7 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>  // Will drag system OpenGL headers
 
-#include "window/core/inputs/input_manager.hpp"
+#include "window/inputs/input_manager.hpp"
 
 namespace xuzy::Window::Inputs {
 

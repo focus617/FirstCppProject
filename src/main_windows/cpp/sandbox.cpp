@@ -1,12 +1,12 @@
 #include "core.h"
-#include "window/core/window_app.hpp"
+#include "editor/core/editor.hpp"
 
 using namespace xuzy;
 
-class Sandbox : public WindowApp {
+class Sandbox : public Editor::Editor {
  public:
   Sandbox(const std::string& t_app_name, const std::string& t_version)
-      : WindowApp{std::move(t_app_name), std::move(t_version)} {
+      : Editor::Editor{std::move(t_app_name), std::move(t_version)} {
   }
 
   ~Sandbox() {}

@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "ui/plugins/IPlugin.h"
+#include "ui/plugins/IPlugin.hpp"
 
 namespace xuzy::UI::Plugins {
 

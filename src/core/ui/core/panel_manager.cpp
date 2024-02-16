@@ -1,8 +1,8 @@
 #include "ui/core/panel_manager.hpp"
 
 #include "tools/event/key_event.hpp"
-#include "window/core/inputs/input_manager.hpp"
-#include "window/core/inputs/key_state.h"
+#include "window/inputs/input_manager.hpp"
+#include "window/inputs/key_state.h"
 
 namespace xuzy::UI {
 

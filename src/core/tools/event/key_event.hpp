@@ -3,7 +3,7 @@
 #include <sstream>
 
 #include "event.hpp"
-#include "window/core/inputs/key_codes.h"
+#include "window/inputs/key_codes.h"
 
 namespace xuzy {
 

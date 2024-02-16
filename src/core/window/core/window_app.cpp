@@ -1,7 +1,5 @@
 #include "window_app.hpp"
 
-#include "ui/core/panel_manager.hpp"
-#include "ui/panels/panel_menubar.hpp"
 #include "window/backend_glfw/window_impl.hpp"
 
 namespace xuzy {
@@ -17,8 +15,8 @@ WindowApp::WindowApp(const std::string& t_app_name,
 
   m_window_->set_event_callback(BIND_EVENT_FN(on_event));
 
-  Window::WindowImpl& window = (Window::WindowImpl&)get_window();
-  GLFWwindow* glfw_window = window.get_native_window();
+  GLFWwindow* glfw_window =
+      ((Window::WindowImpl&)get_window()).get_native_window();
 
   // Decide GL+GLSL versions
   std::string glsl_version = "#version 460";  // GL 4.6
@@ -26,11 +24,6 @@ WindowApp::WindowApp(const std::string& t_app_name,
   m_ui_manager_ = CreateRef<UI::UIManager>(glfw_window, glsl_version,
                                            UI::Style::IMGUI_DARK_STYLE);
   m_layerstack_.push_overlay(m_ui_manager_);
-
-  Ref<UI::PanelManager> panel_manager = CreateRef<UI::PanelManager>();
-  panel_manager->CreatePanel<UI::Panels::PanelMenuBar>("MainMenuBar");
-
-  m_layerstack_.push_layer(panel_manager);
 }
 
 WindowApp::~WindowApp() { close(); }

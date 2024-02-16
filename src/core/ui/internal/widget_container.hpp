@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "ui/internal/memory_mode.h"
+#include "core/base.hpp"
 #include "ui/widgets/AWidget.hpp"
 
 namespace xuzy::UI::Internal {
@@ -27,7 +27,7 @@ class WidgetContainer {
    * @brief Remove a widget from the container
    * @param p_widget
    */
-  void remove_widget(xuzy::UI::Widgets::AWidget& p_widget);
+  void remove_widget(Ref<Widgets::AWidget>& p_widget);
 
   /**
    * @brief Remove all widgets from the container
@@ -36,21 +36,15 @@ class WidgetContainer {
 
   /**
    * @brief Consider a widget
-   * @param p_manageMemory
+   * @param p_widget
    */
-  void consider_widget(xuzy::UI::Widgets::AWidget& p_widget,
-                      bool p_manageMemory = true);
+  void consider_widget(Ref<Widgets::AWidget>& p_widget);
 
   /**
    * @brief Unconsider a widget
    * @param p_widget
    */
-  void unconsider_widget(xuzy::UI::Widgets::AWidget& p_widget);
-
-  /**
-   * @brief Collect garbages by removing widgets marked as "Destroyed"
-   */
-  void collect_garbages();
+  void unconsider_widget(Ref<Widgets::AWidget>& p_widget);
 
   /**
    * @brief Draw every widgets
@@ -65,23 +59,24 @@ class WidgetContainer {
   /**
    * @brief Create a widget
    * @param p_args
+   * @return std::shared_ptr<T>
    */
   template <typename T, typename... Args>
-  T& CreateWidget(Args&&... p_args) {
-    m_widgets.emplace_back(new T(p_args...), MemoryMode::INTERNAL_MANAGMENT);
-    T& instance = *reinterpret_cast<T*>(m_widgets.back().first);
-    instance.set_parent(this);
+  Ref<T> CreateWidget(Args&&... p_args) {
+    Ref<T> instance = CreateRef<T>(p_args...);
+    instance->set_parent(this);
+    m_widgets.emplace_back(instance);
     return instance;
   }
 
   /**
    * @brief Returns the widgets and their memory management mode
    */
-  std::vector<std::pair<xuzy::UI::Widgets::AWidget*, MemoryMode>>& GetWidgets();
+  std::vector<Ref<UI::Widgets::AWidget>>& GetWidgets();
 
  protected:
-  std::vector<std::pair<xuzy::UI::Widgets::AWidget*, MemoryMode>> m_widgets;
-  bool m_reversedDrawOrder = false;
+  std::vector<Ref<UI::Widgets::AWidget>> m_widgets;
+  bool m_reversed_draw_order = false;
 };
 
 }  // namespace xuzy::UI::Internal

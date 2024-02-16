@@ -1,6 +1,14 @@
 # 添加子目录
+add_subdirectory(button)
+add_subdirectory(drag)
+add_subdirectory(input_field)
 add_subdirectory(layout)
 add_subdirectory(menu)
+add_subdirectory(plot)
+add_subdirectory(selection)
+add_subdirectory(slider)
+add_subdirectory(text)
+add_subdirectory(visual)
 
 #添加子目录的源文件给_SUB_SOURCES
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}  _SUB_SOURCES)

@@ -9,7 +9,7 @@ namespace xuzy::UI::Plugins {
 class IPlugin {
  public:
   virtual ~IPlugin() = default;
-  
+
   /**
    * @brief Execute the plugin behaviour
    */
@@ -19,7 +19,6 @@ class IPlugin {
    *  @brief Feel free to store any data you want here
    */
   void* user_data = nullptr;
-
 };
 
 }  // namespace xuzy::UI::Plugins

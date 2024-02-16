@@ -3,7 +3,7 @@
 namespace xuzy::Window::API
 {
 	/**
-	* Interface for any drawable class
+	* @brief Interface for any drawable class
 	*/
 	class IDrawable
 	{

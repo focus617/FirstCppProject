@@ -14,7 +14,7 @@ class PanelMenuBar : public APanel {
   using PanelMap = std::unordered_map<
       std::string,
       std::pair<std::reference_wrapper<UI::Panels::PanelWindow>,
-                std::reference_wrapper<UI::Widgets::Menu::MenuItem>>>;
+                std::shared_ptr<UI::Widgets::Menu::MenuItem>>>;
 
  public:
   /**
@@ -30,9 +30,6 @@ class PanelMenuBar : public APanel {
 
  protected:
   void _on_draw_impl() override;
-
- private:
-  void create_file_menu();
 
  private:
   PanelMap m_panels_map_;

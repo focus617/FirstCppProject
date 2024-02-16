@@ -3,7 +3,7 @@
 #include <sstream>
 
 #include "event.hpp"
-#include "window/core/inputs/mouse_codes.h"
+#include "window/inputs/mouse_codes.h"
 
 namespace xuzy {
 

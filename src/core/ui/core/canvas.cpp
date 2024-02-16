@@ -1,7 +1,7 @@
 #include "canvas.hpp"
 
 #include "tools/event/key_event.hpp"
-#include "window/core/inputs/input_manager.hpp"
+#include "window/inputs/input_manager.hpp"
 
 namespace xuzy::UI {
 

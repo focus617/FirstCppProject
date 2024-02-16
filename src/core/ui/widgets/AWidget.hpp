@@ -2,8 +2,10 @@
 
 #include <string>
 
+#include "ui/imgui/imgui.h"
+
 #include "window/API/IDrawable.h"
-#include "ui/plugins/Pluginable.h"
+#include "ui/plugins/Pluginable.hpp"
 
 namespace xuzy::UI::Internal {
 class WidgetContainer;

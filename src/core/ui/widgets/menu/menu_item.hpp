@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include "core/base.hpp"
 #include "tools/event/event_dispatcher.hpp"
 #include "ui/widgets/data_widget.hpp"
 
@@ -24,7 +25,7 @@ class MenuItem : public DataWidget<bool>,
   MenuItem(const std::string& p_name, const std::string& p_shortcut = "",
            bool p_checkable = false, bool p_checked = false);
 
-  std::shared_ptr<MenuItem> getptr() { return shared_from_this(); }
+  Ref<MenuItem> getptr() { return shared_from_this(); }
 
  protected:
   virtual void _on_draw_impl() override;

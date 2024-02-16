@@ -2,8 +2,8 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>  // Will drag system OpenGL headers
 
-#include "window/core/cursor/cursor_mode.h"
-#include "window/core/cursor/cursor_shape.h"
+#include "window/cursor/cursor_mode.h"
+#include "window/cursor/cursor_shape.h"
 #include "window/core/window.hpp"
 #include "window/backend_glfw/monitor.hpp"
 

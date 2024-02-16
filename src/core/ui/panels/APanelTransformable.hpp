@@ -75,7 +75,7 @@ class APanelTransformable : public APanel {
 
  protected:
   void on_update();
-  virtual void _draw_impl() = 0;
+  virtual void _on_draw_impl() = 0;
 
  private:
   Maths::FVector2 calculate_position_alignment_offset(

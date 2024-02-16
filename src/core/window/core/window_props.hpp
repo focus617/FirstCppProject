@@ -3,8 +3,8 @@
 
 #include <string>
 
-#include "window/core/cursor/cursor_mode.h"
-#include "window/core/cursor/cursor_shape.h"
+#include "window/cursor/cursor_mode.h"
+#include "window/cursor/cursor_shape.h"
 
 namespace xuzy::Window {
 

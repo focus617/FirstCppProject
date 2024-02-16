@@ -17,6 +17,7 @@ add_subdirectory(cpp)
 add_subdirectory(tools)
 add_subdirectory(window)
 add_subdirectory(ui)
+add_subdirectory(editor)
 add_subdirectory(include/resource)
 
 # 生成动态链接库
