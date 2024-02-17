@@ -103,21 +103,23 @@ class DrawableUnselectedEvent : public DrawableEvent {
   EVENT_CLASS_ID(DrawableUnselected)
 };
 
+template <typename T>
 class DrawableValueChangedEvent : public DrawableEvent {
  public:
-  DrawableValueChangedEvent(Ref<Window::API::IDrawable> publisher, bool p_checked)
-      : DrawableEvent(publisher), m_checked(p_checked) {}
+  DrawableValueChangedEvent(Ref<Window::API::IDrawable> publisher,
+                            T p_value)
+      : DrawableEvent(publisher), m_value(p_value) {}
 
   std::string to_string() const override {
     std::stringstream ss;
-    ss << "DrawableValueChangedEvent(checked: " << m_checked << ")";
+    ss << "DrawableValueChangedEvent(value: " << m_value << ")";
     return ss.str();
   }
 
   EVENT_CLASS_ID(DrawableValueChanged)
 
  private:
-  bool m_checked;
+  T m_value;
 };
 
 }  // namespace xuzy::Events

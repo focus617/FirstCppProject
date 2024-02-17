@@ -24,7 +24,7 @@ namespace xuzy::UI::Widgets::Layout
 	protected:
 		virtual void _draw_impl() override
 		{
-			ImGui::Columns(static_cast<int>(_Size), ("##" + m_widgetID).c_str(), false);
+			ImGui::Columns(static_cast<int>(_Size), ("##" + m_widget_id).c_str(), false);
 
 			int counter = 0;
 

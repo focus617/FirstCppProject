@@ -34,7 +34,7 @@ namespace xuzy::UI::Widgets::Button
 		UI::Types::Color background = { 0, 0, 0, 0 };
 		UI::Types::Color tint = { 1, 1, 1, 1 };
 
-		UI::Internal::TextureID textureID;
+		UI::Internal::TextureID texture_id;
 		Maths::FVector2 size;
 	};
 }
