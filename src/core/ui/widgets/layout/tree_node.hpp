@@ -48,7 +48,7 @@ namespace xuzy::UI::Widgets::Layout
 		std::string name;
 		bool selected = false;
 		bool leaf = false;
-		EventDispatcher<void()> event_dispatcher;
+		Events::EventDispatcher<void()> event_dispatcher;
 
 	private:
 		bool m_arrow_click_to_open = false;

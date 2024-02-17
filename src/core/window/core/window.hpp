@@ -16,8 +16,8 @@ namespace xuzy::Window {
  */
 class XUZY_API AWindow {
  public:
-  // EventHandler Signature:  void(*func)(Ref<Event>, bool&)
-  using EventCallbackFn = std::function<void(Ref<Event>, bool&)>;
+  // EventHandler Signature:  void(*func)(Ref<Events::Event>, bool&)
+  using EventCallbackFn = std::function<void(Ref<Events::Event>, bool&)>;
 
   /**
    * @brief Destructor of the window
@@ -34,7 +34,7 @@ class XUZY_API AWindow {
   virtual void set_event_callback(const EventCallbackFn& callback) = 0;
 
   // EventDispatcher for Window
-  xuzy::EventDispatcher<void()> event_dispatcher;
+  Events::EventDispatcher<void()> event_dispatcher;
 
   // To be defined in concrete window class
   static AWindow* Create(const WindowProps& props = WindowProps());

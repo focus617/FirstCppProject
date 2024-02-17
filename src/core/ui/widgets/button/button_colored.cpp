@@ -18,8 +18,8 @@ void xuzy::UI::Widgets::Button::ButtonColored::_on_draw_impl() {
                          !enableAlpha ? ImGuiColorEditFlags_NoAlpha : 0,
                          Internal::Converter::ToImVec2(size))) {
     // Invoke ClickedEvent
-    auto event =
-        CreateRef<DrawableClickedEvent>(DrawableClickedEvent(getptr()));
+    auto event = CreateRef<Events::DrawableClickedEvent>(
+        Events::DrawableClickedEvent(getptr()));
     event_dispatcher.dispatch(event);
   }
 

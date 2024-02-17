@@ -19,17 +19,17 @@ void MenuItem::_on_draw_impl() {
   if (ImGui::MenuItem((name + m_widget_id).c_str(), shortcut.c_str(),
                       checkable ? &checked : nullptr, enabled)) {
     // Invoke ClickedEvent
-    auto event =
-        CreateRef<DrawableClickedEvent>(DrawableClickedEvent(getptr()));
+    auto event = CreateRef<Events::DrawableClickedEvent>(
+        Events::DrawableClickedEvent(getptr()));
     event_dispatcher.dispatch(event);
   }
 
   if (checked != previousValue) {
     // Invoke ValueChangedEvent.Invoke(checked);
-    auto event = CreateRef<DrawableValueChangedEvent>(
-        DrawableValueChangedEvent(getptr(), checked));
+    auto event = CreateRef<Events::DrawableValueChangedEvent>(
+        Events::DrawableValueChangedEvent(getptr(), checked));
     event_dispatcher.dispatch(event);
-	
+
     // Notify plugins
     this->notify_change();
   }

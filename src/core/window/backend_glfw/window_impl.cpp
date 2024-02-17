@@ -19,8 +19,7 @@ AWindow* AWindow::Create(const WindowProps& p_props) {
   return new WindowImpl(p_props);
 }
 
-WindowImpl::WindowImpl(const WindowProps& props)
-    : m_monitor(props) {
+WindowImpl::WindowImpl(const WindowProps& props) : m_monitor(props) {
   m_data_.m_title = props.title;
   m_data_.m_size =
       std::pair<unsigned int, unsigned int>(props.width, props.height);
@@ -269,9 +268,7 @@ void WindowImpl::glfw_window_init(const WindowProps& props) {
   m_monitor.setup_vsync();  // Enable vsync
 }
 
-void WindowImpl::glfw_window_shutdown() {
-  glfwDestroyWindow(m_glfw_window_);
-}
+void WindowImpl::glfw_window_shutdown() { glfwDestroyWindow(m_glfw_window_); }
 
 void WindowImpl::glfw_cursors_init() {
   glfw_cursors_create();
@@ -281,32 +278,34 @@ void WindowImpl::glfw_cursors_init() {
 
 void WindowImpl::glfw_setup_callback() {
   // Set GLFW callbacks
-  glfwSetWindowPosCallback(
-      m_glfw_window_, [](GLFWwindow* window, int xpos, int ypos) {
-        WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-        data.m_position.first = xpos;
-        data.m_position.second = ypos;
-        // Produce event
-        auto event = CreateRef<WindowMovedEvent>(WindowMovedEvent(xpos, ypos));
-        // Publish to application
-        data.event_dispatcher.dispatch(event);
-      });
-
-  glfwSetWindowSizeCallback(m_glfw_window_, [](GLFWwindow* window, int width,
-                                               int height) {
+  glfwSetWindowPosCallback(m_glfw_window_, [](GLFWwindow* window, int xpos,
+                                              int ypos) {
     WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-    data.m_size.first = width;
-    data.m_size.second = height;
+    data.m_position.first = xpos;
+    data.m_position.second = ypos;
     // Produce event
-    auto event = CreateRef<WindowResizeEvent>(WindowResizeEvent(width, height));
+    auto event =
+        CreateRef<Events::WindowMovedEvent>(Events::WindowMovedEvent(xpos, ypos));
     // Publish to application
     data.event_dispatcher.dispatch(event);
   });
 
+  glfwSetWindowSizeCallback(
+      m_glfw_window_, [](GLFWwindow* window, int width, int height) {
+        WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+        data.m_size.first = width;
+        data.m_size.second = height;
+        // Produce event
+        auto event = CreateRef<Events::WindowResizeEvent>(
+            Events::WindowResizeEvent(width, height));
+        // Publish to application
+        data.event_dispatcher.dispatch(event);
+      });
+
   glfwSetWindowCloseCallback(m_glfw_window_, [](GLFWwindow* window) {
     WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
-    auto event = CreateRef<WindowCloseEvent>(WindowCloseEvent());
+    auto event = CreateRef<Events::WindowCloseEvent>(Events::WindowCloseEvent());
     // Publish to application
     data.event_dispatcher.dispatch(event);
   });
@@ -324,19 +323,22 @@ void WindowImpl::glfw_setup_callback() {
 
       switch (action) {
         case GLFW_PRESS: {
-          auto event = CreateRef<KeyPressedEvent>(KeyPressedEvent(key, 0));
+          auto event =
+              CreateRef<Events::KeyPressedEvent>(Events::KeyPressedEvent(key, 0));
           // Publish to application
           data.event_dispatcher.dispatch(event);
           break;
         }
         case GLFW_RELEASE: {
-          auto event = CreateRef<KeyReleasedEvent>(KeyReleasedEvent(key));
+          auto event =
+              CreateRef<Events::KeyReleasedEvent>(Events::KeyReleasedEvent(key));
           // Publish to application
           data.event_dispatcher.dispatch(event);
           break;
         }
         case GLFW_REPEAT: {
-          auto event = CreateRef<KeyPressedEvent>(KeyPressedEvent(key, 1));
+          auto event =
+              CreateRef<Events::KeyPressedEvent>(Events::KeyPressedEvent(key, 1));
           // Publish to application
           data.event_dispatcher.dispatch(event);
           break;
@@ -356,7 +358,8 @@ void WindowImpl::glfw_setup_callback() {
         if (!io.WantCaptureKeyboard) {
           WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
-          auto event = CreateRef<KeyTypedEvent>(KeyTypedEvent(keycode));
+          auto event =
+              CreateRef<Events::KeyTypedEvent>(Events::KeyTypedEvent(keycode));
           // Publish to application
           data.event_dispatcher.dispatch(event);
         }
@@ -375,15 +378,15 @@ void WindowImpl::glfw_setup_callback() {
 
           switch (action) {
             case GLFW_PRESS: {
-              auto event = CreateRef<MouseButtonPressedEvent>(
-                  MouseButtonPressedEvent(button));
+              auto event = CreateRef<Events::MouseButtonPressedEvent>(
+                  Events::MouseButtonPressedEvent(button));
               // Publish to application
               data.event_dispatcher.dispatch(event);
               break;
             }
             case GLFW_RELEASE: {
-              auto event = CreateRef<MouseButtonReleasedEvent>(
-                  MouseButtonReleasedEvent(button));
+              auto event = CreateRef<Events::MouseButtonReleasedEvent>(
+                  Events::MouseButtonReleasedEvent(button));
               // Publish to application
               data.event_dispatcher.dispatch(event);
               break;
@@ -403,30 +406,30 @@ void WindowImpl::glfw_setup_callback() {
         if (!io.WantCaptureMouse) {
           WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
-          auto event = CreateRef<MouseScrolledEvent>(
-              MouseScrolledEvent((float)xOffset, (float)yOffset));
+          auto event = CreateRef<Events::MouseScrolledEvent>(
+              Events::MouseScrolledEvent((float)xOffset, (float)yOffset));
           // Publish to application
           data.event_dispatcher.dispatch(event);
         }
       });
 
-  glfwSetCursorPosCallback(m_glfw_window_, [](GLFWwindow* window, double xPos,
-                                              double yPos) {
-    // Always forward mouse data to ImGui.
-    // This should be automatic with default backends,
-    ImGuiIO& io = ImGui::GetIO();
-    (void)io;
+  glfwSetCursorPosCallback(
+      m_glfw_window_, [](GLFWwindow* window, double xPos, double yPos) {
+        // Always forward mouse data to ImGui.
+        // This should be automatic with default backends,
+        ImGuiIO& io = ImGui::GetIO();
+        (void)io;
 
-    // Only forward mouse data to my underlying app
-    if (!io.WantCaptureMouse) {
-      WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+        // Only forward mouse data to my underlying app
+        if (!io.WantCaptureMouse) {
+          WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
-      auto event =
-          CreateRef<MouseMovedEvent>(MouseMovedEvent((float)xPos, (float)yPos));
-      // Publish to application
-      data.event_dispatcher.dispatch(event);
-    }
-  });
+          auto event = CreateRef<Events::MouseMovedEvent>(
+              Events::MouseMovedEvent((float)xPos, (float)yPos));
+          // Publish to application
+          data.event_dispatcher.dispatch(event);
+        }
+      });
 }
 
 void WindowImpl::glfw_update_size_limit() const {

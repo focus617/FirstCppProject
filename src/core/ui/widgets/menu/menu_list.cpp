@@ -12,8 +12,8 @@ void MenuList::_on_draw_impl() {
   if (ImGui::BeginMenu(name.c_str(), !locked)) {
     if (!m_opened) {
       // Invoke ClickedEvent
-      auto event =
-          CreateRef<DrawableClickedEvent>(DrawableClickedEvent(getptr()));
+      auto event = CreateRef<Events::DrawableClickedEvent>(
+          Events::DrawableClickedEvent(getptr()));
       event_dispatcher.dispatch(event);
       m_opened = true;
     }

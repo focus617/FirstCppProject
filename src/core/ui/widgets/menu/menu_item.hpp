@@ -27,11 +27,13 @@ class MenuItem : public DataWidget<bool>,
 
   Ref<MenuItem> getptr() { return shared_from_this(); }
 
+  std::string get_name() { return name; }
+
  protected:
   virtual void _on_draw_impl() override;
 
  public:
-  EventDispatcher<void()> event_dispatcher;
+  Events::EventDispatcher<void()> event_dispatcher;
   
  private:
   std::string name;

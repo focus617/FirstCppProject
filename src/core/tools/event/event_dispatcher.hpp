@@ -6,7 +6,7 @@
 
 #include "event.hpp"
 
-namespace xuzy {
+namespace xuzy::Events {
 
 /**
  * The ID of a listener/delegater (Registered handler/callback).
@@ -107,6 +107,6 @@ class EventDispatcher<ReturnType(Args...)> {
   std::mutex m_mutex_;
 };
 
-}  // namespace xuzy
+}  // namespace xuzy::Events
 
 #include "event_dispatcher.inl"

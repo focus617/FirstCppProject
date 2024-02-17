@@ -24,15 +24,15 @@ void PanelManager::on_update() {
 void PanelManager::handle_shortcuts(float p_deltaTime) {
   if (Input::InputManager::get_key_state(Input::Key::LeftControl) ==
       Input::Key::KeyState::KEY_PRESS) {
-
     if (Input::InputManager::is_key_pressed(Input::Key::Tab))
       LOG(INFO) << "LCtrl+Tab key is pressed (poll)!";
   }
 }
 
-void PanelManager::on_event(Ref<Event> event, bool& handled) {
-  if (event->get_event_id() == EventId::KeyPressed) {
-    Ref<KeyPressedEvent> e = std::static_pointer_cast<KeyPressedEvent>(event);
+void PanelManager::on_event(Ref<Events::Event> event, bool& handled) {
+  if (event->get_event_id() == Events::EventId::KeyPressed) {
+    Ref<Events::KeyPressedEvent> e =
+        std::static_pointer_cast<Events::KeyPressedEvent>(event);
     if (e->get_key_code() == Input::Key::Tab) {
       LOG(INFO) << "Tab key is pressed (event)!";
       handled = true;

@@ -261,7 +261,7 @@ class XUZY_API WindowImpl : public AWindow {
     Cursor::CursorMode m_cursor_mode;
     Cursor::CursorShape m_cursor_shape;
 
-    xuzy::EventDispatcher<void()> event_dispatcher;
+    Events::EventDispatcher<void()> event_dispatcher;
   };
 
   WindowData m_data_;

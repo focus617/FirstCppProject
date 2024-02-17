@@ -44,19 +44,19 @@ void WindowApp::main_loop() {
   }
 }
 
-void WindowApp::on_event(Ref<Event> event, bool& handled) {
+void WindowApp::on_event(Ref<Events::Event> event, bool& handled) {
   handled = false;
 
   // Handle global event, e.g. WindowCloseEvent
   switch (event->get_event_id()) {
-    case EventId::WindowClose:
+    case Events::EventId::WindowClose:
       handled =
-          OnWindowClose(std::static_pointer_cast<WindowCloseEvent>(event));
+          OnWindowClose(std::static_pointer_cast<Events::WindowCloseEvent>(event));
       return;
 
-    case EventId::WindowResize:
+    case Events::EventId::WindowResize:
       handled =
-          OnWindowResize(std::static_pointer_cast<WindowResizeEvent>(event));
+          OnWindowResize(std::static_pointer_cast<Events::WindowResizeEvent>(event));
       break;
       ;
 
@@ -74,13 +74,13 @@ void WindowApp::on_event(Ref<Event> event, bool& handled) {
   }
 }
 
-bool WindowApp::OnWindowClose(Ref<WindowCloseEvent> e) {
+bool WindowApp::OnWindowClose(Ref<Events::WindowCloseEvent> e) {
   LOG(INFO) << "Window Close Clicked (Event: " << *e << ")" << std::endl;
   m_running_ = false;
   return true;
 }
 
-bool WindowApp::OnWindowResize(Ref<WindowResizeEvent> e) {
+bool WindowApp::OnWindowResize(Ref<Events::WindowResizeEvent> e) {
   LOG(INFO) << "Window Resized (Event: " << *e << ")" << std::endl;
 
   if ((e->get_width() == 0) || (e->get_height() == 0)) {

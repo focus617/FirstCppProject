@@ -31,6 +31,6 @@ namespace xuzy::UI::Widgets::Layout
 		std::string name;
 		bool closable = false;
 		bool opened = true;
-		EventDispatcher<void()> event_dispatcher;
+		Events::EventDispatcher<void()> event_dispatcher;
 	};
 }

@@ -28,7 +28,7 @@ class MenuList : public Layout::Group,
  public:
   std::string name;
   bool locked;
-  EventDispatcher<void()> event_dispatcher;
+  Events::EventDispatcher<void()> event_dispatcher;
 
  private:
   bool m_opened;

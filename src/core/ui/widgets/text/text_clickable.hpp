@@ -25,6 +25,6 @@ namespace xuzy::UI::Widgets::Text
 		virtual void _on_draw_impl() override;
 
 	public:
-	  	EventDispatcher<void()> event_dispatcher;
+	  	Events::EventDispatcher<void()> event_dispatcher;
 	};
 }

@@ -43,20 +43,20 @@ class XUZY_API UIManager : public xuzy::Window::ALayer {
 
   virtual void on_draw() override;
   virtual void on_update() override;
-  virtual void on_event(Ref<Event> event, bool& handled) override;
+  virtual void on_event(Ref<Events::Event> event, bool& handled) override;
 
   void begin_render();
   void end_render();
 
  private:
-  bool on_mouse_button_pressed_event(Ref<MouseButtonPressedEvent> e);
-  bool on_mouse_button_released_event(Ref<MouseButtonReleasedEvent> e);
-  bool on_mouse_moved_event(Ref<MouseMovedEvent> e);
-  bool on_mouse_scrolled_event(Ref<MouseScrolledEvent> e);
-  bool on_key_pressed_event(Ref<KeyPressedEvent> e);
-  bool on_key_released_event(Ref<KeyReleasedEvent> e);
-  bool on_key_typed_event(Ref<KeyTypedEvent> e);
-  bool on_window_resize_event(Ref<WindowResizeEvent> e);
+  bool on_mouse_button_pressed_event(Ref<Events::MouseButtonPressedEvent> e);
+  bool on_mouse_button_released_event(Ref<Events::MouseButtonReleasedEvent> e);
+  bool on_mouse_moved_event(Ref<Events::MouseMovedEvent> e);
+  bool on_mouse_scrolled_event(Ref<Events::MouseScrolledEvent> e);
+  bool on_key_pressed_event(Ref<Events::KeyPressedEvent> e);
+  bool on_key_released_event(Ref<Events::KeyReleasedEvent> e);
+  bool on_key_typed_event(Ref<Events::KeyTypedEvent> e);
+  bool on_window_resize_event(Ref<Events::WindowResizeEvent> e);
 
   /**
    * @brief Load imgui and setup context

@@ -35,8 +35,8 @@ void ButtonSmall::_on_draw_impl() {
 
   if (ImGui::SmallButton((label + m_widget_id).c_str())) {
     // Invoke ClickedEvent
-    auto event =
-        CreateRef<DrawableClickedEvent>(DrawableClickedEvent(getptr()));
+    auto event = CreateRef<Events::DrawableClickedEvent>(
+        Events::DrawableClickedEvent(getptr()));
     event_dispatcher.dispatch(event);
   }
 

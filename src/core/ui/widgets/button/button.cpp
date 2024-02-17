@@ -41,8 +41,8 @@ void Button::_on_draw_impl() {
                       // disabled ? ImGuiButtonFlags_Disabled : 0))
                       disabled ? ImGuiItemFlags_Disabled : 0)) {
     // Invoke ClickedEvent
-    auto event =
-        CreateRef<DrawableClickedEvent>(DrawableClickedEvent(getptr()));
+    auto event = CreateRef<Events::DrawableClickedEvent>(
+        Events::DrawableClickedEvent(getptr()));
     event_dispatcher.dispatch(event);
   }
 

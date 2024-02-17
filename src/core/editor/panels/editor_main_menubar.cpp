@@ -2,11 +2,12 @@
 
 #include "ui/widgets/text/text.hpp"
 #include "ui/widgets/visual/separator.hpp"
+#include "window/core/window_app.hpp"
 
 namespace xuzy::Editor::Panels {
 
 // 一个能够处理事件的静态函数
-void EventHandler(Ref<Event> evt, bool& handled) {
+void EventHandler(Ref<Events::Event> evt, bool& handled) {
   std::cout << "Event Callback: " << *evt << std::endl;
 }
 
@@ -33,6 +34,12 @@ void MainMenuBar::create_file_menu() {
   file_menu->CreateWidget<UI::Widgets::Visual::Separator>();
   file_menu->CreateWidget<UI::Widgets::Menu::MenuItem>("Save", "Ctrl+S");
   file_menu->CreateWidget<UI::Widgets::Menu::MenuItem>("Save As..");
+
+  file_menu->CreateWidget<UI::Widgets::Visual::Separator>();
+  auto file_quit_menu =
+      file_menu->CreateWidget<UI::Widgets::Menu::MenuItem>("Quit", "Alt+F4");
+  file_quit_menu->event_dispatcher +=
+      [](Ref<Events::Event> evt, bool& handled) { ((WindowApp&)(App::get())).close(); };
 }
 
 void MainMenuBar::create_edit_menu() {

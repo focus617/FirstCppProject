@@ -13,19 +13,19 @@ void TextSelectable::_on_draw_impl() {
                         disabled ? ImGuiSelectableFlags_Disabled
                                  : ImGuiSelectableFlags_None)) {
     // Invoke ClickedEvent
-    auto click_event =
-        CreateRef<DrawableClickedEvent>(DrawableClickedEvent(getptr()));
+    auto click_event = CreateRef<Events::DrawableClickedEvent>(
+        Events::DrawableClickedEvent(getptr()));
     event_dispatcher.dispatch(click_event);
 
     if (selected) {
       // Invoke DrawableSelectedEvent
-      auto select_event =
-          CreateRef<DrawableSelectedEvent>(DrawableSelectedEvent(getptr()));
+      auto select_event = CreateRef<Events::DrawableSelectedEvent>(
+          Events::DrawableSelectedEvent(getptr()));
       event_dispatcher.dispatch(select_event);
     } else {
       // Invoke DrawableUnselectedEvent
-      auto unselect_event =
-          CreateRef<DrawableUnselectedEvent>(DrawableUnselectedEvent(getptr()));
+      auto unselect_event = CreateRef<Events::DrawableUnselectedEvent>(
+          Events::DrawableUnselectedEvent(getptr()));
       event_dispatcher.dispatch(unselect_event);
     }
   }

@@ -5,7 +5,7 @@
 #include "event.hpp"
 #include "window/inputs/key_codes.h"
 
-namespace xuzy {
+namespace xuzy::Events {
 
 class KeyEvent : public Event {
  public:
@@ -68,4 +68,4 @@ class KeyTypedEvent : public KeyEvent {
   EVENT_CLASS_ID(KeyTyped)
 };
 
-}  // namespace xuzy
+}  // namespace xuzy::Events

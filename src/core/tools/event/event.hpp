@@ -1,7 +1,7 @@
 #pragma once
 #include "core/base.hpp"
 
-namespace xuzy {
+namespace xuzy::Events {
 
 // Events are currently blocking, meaning when an event occurs it
 // immediately gets dispatched and must be dealt with right then an there.
@@ -84,4 +84,4 @@ inline std::ostream& operator<<(std::ostream& os, const Event& e) {
   return os << e.to_string();
 }
 
-}  // namespace xuzy
+}  // namespace xuzy::Events

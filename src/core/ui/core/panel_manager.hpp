@@ -23,7 +23,7 @@ class XUZY_API PanelManager : public xuzy::Window::ALayer {
   virtual void on_attach() override { LOG(INFO) << "PanelManager OnAttach"; }
   virtual void on_detach() override { LOG(INFO) << "PanelManager OnDetach"; }
   virtual void on_update() override;
-  virtual void on_event(Ref<Event> event, bool& handled) override;
+  virtual void on_event(Ref<Events::Event> event, bool& handled) override;
 
   /**
    * @brief Draw the canvas and its panels

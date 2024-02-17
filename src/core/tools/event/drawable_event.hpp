@@ -6,7 +6,7 @@
 #include "event.hpp"
 #include "window/API/IDrawable.h"
 
-namespace xuzy {
+namespace xuzy::Events {
 
 class DrawableEvent : public Event {
  public:
@@ -120,4 +120,4 @@ class DrawableValueChangedEvent : public DrawableEvent {
   bool m_checked;
 };
 
-}  // namespace xuzy
+}  // namespace xuzy::Events

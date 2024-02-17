@@ -32,6 +32,6 @@ namespace xuzy::UI::Widgets::Text
 		bool selected;
 		bool disabled;
 
-		EventDispatcher<void()> event_dispatcher;
+		Events::EventDispatcher<void()> event_dispatcher;
 	};
 }

@@ -106,7 +106,7 @@ namespace xuzy::UI::Panels
 		/**
         * @brief Event Handler for MenuItem ClickEvent
         */
-		void event_handler(Ref<Event> evt, bool& handled);		
+		void event_handler(Ref<Events::Event> evt, bool& handled);		
 
 	protected:
 		void _on_draw_impl() override;
@@ -131,7 +131,7 @@ namespace xuzy::UI::Panels
 		bool allow_inputs = true;
 		bool title_bar = true;
 
-		EventDispatcher<void()> event_dispatcher;
+		Events::EventDispatcher<void()> event_dispatcher;
 		// OvTools::Eventing::Event<> OpenEvent;
 		// OvTools::Eventing::Event<> CloseEvent;
 

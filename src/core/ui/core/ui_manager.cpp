@@ -44,9 +44,7 @@ void UIManager::on_detach() {
 
 void UIManager::on_update() {}
 
-void UIManager::on_draw() {
-  m_canvas_.on_draw();
-}
+void UIManager::on_draw() { m_canvas_.on_draw(); }
 
 void UIManager::begin_render() {
   // Start a new frame
@@ -129,11 +127,14 @@ void UIManager::imgui_init() {
 
   // Disable moving windows by dragging another thing than the title bar
   io.ConfigWindowsMoveFromTitleBarOnly = true;
+  io.ConfigViewportsNoAutoMerge = true;
+  // 如果不开启io.ConfigViewportsNoAutoMerge可能引起拖动窗口不小心拖动到隐藏的主窗口,
+  // 导致子窗口也隐藏的情况。
 
   // Enable Keyboard Controls
   io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
   // Enable Gamepad Controls
-  // io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+  io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
 
   // EnableMulti-Viewport / Platform Windows
   io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
@@ -286,49 +287,49 @@ float UIManager::get_layout_auto_save_frequency(float p_frequeny) {
   return ImGui::GetIO().IniSavingRate;
 }
 
-void UIManager::on_event(Ref<Event> event, bool& handled) {
+void UIManager::on_event(Ref<Events::Event> event, bool& handled) {
   handled = false;
 
   // Handle global event, e.g. WindowCloseEvent
   switch (event->get_event_id()) {
-    case EventId::WindowResize:
+    case Events::EventId::WindowResize:
       handled = on_window_resize_event(
-          std::static_pointer_cast<WindowResizeEvent>(event));
+          std::static_pointer_cast<Events::WindowResizeEvent>(event));
       break;
 
-    case EventId::KeyPressed:
+    case Events::EventId::KeyPressed:
       handled = on_key_pressed_event(
-          std::static_pointer_cast<KeyPressedEvent>(event));
+          std::static_pointer_cast<Events::KeyPressedEvent>(event));
       break;
 
-    case EventId::KeyTyped:
-      handled =
-          on_key_typed_event(std::static_pointer_cast<KeyTypedEvent>(event));
+    case Events::EventId::KeyTyped:
+      handled = on_key_typed_event(
+          std::static_pointer_cast<Events::KeyTypedEvent>(event));
       break;
 
-    case EventId::KeyReleased:
+    case Events::EventId::KeyReleased:
       handled = on_key_released_event(
-          std::static_pointer_cast<KeyReleasedEvent>(event));
+          std::static_pointer_cast<Events::KeyReleasedEvent>(event));
       break;
 
-    case EventId::MouseButtonPressed:
+    case Events::EventId::MouseButtonPressed:
       handled = on_mouse_button_pressed_event(
-          std::static_pointer_cast<MouseButtonPressedEvent>(event));
+          std::static_pointer_cast<Events::MouseButtonPressedEvent>(event));
       break;
 
-    case EventId::MouseButtonReleased:
+    case Events::EventId::MouseButtonReleased:
       handled = on_mouse_button_released_event(
-          std::static_pointer_cast<MouseButtonReleasedEvent>(event));
+          std::static_pointer_cast<Events::MouseButtonReleasedEvent>(event));
       break;
 
-    case EventId::MouseMoved:
+    case Events::EventId::MouseMoved:
       handled = on_mouse_moved_event(
-          std::static_pointer_cast<MouseMovedEvent>(event));
+          std::static_pointer_cast<Events::MouseMovedEvent>(event));
       break;
 
-    case EventId::MouseScrolled:
+    case Events::EventId::MouseScrolled:
       handled = on_mouse_scrolled_event(
-          std::static_pointer_cast<MouseScrolledEvent>(event));
+          std::static_pointer_cast<Events::MouseScrolledEvent>(event));
       break;
 
     default:
@@ -337,7 +338,7 @@ void UIManager::on_event(Ref<Event> event, bool& handled) {
   }
 }
 
-bool UIManager::on_window_resize_event(Ref<WindowResizeEvent> e) {
+bool UIManager::on_window_resize_event(Ref<Events::WindowResizeEvent> e) {
   LOG(INFO) << "Window Resize Event: " << *e << std::endl;
 
   ImGuiIO& io = ImGui::GetIO();
@@ -348,7 +349,7 @@ bool UIManager::on_window_resize_event(Ref<WindowResizeEvent> e) {
   return true;
 }
 
-bool UIManager::on_key_pressed_event(Ref<KeyPressedEvent> e) {
+bool UIManager::on_key_pressed_event(Ref<Events::KeyPressedEvent> e) {
   LOG(INFO) << "Key Pressed Event: " << *e << std::endl;
 
   ImGuiIO& io = ImGui::GetIO();
@@ -365,7 +366,7 @@ bool UIManager::on_key_pressed_event(Ref<KeyPressedEvent> e) {
   return true;
 }
 
-bool UIManager::on_key_released_event(Ref<KeyReleasedEvent> e) {
+bool UIManager::on_key_released_event(Ref<Events::KeyReleasedEvent> e) {
   LOG(INFO) << "Key Released Event: " << *e << std::endl;
 
   ImGuiIO& io = ImGui::GetIO();
@@ -374,7 +375,7 @@ bool UIManager::on_key_released_event(Ref<KeyReleasedEvent> e) {
   return true;
 }
 
-bool UIManager::on_key_typed_event(Ref<KeyTypedEvent> e) {
+bool UIManager::on_key_typed_event(Ref<Events::KeyTypedEvent> e) {
   LOG(INFO) << "Key Typed Event: " << *e << std::endl;
 
   ImGuiIO& io = ImGui::GetIO();
@@ -385,7 +386,8 @@ bool UIManager::on_key_typed_event(Ref<KeyTypedEvent> e) {
   return true;
 }
 
-bool UIManager::on_mouse_button_pressed_event(Ref<MouseButtonPressedEvent> e) {
+bool UIManager::on_mouse_button_pressed_event(
+    Ref<Events::MouseButtonPressedEvent> e) {
   LOG(INFO) << "Mouse Button Pressed Event: " << *e << std::endl;
 
   ImGuiIO& io = ImGui::GetIO();
@@ -395,7 +397,7 @@ bool UIManager::on_mouse_button_pressed_event(Ref<MouseButtonPressedEvent> e) {
 }
 
 bool UIManager::on_mouse_button_released_event(
-    Ref<MouseButtonReleasedEvent> e) {
+    Ref<Events::MouseButtonReleasedEvent> e) {
   LOG(INFO) << "Mouse Button Released Event: " << *e << std::endl;
 
   ImGuiIO& io = ImGui::GetIO();
@@ -404,7 +406,7 @@ bool UIManager::on_mouse_button_released_event(
   return true;
 }
 
-bool UIManager::on_mouse_moved_event(Ref<MouseMovedEvent> e) {
+bool UIManager::on_mouse_moved_event(Ref<Events::MouseMovedEvent> e) {
   LOG(INFO) << "Mouse Moved Event: " << *e << std::endl;
 
   ImGuiIO& io = ImGui::GetIO();
@@ -413,7 +415,7 @@ bool UIManager::on_mouse_moved_event(Ref<MouseMovedEvent> e) {
   return true;
 }
 
-bool UIManager::on_mouse_scrolled_event(Ref<MouseScrolledEvent> e) {
+bool UIManager::on_mouse_scrolled_event(Ref<Events::MouseScrolledEvent> e) {
   LOG(INFO) << "Mouse Scrolled Event: " << *e << std::endl;
 
   ImGuiIO& io = ImGui::GetIO();

@@ -2,7 +2,7 @@
 
 #include "event.hpp"
 
-namespace xuzy {
+namespace xuzy::Events {
 
 class WindowMovedEvent : public Event {
  public:
@@ -92,4 +92,4 @@ class AppRenderEvent : public Event {
   EVENT_CLASS_CATEGORY(EventCategoryApplication)
 };
 
-}  // namespace xuzy
+}  // namespace xuzy::Events

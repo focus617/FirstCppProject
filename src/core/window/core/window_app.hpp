@@ -39,9 +39,9 @@ class XUZY_API WindowApp : public App {
   XUZY_API void launch_tasks() override;
   XUZY_API void main_loop() override;
 
-  XUZY_API virtual void on_event(Ref<Event> evt, bool& handled);
-  XUZY_API virtual bool OnWindowClose(Ref<WindowCloseEvent> e);
-  XUZY_API virtual bool OnWindowResize(Ref<WindowResizeEvent> e);
+  XUZY_API virtual void on_event(Ref<Events::Event> evt, bool& handled);
+  XUZY_API virtual bool OnWindowClose(Ref<Events::WindowCloseEvent> e);
+  XUZY_API virtual bool OnWindowResize(Ref<Events::WindowResizeEvent> e);
 
  private:
   Scope<Window::AWindow> m_window_;

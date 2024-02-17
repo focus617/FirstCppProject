@@ -82,29 +82,29 @@ bool PanelWindow::is_scrolled_to_top() const { return m_scrolledToTop; }
 
 void PanelWindow::invoke_open_event() {
   // Invoke OpenEvent
-  auto open_event =
-      CreateRef<DrawableOpenedEvent>(DrawableOpenedEvent(getptr()));
+  auto open_event = CreateRef<Events::DrawableOpenedEvent>(
+      Events::DrawableOpenedEvent(getptr()));
   event_dispatcher.dispatch(open_event);
 }
 
 void PanelWindow::invoke_close_event() {
   // Invoke CloseEvent
-  auto close_event =
-      CreateRef<DrawableClosedEvent>(DrawableClosedEvent(getptr()));
+  auto close_event = CreateRef<Events::DrawableClosedEvent>(
+      Events::DrawableClosedEvent(getptr()));
   event_dispatcher.dispatch(close_event);
 }
 
-void PanelWindow::event_handler(Ref<Event> evt, bool& handled) {
+void PanelWindow::event_handler(Ref<Events::Event> evt, bool& handled) {
   std::cout << "Event: " << *evt << std::endl;
 
   handled = false;
 
   switch (evt->get_event_id()) {
-    case EventId::DrawableClicked:
+    case Events::EventId::DrawableClicked:
       set_opened(true);
       handled = true;
       break;
-    case EventId::DrawableValueChanged:
+    case Events::EventId::DrawableValueChanged:
       handled = true;
       break;
     default:

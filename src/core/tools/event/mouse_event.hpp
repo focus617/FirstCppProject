@@ -5,7 +5,7 @@
 #include "event.hpp"
 #include "window/inputs/mouse_codes.h"
 
-namespace xuzy {
+namespace xuzy::Events {
 
 class MouseMovedEvent : public Event {
  public:
@@ -90,4 +90,4 @@ class MouseButtonReleasedEvent : public MouseButtonEvent {
   EVENT_CLASS_ID(MouseButtonReleased)
 };
 
-}  // namespace xuzy
+}  // namespace xuzy::Events

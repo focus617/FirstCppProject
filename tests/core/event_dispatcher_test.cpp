@@ -16,17 +16,17 @@ class Button {
 
  public:
   // EventHandler:  void(*func)(oid(Ref<Event>, bool&)
-  xuzy::EventDispatcher<void()> event_dispatcher;
+  Events::EventDispatcher<void()> event_dispatcher;
 };
 
 // 一个能够处理事件的静态函数
-void EventHandler(Ref<Event> evt, bool& handled) {
+void EventHandler(Ref<Events::Event> evt, bool& handled) {
   checker = true;  // modify global static variable
 
   handled = false;
-  if (evt->is_in_category(EventCategoryKeyboard)) {
+  if (evt->is_in_category(Events::EventCategoryKeyboard)) {
     switch (evt->get_event_id()) {
-      case EventId::KeyPressed:
+      case Events::EventId::KeyPressed:
         // Ref<KeyPressedEvent> event = dynamic_cast<Ref<KeyPressedEvent>>(evt);
         std::cout << "Button Click(Event: " << *evt << ")" << std::endl;
         handled = true;
@@ -43,12 +43,12 @@ void EventHandler(Ref<Event> evt, bool& handled) {
 // 一个接收事件的类，并且它具有能够处理事件的方法
 class Example {
  public:
-  void EventHandler(Ref<Event> evt, bool& handled) {
+  void EventHandler(Ref<Events::Event> evt, bool& handled) {
     checker = true;  // modify global static variable
 
     handled = false;
     switch (evt->get_event_id()) {
-      case EventId::KeyPressed:
+      case Events::EventId::KeyPressed:
         std::cout << "Example Click(Event: " << *evt << ")" << std::endl;
         handled = true;
         break;
@@ -68,7 +68,7 @@ class Example {
 class EventDispatcher_Test_Fixture : public testing::Test {
  public:
   Button button;
-  Ref<Event> event;
+  Ref<Events::Event> event;
 
   EventDispatcher_Test_Fixture() {}
   ~EventDispatcher_Test_Fixture() {}
@@ -79,8 +79,8 @@ class EventDispatcher_Test_Fixture : public testing::Test {
 
 // 生产KeyPressed事件
 void EventDispatcher_Test_Fixture::SetUp() {
-  event = CreateRef<KeyPressedEvent>(
-      KeyPressedEvent(Window::Inputs::Key::Space, 1));
+  event = CreateRef<Events::KeyPressedEvent>(
+      Events::KeyPressedEvent(Window::Inputs::Key::Space, 1));
 }
 
 void EventDispatcher_Test_Fixture::TearDown() {}
@@ -121,12 +121,12 @@ TEST_F(EventDispatcher_Test_Fixture, event_on_lambda_func) {
   checker = false;
 
   // When: 匿名函数做委托函数
-  button.event_dispatcher += [](Ref<Event> evt, bool& handled) {
+  button.event_dispatcher += [](Ref<Events::Event> evt, bool& handled) {
     checker = true;  // modify global static variable
 
     handled = false;
     switch (evt->get_event_id()) {
-      case EventId::KeyPressed:
+      case Events::EventId::KeyPressed:
         std::cout << "Lambda Click(Event: " << *evt << ")" << std::endl;
         handled = true;
         break;
@@ -160,12 +160,12 @@ TEST_F(EventDispatcher_Test_Fixture, handler_count) {
   EXPECT_EQ(2, button.event_dispatcher.handler_count());
 
   // When: 匿名函数做委托函数
-  button.event_dispatcher += [](Ref<Event> evt, bool& handled) {
+  button.event_dispatcher += [](Ref<Events::Event> evt, bool& handled) {
     checker = true;  // modify global static variable
 
     handled = false;
     switch (evt->get_event_id()) {
-      case EventId::KeyPressed:
+      case Events::EventId::KeyPressed:
         std::cout << "Lambda Click(Event: " << *evt << ")" << std::endl;
         handled = true;
         break;
@@ -190,12 +190,12 @@ TEST_F(EventDispatcher_Test_Fixture, clear_handler) {
   button.event_dispatcher += EXAMPLE_BIND_EVENT_FN(example);
 
   // 匿名函数做委托函数
-  button.event_dispatcher += [](Ref<Event> evt, bool& handled) {
+  button.event_dispatcher += [](Ref<Events::Event> evt, bool& handled) {
     checker = true;  // modify global static variable
 
     handled = false;
     switch (evt->get_event_id()) {
-      case EventId::KeyPressed:
+      case Events::EventId::KeyPressed:
         std::cout << "Lambda Click(Event: " << *evt << ")" << std::endl;
         handled = true;
         break;

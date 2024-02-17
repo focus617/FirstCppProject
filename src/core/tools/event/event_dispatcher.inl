@@ -2,7 +2,7 @@
 
 #include "event.hpp"
 
-namespace xuzy {
+namespace xuzy::Events {
 
 template <typename ReturnType, typename... Args>
 void EventDispatcher<ReturnType(Args...)>::dispatch(Ref<Event> event,
@@ -78,4 +78,4 @@ bool EventDispatcher<ReturnType(Args...)>::operator-=(HandlerID handler_id) {
   return unsubscribe(handler_id);
 }
 
-}  // namespace xuzy
+}  // namespace xuzy::Events
