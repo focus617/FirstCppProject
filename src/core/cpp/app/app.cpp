@@ -11,13 +11,13 @@ App* App::s_instance_ = nullptr;
 internal::AppImpl* App::p_impl_ = internal::AppImpl::GetInstance();
 
 App::App(const std::string& p_app_name, const std::string& p_version)
-    : m_context_{p_app_name, p_version},
+    : m_app_name_{p_app_name}, m_version_{p_version},
       p_cli_parser_{nullptr}
 {
   XUZY_CHECK_(nullptr == s_instance_) << "Application already exists!";
   s_instance_ = this;
 
-  LOG(INFO) << m_context_.m_app_name_ << " version: " << m_context_.m_version_ << std::endl;
+  LOG(INFO) << m_app_name_ << " version: " << m_version_ << std::endl;
 }
 
 App::~App() {
@@ -30,7 +30,7 @@ App::~App() {
 void App::version_check(int argc, char* argv[]) {}
 
 void App::dumpError(std::string error) {
-  LOG(ERROR) << m_context_.m_app_name_ << " error: " << error << std::endl;
+  LOG(ERROR) << m_app_name_ << " error: " << error << std::endl;
 }
 
 void App::load_conf(const std::string& filename) {
@@ -39,13 +39,13 @@ void App::load_conf(const std::string& filename) {
     throw xuzy::FileNotFoundException(filename + " not exist.");
   }
 
-  LOG(INFO) << m_context_.m_app_name_ << ": Load configuration from " << filename;
+  LOG(INFO) << m_app_name_ << ": Load configuration from " << filename;
   App::get_impl()->load_conf_from_file(filename, m_conf_);
 }
 
 void App::setup() {
   // Setup configuration
-  std::string config_filename = m_context_.m_app_name_ + ".json";
+  std::string config_filename = m_app_name_ + ".json";
   load_conf(config_filename);
 
   if (m_conf_.empty()) {

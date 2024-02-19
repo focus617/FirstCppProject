@@ -5,7 +5,6 @@
 #include <nlohmann/json.hpp>
 
 #include "argsparser.hpp"
-#include "context.hpp"
 
 using json = nlohmann::json;
 
@@ -73,7 +72,9 @@ class XUZY_API App {
   XUZY_API virtual void dumpError(std::string error);
 
  private:
-  Core::Context m_context_;
+  const std::string m_app_name_;
+  const std::string m_version_;
+
   ArgsParser* p_cli_parser_;
 
   static App* s_instance_;

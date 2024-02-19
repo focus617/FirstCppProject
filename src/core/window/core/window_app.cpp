@@ -1,27 +1,16 @@
 #include "window_app.hpp"
 
-#include "window/backend_glfw/window_impl.hpp"
-
 namespace xuzy {
 
-#define BIND_EVENT_FN(x) \
-  std::bind(&WindowApp::x, this, std::placeholders::_1, std::placeholders::_2)
+WindowApp::WindowApp(const std::string& p_app_name,
+                     const std::string& p_version)
+    : App{p_app_name, p_version}, m_context_{p_app_name, p_version} {
+  m_context_.m_window_->set_event_callback(std::bind(&WindowApp::on_event, this,
+                                                     std::placeholders::_1,
+                                                     std::placeholders::_2));
 
-WindowApp::WindowApp(const std::string& t_app_name,
-                     const std::string& t_version)
-    : App{std::move(t_app_name), std::move(t_version)} {
-  m_window_ = std::unique_ptr<Window::AWindow>(
-      Window::AWindow::Create(Window::WindowProps(t_app_name)));
-
-  m_window_->set_event_callback(BIND_EVENT_FN(on_event));
-
-  GLFWwindow* glfw_window =
-      ((Window::WindowImpl&)get_window()).get_native_window();
-
-  // Decide GL+GLSL versions
-  std::string glsl_version = "#version 460";  // GL 4.6
-
-  m_ui_manager_ = CreateRef<UI::UIManager>(glfw_window, glsl_version,
+  m_ui_manager_ = CreateRef<UI::UIManager>(m_context_.get_native_window(),
+                                           m_context_.glsl_version,
                                            UI::Style::IMGUI_DARK_STYLE);
   m_layerstack_.push_overlay(m_ui_manager_);
 }
@@ -36,11 +25,10 @@ void WindowApp::main_loop() {
       for (Ref<Window::ALayer> layer : m_layerstack_) layer->on_update();
 
       m_ui_manager_->begin_render();
-      // for (Ref<Window::ALayer> layer : m_layerstack_) layer->on_draw();
       m_layerstack_.on_draw();
       m_ui_manager_->end_render();
     }
-    m_window_->on_update();
+    m_context_.m_window_->on_update();
   }
 }
 
@@ -50,13 +38,13 @@ void WindowApp::on_event(Ref<Events::Event> event, bool& handled) {
   // Handle global event, e.g. WindowCloseEvent
   switch (event->get_event_id()) {
     case Events::EventId::WindowClose:
-      handled =
-          OnWindowClose(std::static_pointer_cast<Events::WindowCloseEvent>(event));
+      handled = OnWindowClose(
+          std::static_pointer_cast<Events::WindowCloseEvent>(event));
       return;
 
     case Events::EventId::WindowResize:
-      handled =
-          OnWindowResize(std::static_pointer_cast<Events::WindowResizeEvent>(event));
+      handled = OnWindowResize(
+          std::static_pointer_cast<Events::WindowResizeEvent>(event));
       break;
       ;
 

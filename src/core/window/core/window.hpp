@@ -37,7 +37,7 @@ class XUZY_API AWindow {
   Events::EventDispatcher<void()> event_dispatcher;
 
   // To be defined in concrete window class
-  static AWindow* Create(const WindowProps& props = WindowProps());
+  static AWindow* Create(const WindowProps& props);
 };
 
 }  // namespace xuzy::Window

@@ -36,6 +36,8 @@ namespace xuzy::UI::Types
 		* @param p_other
 		*/
 		bool operator!=(const Color& p_other);
+
+		friend std::ostream& operator<<(std::ostream&, const Color&);
 	};
 
 } // namespace xuzy::UI::Types

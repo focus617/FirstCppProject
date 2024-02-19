@@ -7,7 +7,7 @@
 namespace xuzy::UI::Widgets::Text
 {
 	/**
-	* @brief Widget to display text on a panel that is also clickable
+	*  @brief @brief Widget to display text on a panel that is also clickable
 	*/
 	class TextClickable : public Text,
                  		  public std::enable_shared_from_this<TextClickable>

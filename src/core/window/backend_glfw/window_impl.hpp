@@ -244,7 +244,7 @@ class XUZY_API WindowImpl : public AWindow {
   void glfw_update_size_limit() const;
 
  public:
-  Monitor m_monitor;
+  Window::Monitor m_monitor;
 
  private:
   GLFWwindow* m_glfw_window_ = nullptr;

@@ -16,6 +16,7 @@ class DrawableEvent : public Event {
   DrawableEvent(Ref<Window::API::IDrawable> publisher)
       : m_publisher(publisher) {}
 
+ public:
   Ref<Window::API::IDrawable> m_publisher;
 };
 
