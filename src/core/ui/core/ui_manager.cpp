@@ -3,6 +3,7 @@
 #include "ui_manager.hpp"
 
 #include "ui/backend/opengl/imgui_include.h"
+#include "ui/implot/implot.h"
 #include "ui/style/set_style.h"
 #include "window/core/window_app.hpp"
 
@@ -39,6 +40,7 @@ void UIManager::on_detach() {
   // Cleanup imgui
   ImGui_ImplOpenGL3_Shutdown();
   ImGui_ImplGlfw_Shutdown();
+  ImPlot::DestroyContext();
   ImGui::DestroyContext();
 }
 
@@ -121,6 +123,7 @@ void UIManager::imgui_init() {
   // Setup Dear ImGui context
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
+  ImPlot::CreateContext();
 
   ImGuiIO& io = ImGui::GetIO();
   (void)io;

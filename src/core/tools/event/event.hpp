@@ -37,6 +37,7 @@ enum class EventId {
   DrawableSelected,
   DrawableUnselected,
   DrawableValueChanged,
+  DrawableEnterPressed,
   EventIdCount
 };
 

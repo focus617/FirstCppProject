@@ -39,7 +39,7 @@ class SliderSingleScalar
         orientation(p_orientation),
         label(p_label),
         format(p_format),
-        m_dataType(p_dataType) {}
+        m_data_type(p_dataType) {}
 
   Ref<SliderSingleScalar<T>> getptr() {
     return std::enable_shared_from_this<
@@ -60,13 +60,13 @@ class SliderSingleScalar
     switch (orientation) {
       case ESliderOrientation::HORIZONTAL:
         valueChanged =
-            ImGui::SliderScalar((label + this->m_widget_id).c_str(), m_dataType,
+            ImGui::SliderScalar((label + this->m_widget_id).c_str(), m_data_type,
                                 &value, &min, &max, format.c_str());
         break;
       case ESliderOrientation::VERTICAL:
         valueChanged = ImGui::VSliderScalar(
             (label + this->m_widget_id).c_str(),
-            Internal::Converter::ToImVec2(verticalModeSize), m_dataType, &value,
+            Internal::Converter::ToImVec2(verticalModeSize), m_data_type, &value,
             &min, &max, format.c_str());
         break;
     }
@@ -95,6 +95,6 @@ class SliderSingleScalar
   // OvTools::Eventing::Event<T> ValueChangedEvent;
 
  private:
-  ImGuiDataType m_dataType;
+  ImGuiDataType m_data_type;
 };
 }  // namespace xuzy::UI::Widgets::Sliders

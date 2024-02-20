@@ -56,13 +56,13 @@ void RadioButtonLinker::on_radio_button_clicked(Ref<Events::Event> evt,
           (radio_button.get().m_radio_id == m_selected);
 
     // ValueChangedEvent.Invoke(m_selected);
-    auto click_event = CreateRef<Events::DrawableValueChangedEvent<int>>(
-        Events::DrawableValueChangedEvent<int>(getptr(), m_selected));
-    event_dispatcher.dispatch(click_event);
+    auto value_changed_event =
+        CreateRef<Events::DrawableValueChangedEvent<int>>(
+            Events::DrawableValueChangedEvent<int>(getptr(), m_selected));
+    event_dispatcher.dispatch(value_changed_event);
 
     // Notify Plugins
     this->notify_change();
-
   }
 }
 

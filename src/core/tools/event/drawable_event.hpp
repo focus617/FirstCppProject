@@ -123,4 +123,23 @@ class DrawableValueChangedEvent : public DrawableEvent {
   T m_value;
 };
 
+template <typename T>
+class DrawableEnterPressedEvent : public DrawableEvent {
+ public:
+  DrawableEnterPressedEvent(Ref<Window::API::IDrawable> publisher,
+                            T p_value)
+      : DrawableEvent(publisher), m_value(p_value) {}
+
+  std::string to_string() const override {
+    std::stringstream ss;
+    ss << "DrawableEnterPressedEvent(value: " << m_value << ")";
+    return ss.str();
+  }
+
+  EVENT_CLASS_ID(DrawableEnterPressed)
+
+ private:
+  T m_value;
+};
+
 }  // namespace xuzy::Events

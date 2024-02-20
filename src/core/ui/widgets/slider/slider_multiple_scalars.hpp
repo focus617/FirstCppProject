@@ -28,7 +28,7 @@ class SliderMultipleScalars : public DataWidget<std::array<T, _Size>> {
   SliderMultipleScalars(ImGuiDataType_ p_dataType, T p_min, T p_max, T p_value,
                         const std::string& p_label, const std::string& p_format)
       : DataWidget<std::array<T, _Size>>(values),
-        m_dataType(p_dataType),
+        m_data_type(p_dataType),
         min(p_min),
         max(p_max),
         label(p_label),
@@ -48,7 +48,7 @@ class SliderMultipleScalars : public DataWidget<std::array<T, _Size>> {
     }
 
     bool valueChanged =
-        ImGui::SliderScalarN((label + this->m_widget_id).c_str(), m_dataType,
+        ImGui::SliderScalarN((label + this->m_widget_id).c_str(), m_data_type,
                              values.data(), _Size, &min, &max, format.c_str());
 
     if (valueChanged) {
@@ -66,6 +66,6 @@ class SliderMultipleScalars : public DataWidget<std::array<T, _Size>> {
   OvTools::Eventing::Event<std::array<T, _Size>&> ValueChangedEvent;
 
  protected:
-  ImGuiDataType_ m_dataType;
+  ImGuiDataType_ m_data_type;
 };
 }  // namespace xuzy::UI::Widgets::Sliders
