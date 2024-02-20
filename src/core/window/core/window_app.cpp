@@ -12,6 +12,9 @@ WindowApp::WindowApp(const std::string& p_app_name,
   m_ui_manager_ = CreateRef<UI::UIManager>(m_context_.get_native_window(),
                                            m_context_.glsl_version,
                                            UI::Style::IMGUI_DARK_STYLE);
+
+  m_ui_manager_-> set_canvas(CreateRef<UI::Canvas>());
+
   m_layerstack_.push_overlay(m_ui_manager_);
 }
 

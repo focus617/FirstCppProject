@@ -5,8 +5,8 @@
 #include "tools/event/application_event.hpp"
 #include "tools/event/key_event.hpp"
 #include "tools/event/mouse_event.hpp"
-#include "ui/imgui/imgui.h"
 #include "ui/core/canvas.hpp"
+#include "ui/imgui/imgui.h"
 #include "ui/style/style.h"
 #include "window/core/layer.hpp"
 
@@ -48,21 +48,16 @@ class XUZY_API UIManager : public xuzy::Window::ALayer {
   void begin_render();
   void end_render();
 
- private:
-  bool on_mouse_button_pressed_event(Ref<Events::MouseButtonPressedEvent> e);
-  bool on_mouse_button_released_event(Ref<Events::MouseButtonReleasedEvent> e);
-  bool on_mouse_moved_event(Ref<Events::MouseMovedEvent> e);
-  bool on_mouse_scrolled_event(Ref<Events::MouseScrolledEvent> e);
-  bool on_key_pressed_event(Ref<Events::KeyPressedEvent> e);
-  bool on_key_released_event(Ref<Events::KeyReleasedEvent> e);
-  bool on_key_typed_event(Ref<Events::KeyTypedEvent> e);
-  bool on_window_resize_event(Ref<Events::WindowResizeEvent> e);
+  /**
+   * @brief Defines the canvas to use
+   * @param p_canvas
+   */
+  void set_canvas(Ref<UI::Canvas> p_canvas);
 
   /**
-   * @brief Load imgui and setup context
+   * @brief Stop considering the current canvas (if any)
    */
-  void imgui_init();
-  void imgui_toolbar();
+  void remove_canvas();
 
   /**
    * @brief Load a font
@@ -143,13 +138,29 @@ class XUZY_API UIManager : public xuzy::Window::ALayer {
   float get_layout_auto_save_frequency(float p_frequeny);
 
  private:
+  bool on_mouse_button_pressed_event(Ref<Events::MouseButtonPressedEvent> e);
+  bool on_mouse_button_released_event(Ref<Events::MouseButtonReleasedEvent> e);
+  bool on_mouse_moved_event(Ref<Events::MouseMovedEvent> e);
+  bool on_mouse_scrolled_event(Ref<Events::MouseScrolledEvent> e);
+  bool on_key_pressed_event(Ref<Events::KeyPressedEvent> e);
+  bool on_key_released_event(Ref<Events::KeyReleasedEvent> e);
+  bool on_key_typed_event(Ref<Events::KeyTypedEvent> e);
+  bool on_window_resize_event(Ref<Events::WindowResizeEvent> e);
+
+  /**
+   * @brief Load imgui and setup context
+   */
+  void imgui_init();
+  void imgui_toolbar();
+
+ private:
   std::string m_layout_config_filename = "imgui.ini";
 
   GLFWwindow* m_glfw_window_;
   std::string m_glsl_version_;
   UI::Style m_style_;
 
-  UI::Canvas m_canvas_;
+  Ref<UI::Canvas> m_canvas_ = nullptr;
 
   std::unordered_map<std::string, ImFont*> m_fonts_;
   float m_font_size_pixels_ = 18.0f;

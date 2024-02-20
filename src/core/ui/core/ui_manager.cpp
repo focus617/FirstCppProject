@@ -46,7 +46,9 @@ void UIManager::on_detach() {
 
 void UIManager::on_update() {}
 
-void UIManager::on_draw() { m_canvas_.on_draw(); }
+void UIManager::on_draw() {
+  if (m_canvas_) m_canvas_->on_draw();
+}
 
 void UIManager::begin_render() {
   // Start a new frame
@@ -262,7 +264,7 @@ void UIManager::enable_docking(bool p_value) {
     ImGui::GetIO().ConfigFlags &= ~ImGuiConfigFlags_DockingEnable;
 
   m_enable_docking = p_value;
-  m_canvas_.make_dockspace(p_value);
+  if (m_canvas_) m_canvas_->make_dockspace(p_value);
 }
 
 void UIManager::enable_layout_save(bool p_value) {
@@ -288,6 +290,17 @@ void UIManager::set_layout_auto_save_frequency(float p_frequency) {
 
 float UIManager::get_layout_auto_save_frequency(float p_frequeny) {
   return ImGui::GetIO().IniSavingRate;
+}
+
+void UIManager::set_canvas(Ref<UI::Canvas> p_canvas) {
+  remove_canvas();
+  m_canvas_ = p_canvas;
+  
+  m_canvas_->make_dockspace(m_enable_docking);
+}
+
+void UIManager::remove_canvas() {
+  m_canvas_ = nullptr;
 }
 
 void UIManager::on_event(Ref<Events::Event> event, bool& handled) {
