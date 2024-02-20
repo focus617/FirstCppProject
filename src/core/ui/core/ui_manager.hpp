@@ -167,7 +167,7 @@ class XUZY_API UIManager : public xuzy::Window::ALayer {
 
   ImVec4 m_clear_color_ = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-  bool m_enable_docking = false;
+  bool m_enable_docking = true;
 
   float m_time_ = 0.0f;
 };

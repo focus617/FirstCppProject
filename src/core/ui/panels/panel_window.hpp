@@ -109,7 +109,7 @@ namespace xuzy::UI::Panels
 		void event_handler(Ref<Events::Event> evt, bool& handled);		
 
 	protected:
-		void _on_draw_impl() override;
+		virtual void _on_draw_impl() override;
 
 	public:
 		std::string name;
@@ -121,7 +121,7 @@ namespace xuzy::UI::Panels
 		bool closable = false;
 		bool movable = true;
 		bool scrollable = true;
-		bool dockable = false;
+		bool dockable = true;
 		bool hide_background = false;
 		bool force_horizontal_scrollbar = false;
 		bool force_vertical_scrollbar = false;
@@ -139,10 +139,10 @@ namespace xuzy::UI::Panels
 		bool m_opened;
 		bool m_hovered;
 		bool m_focused;
-        bool m_mustScrollToBottom = false;
-        bool m_mustScrollToTop = false;
-        bool m_scrolledToBottom = false;
-        bool m_scrolledToTop = false;
+        bool m_must_scroll_to_bottom = false;
+        bool m_must_scroll_to_top = false;
+        bool m_scrolled_to_bottom = false;
+        bool m_scrolled_to_top = false;
 	};
 
 } // namespace xuzy::UI::Panels

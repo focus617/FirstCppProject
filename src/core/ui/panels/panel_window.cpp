@@ -72,13 +72,13 @@ bool PanelWindow::is_appearing() const {
     return false;
 }
 
-void PanelWindow::scroll_to_bottom() { m_mustScrollToBottom = true; }
+void PanelWindow::scroll_to_bottom() { m_must_scroll_to_bottom = true; }
 
-void PanelWindow::scroll_to_top() { m_mustScrollToTop = true; }
+void PanelWindow::scroll_to_top() { m_must_scroll_to_top = true; }
 
-bool PanelWindow::is_scrolled_to_bottom() const { return m_scrolledToBottom; }
+bool PanelWindow::is_scrolled_to_bottom() const { return m_scrolled_to_bottom; }
 
-bool PanelWindow::is_scrolled_to_top() const { return m_scrolledToTop; }
+bool PanelWindow::is_scrolled_to_top() const { return m_scrolled_to_top; }
 
 void PanelWindow::invoke_open_event() {
   // Invoke OpenEvent
@@ -154,21 +154,21 @@ void PanelWindow::_on_draw_impl() {
 
       auto scrollY = ImGui::GetScrollY();
 
-      m_scrolledToBottom = scrollY == ImGui::GetScrollMaxY();
-      m_scrolledToTop = scrollY == 0.0f;
+      m_scrolled_to_bottom = scrollY == ImGui::GetScrollMaxY();
+      m_scrolled_to_top = scrollY == 0.0f;
 
       if (!m_opened) invoke_close_event();
 
       on_update();
 
-      if (m_mustScrollToBottom) {
+      if (m_must_scroll_to_bottom) {
         ImGui::SetScrollY(ImGui::GetScrollMaxY());
-        m_mustScrollToBottom = false;
+        m_must_scroll_to_bottom = false;
       }
 
-      if (m_mustScrollToTop) {
+      if (m_must_scroll_to_top) {
         ImGui::SetScrollY(0.0f);
-        m_mustScrollToTop = false;
+        m_must_scroll_to_top = false;
       }
 
       draw_widgets();

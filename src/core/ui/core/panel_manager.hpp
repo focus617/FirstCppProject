@@ -62,7 +62,7 @@ class XUZY_API PanelManager : public xuzy::Window::ALayer {
   void CreatePanel(const std::string& p_id, Args&&... p_args) {
     if constexpr (std::is_base_of<UI::Panels::PanelWindow, T>::value) {
       m_panel_map_.emplace(
-          p_id, std::make_unique<T>(p_id, std::forward<Args>(p_args)...));
+          p_id, CreateScope<T>(p_id, std::forward<Args>(p_args)...));
 
       // T& instance = *static_cast<T*>(m_panel_map_.at(p_id).get());
       // GetPanelAs<OvEditor::Panels::MenuBar>("Menu Bar")
@@ -70,7 +70,7 @@ class XUZY_API PanelManager : public xuzy::Window::ALayer {
 
     } else {
       m_panel_map_.emplace(p_id,
-                           std::make_unique<T>(std::forward<Args>(p_args)...));
+                           CreateScope<T>(std::forward<Args>(p_args)...));
     }
     add_panel(*m_panel_map_.at(p_id));
   }
