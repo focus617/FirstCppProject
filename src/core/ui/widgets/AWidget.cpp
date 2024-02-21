@@ -29,11 +29,30 @@ xuzy::UI::Internal::WidgetContainer* AWidget::get_parent() { return m_parent; }
 void AWidget::on_draw() {
   if (enabled) {
     _on_draw_impl();
+    if (m_enable_tool_tip && ImGui::BeginItemTooltip())
+    {
+        ImGui::PushTextWrapPos(ImGui::GetFontSize() * 50.0f);
+        ImGui::TextUnformatted(m_tool_tip.c_str());
+        ImGui::PopTextWrapPos();
+        ImGui::EndTooltip();
+    }
 
     if (m_auto_execute_plugins) execute_plugins();
 
     if (!lineBreak) ImGui::SameLine();
   }
 }
+
+  void AWidget::set_tool_tip_desc(const std::string& p_desc){
+    m_tool_tip = p_desc;
+  }
+
+  void AWidget::enable_tool_tip(bool p_enable){
+    m_enable_tool_tip = p_enable;
+  }
+
+  bool AWidget::has_enable_tool_tip() const{
+    return m_enable_tool_tip;
+  }
 
 }  // namespace xuzy::UI::Widgets

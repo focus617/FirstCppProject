@@ -66,6 +66,22 @@ class AWidget
    */
   Internal::WidgetContainer* get_parent();
 
+  /**
+   * @brief Defines the tool tip of this widget
+   * @param p_tool_desc
+   */
+  void set_tool_tip_desc(const std::string& p_desc);
+
+  /**
+   * @brief Enable or disable showing of widget tip
+   */
+  void enable_tool_tip(bool p_enable);
+
+  /**
+   * @brief Returns true if enable showing of widget tip
+   */
+  bool has_enable_tool_tip() const;
+
  protected:
   virtual void _on_draw_impl() = 0;
 
@@ -76,11 +92,13 @@ class AWidget
  protected:
   Internal::WidgetContainer* m_parent;
   std::string m_widget_id = "?";
+  std::string m_tool_tip = "";
   bool m_auto_execute_plugins = true;
 
  private:
   static uint64_t __WIDGET_ID_INCREMENT;
   bool m_destroyed = false;
+  bool m_enable_tool_tip = false;
 };
 
 }  // namespace xuzy::UI::Widgets
