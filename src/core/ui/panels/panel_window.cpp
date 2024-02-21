@@ -81,6 +81,8 @@ bool PanelWindow::is_scrolled_to_bottom() const { return m_scrolled_to_bottom; }
 bool PanelWindow::is_scrolled_to_top() const { return m_scrolled_to_top; }
 
 void PanelWindow::invoke_open_event() {
+  LOG(INFO) << name << get_panel_id() << " Panel opened." << std::endl;
+
   // Invoke OpenEvent
   auto open_event = CreateRef<Events::DrawableOpenedEvent>(
       Events::DrawableOpenedEvent(getptr()));
@@ -88,6 +90,8 @@ void PanelWindow::invoke_open_event() {
 }
 
 void PanelWindow::invoke_close_event() {
+  LOG(INFO) << name << get_panel_id() << " Panel closed." << std::endl;
+
   // Invoke CloseEvent
   auto close_event = CreateRef<Events::DrawableClosedEvent>(
       Events::DrawableClosedEvent(getptr()));
@@ -95,7 +99,7 @@ void PanelWindow::invoke_close_event() {
 }
 
 void PanelWindow::event_handler(Ref<Events::Event> evt, bool& handled) {
-  std::cout << "Event: " << *evt << std::endl;
+  LOG(INFO) << "Event: " << *evt << std::endl;
 
   handled = false;
 

@@ -42,19 +42,19 @@ void PanelManager::on_event(Ref<Events::Event> event, bool& handled) {
 }
 
 void PanelManager::on_draw() {
-  for (auto& panel : m_panels_) panel.get().on_draw();
+  for (auto& panel : m_panels_) panel->on_draw();
 }
 
-void PanelManager::add_panel(Panels::APanel& p_panel) {
-  m_panels_.push_back(std::ref(p_panel));
+void PanelManager::add_panel(Ref<Panels::APanel>& p_panel) {
+  m_panels_.push_back(p_panel);
 }
 
-void PanelManager::remove_panel(Panels::APanel& p_panel) {
-  m_panels_.erase(std::remove_if(
-      m_panels_.begin(), m_panels_.end(),
-      [&p_panel](std::reference_wrapper<Panels::APanel>& p_item) {
-        return &p_panel == &p_item.get();
-      }));
+void PanelManager::remove_panel(Ref<Panels::APanel>& p_panel) {
+  auto found = std::find(m_panels_.begin(), m_panels_.end(), p_panel);
+
+  if (found != m_panels_.end()) {
+    m_panels_.erase(found);
+  }
 }
 
 void PanelManager::remove_all_panels() { m_panels_.clear(); }

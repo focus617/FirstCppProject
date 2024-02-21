@@ -40,13 +40,13 @@ class XUZY_API PanelManager : public xuzy::Window::ALayer {
    * Adds a panel to the canvas
    * @param p_panel
    */
-  void add_panel(Panels::APanel& p_panel);
+  void add_panel(Ref<Panels::APanel>& p_panel);
 
   /**
    * @brief Removes a panel from the canvas
    * @param p_panel
    */
-  void remove_panel(Panels::APanel& p_panel);
+  void remove_panel(Ref<Panels::APanel>& p_panel);
 
   /**
    * @brief Removes every panels from the canvas
@@ -60,19 +60,21 @@ class XUZY_API PanelManager : public xuzy::Window::ALayer {
    */
   template <typename T, typename... Args>
   void CreatePanel(const std::string& p_id, Args&&... p_args) {
+    
     if constexpr (std::is_base_of<UI::Panels::PanelWindow, T>::value) {
-      m_panel_map_.emplace(
-          p_id, CreateScope<T>(p_id, std::forward<Args>(p_args)...));
+      Ref<T> instance = CreateRef<T>(p_id, std::forward<Args>(p_args)...);
+      m_panel_map_.emplace(p_id, instance);
+
 
       // T& instance = *static_cast<T*>(m_panel_map_.at(p_id).get());
       // GetPanelAs<OvEditor::Panels::MenuBar>("Menu Bar")
       //     .RegisterPane(instance.name, instance);
 
     } else {
-      m_panel_map_.emplace(p_id,
-                           CreateScope<T>(std::forward<Args>(p_args)...));
+      Ref<T> instance = CreateRef<T>(std::forward<Args>(p_args)...);
+      m_panel_map_.emplace(p_id, instance);
     }
-    add_panel(*m_panel_map_.at(p_id));
+    add_panel(m_panel_map_.at(p_id));
   }
 
   /**
@@ -86,9 +88,9 @@ class XUZY_API PanelManager : public xuzy::Window::ALayer {
   }
 
  private:
-  std::vector<std::reference_wrapper<Panels::APanel>> m_panels_;
+  std::vector<Ref<Panels::APanel>> m_panels_;
 
-  std::unordered_map<std::string, std::unique_ptr<Panels::APanel>> m_panel_map_;
+  std::unordered_map<std::string, Ref<Panels::APanel>> m_panel_map_;
 };
 
 }  // namespace xuzy::UI

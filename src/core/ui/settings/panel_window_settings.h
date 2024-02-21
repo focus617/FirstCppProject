@@ -8,10 +8,10 @@ namespace xuzy::UI::Settings
 	*/
 	struct PanelWindowSettings
 	{
-		bool closable					= false;
+		bool closable					= true;
 		bool resizable					= true;
 		bool movable					= true;
-		bool dockable					= false;
+		bool dockable					= true;
 		bool scrollable					= true;
 		bool hide_background			= false;
 		bool force_horizontal_scrollbar	= false;

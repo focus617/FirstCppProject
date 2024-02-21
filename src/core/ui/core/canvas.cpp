@@ -8,8 +8,8 @@ namespace xuzy::UI {
 void Canvas::on_draw() {
   if (m_is_dockspace_) {
     // Create an explicit docking node within an existing window.
-    // - Drag from window title bar or their tab to dock/undock. Hold SHIFT to
-    // disable docking.
+    // - Drag from window title bar or their tab to dock/undock. 
+    // - Hold SHIFT to disable docking.
     // - Drag from window menu button (upper-left button) to undock an entire
     // node (all windows).
 
