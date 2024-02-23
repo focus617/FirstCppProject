@@ -132,8 +132,6 @@ namespace xuzy::UI::Panels
 		bool title_bar = true;
 
 		Events::EventDispatcher<void()> event_dispatcher;
-		// OvTools::Eventing::Event<> OpenEvent;
-		// OvTools::Eventing::Event<> CloseEvent;
 
 	private:
 		bool m_opened;

@@ -4,6 +4,8 @@
 #include "window/inputs/input_manager.hpp"
 #include "window/inputs/key_state.h"
 
+#include "ui/implot/implot.h"
+
 namespace xuzy::UI {
 
 #define Input xuzy::Window::Inputs
@@ -43,13 +45,17 @@ void PanelManager::on_event(Ref<Events::Event> event, bool& handled) {
 
 void PanelManager::on_draw() {
   for (auto& panel : m_panels_) panel->on_draw();
+
+  // Tempoaray add here
+  ImGui::ShowDemoWindow();
+  ImPlot::ShowDemoWindow();
 }
 
-void PanelManager::add_panel(Ref<Panels::APanel>& p_panel) {
+void PanelManager::add_panel(const Ref<Panels::APanel>& p_panel) {
   m_panels_.push_back(p_panel);
 }
 
-void PanelManager::remove_panel(Ref<Panels::APanel>& p_panel) {
+void PanelManager::remove_panel(const Ref<Panels::APanel>& p_panel) {
   auto found = std::find(m_panels_.begin(), m_panels_.end(), p_panel);
 
   if (found != m_panels_.end()) {

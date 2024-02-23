@@ -8,7 +8,7 @@
 namespace xuzy::UI::Widgets::Menu {
 
 /**
- * Widget that behave like a group with a menu display
+ * @brief Widget that behave like a group with a menu display
  */
 class MenuList : public Layout::Group,
                  public std::enable_shared_from_this<MenuList> {
