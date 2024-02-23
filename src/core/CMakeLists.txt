@@ -13,12 +13,14 @@ endif()
 aux_source_directory(. _SOURCES)
 
 # 添加子目录
-add_subdirectory(cpp)
+add_subdirectory(app)
+add_subdirectory(classloader)
 add_subdirectory(tools)
 add_subdirectory(window)
 add_subdirectory(ui)
 add_subdirectory(editor)
-add_subdirectory(include/resource)
+add_subdirectory(renderer)
+add_subdirectory(app/include/resource)
 
 # 生成动态链接库
 add_library(core SHARED ${_SOURCES})
@@ -65,7 +67,9 @@ set(STBIMAGE_INCLUDE_DIR
 target_include_directories(core
   PUBLIC 
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/app/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/classloader/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/renderer/include>
     $<INSTALL_INTERFACE:include/core>
   PRIVATE
     ${PROJECT_BINARY_DIR}/src
@@ -76,7 +80,7 @@ target_include_directories(core
 
 # Precompiled headers
 target_precompile_headers(core 
-  PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/pch.h"
+  PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/app/include/pch.h"
 )
 
 # 添加链接库

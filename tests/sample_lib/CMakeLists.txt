@@ -13,8 +13,10 @@ set_target_properties(sample_lib PROPERTIES
 )
 
 # 指定头文件路径
-target_include_directories(sample_lib 
-    PRIVATE ${PROJECT_SOURCE_DIR}/src/core/include
+target_include_directories(sample_lib PRIVATE
+   ${PROJECT_SOURCE_DIR}/src/core/include
+   ${PROJECT_SOURCE_DIR}/src/core/app/include
+   ${PROJECT_SOURCE_DIR}/src/core/classloader/include
 )
 
 install(TARGETS sample_lib

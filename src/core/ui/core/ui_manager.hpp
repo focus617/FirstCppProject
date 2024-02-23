@@ -163,7 +163,7 @@ class XUZY_API UIManager : public xuzy::Window::ALayer {
   Ref<UI::Canvas> m_canvas_ = nullptr;
 
   std::unordered_map<std::string, ImFont*> m_fonts_;
-  float m_font_size_pixels_ = 18.0f;
+  float m_font_size_pixels_ = 20.0f;
 
   ImVec4 m_clear_color_ = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 

@@ -15,7 +15,7 @@ WindowApp::WindowApp(const std::string& p_app_name,
 
   m_ui_manager_-> set_canvas(CreateRef<UI::Canvas>());
 
-  m_layerstack_.push_overlay(m_ui_manager_);
+  m_layerstack_.push_layer(m_ui_manager_);
 }
 
 WindowApp::~WindowApp() { close(); }
