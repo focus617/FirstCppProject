@@ -144,14 +144,14 @@ struct WindowProps {
    * compatible with. The exact behavior of these hints depend on the requested
    * client API
    */
-  uint8_t context_major_version = 4;
+  uint context_major_version = 4;
 
   /**
    * Specify the client API minor version that the created context must be
    * compatible with. The exact behavior of these hints depend on the requested
    * client API
    */
-  uint8_t context_minor_version = 6;
+  uint context_minor_version = 6;
 
   /**
    * specifies whether to create a debug OpenGL context, which may have

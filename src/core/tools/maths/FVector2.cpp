@@ -2,7 +2,7 @@
 #include <stdexcept>
 #include <cmath>
 
-#include "FVector2.hpp"
+#include "tools/maths/FVector2.hpp"
 
 namespace xuzy::Maths {
 

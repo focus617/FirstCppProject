@@ -3,6 +3,7 @@
 #include <GLFW/glfw3.h>  // Will drag system OpenGL headers
 
 #include "window/core/window_props.hpp"
+#include "window/core/AGraphics_context.hpp"
 
 namespace xuzy::Window {
 
@@ -71,19 +72,18 @@ class Monitor {
    */
   bool is_vsync() const;
 
+  /**
+   * @brief Dump driver(eg. OpenGL) vendor and version
+   */
+  void driver_info() const;
+
  private:
   bool m_glfw_initialized = false;
   bool m_vsync;
   int32_t m_refresh_rate;
 
-  /* GLFW Context */
-  struct GlfwContext {
-    uint8_t m_major_version;
-    uint8_t m_minor_version;
-    bool m_debug_profile;
-  };
-
-  GlfwContext m_glfw_context_;
+  /* GLFW-OpenGL Context */
+  Scope<AGraphicsContext> m_context_;
 };
 
 }  // namespace xuzy::Window

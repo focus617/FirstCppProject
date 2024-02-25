@@ -2,6 +2,7 @@ set(CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/install")
 # Import extern Libraries
 find_package(glog REQUIRED)
 find_package(glfw3 REQUIRED)
+find_package(glad REQUIRED)
 
 # Import nlohmann_json
 find_package(nlohmann_json 3.11.3 REQUIRED)
@@ -58,6 +59,11 @@ set(GLFW_INCLUDE_DIR
   CACHE PATH "GLFW include directory"
 )
 
+set(GLAD_INCLUDE_DIR
+  ${PROJECT_SOURCE_DIR}/extern/glad/include
+  CACHE PATH "GLAD include directory"
+)
+
 set(STBIMAGE_INCLUDE_DIR
   ${PROJECT_SOURCE_DIR}/extern/stb_image
   CACHE PATH "STB IMAGE include directory"
@@ -69,6 +75,7 @@ target_include_directories(core
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/app/include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/classloader/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/editor/include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/renderer/include>
     $<INSTALL_INTERFACE:include/core>
   PRIVATE
@@ -90,6 +97,7 @@ target_link_libraries(core
     nlohmann_json::nlohmann_json
     resource
     glfw
+    glad
     ${GL_LIBRARY}  #opengl lib
 )
 

@@ -5,7 +5,7 @@
 #include "app/app.hpp"
 #include "tools/event/application_event.hpp"
 #include "ui/core/ui_manager.hpp"
-#include "window/core/context.hpp"
+#include "window/core/app_context.hpp"
 #include "window/core/layerstack.hpp"
 
 namespace xuzy {
@@ -46,7 +46,7 @@ class XUZY_API WindowApp : public App {
   XUZY_API virtual bool OnWindowResize(Ref<Events::WindowResizeEvent> e);
 
  private:
-  Window::Context m_context_;
+  Window::AppContext m_context_;
 
   bool m_minimized_ = false;
   bool m_running_ = true;

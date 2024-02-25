@@ -1,8 +1,8 @@
-#include "window/core/context.hpp"
+#include "window/core/app_context.hpp"
 
 namespace xuzy::Window {
 
-Context::Context(const std::string& p_app_name, const std::string& p_version)
+AppContext::AppContext(const std::string& p_app_name, const std::string& p_version)
     : m_app_name_{p_app_name}, m_version_{p_version} {
   /* Settings */
   m_props_ = WindowProps(p_app_name);
@@ -19,9 +19,9 @@ Context::Context(const std::string& p_app_name, const std::string& p_version)
                            monHeight / 2 - winHeight / 2);
 }
 
-Context::~Context() {}
+AppContext::~AppContext() {}
 
-GLFWwindow* Context::get_native_window() const {
+GLFWwindow* AppContext::get_native_window() const {
   return ((Window::WindowImpl&)(*m_window_)).get_native_window();
 }
 

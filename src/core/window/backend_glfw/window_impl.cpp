@@ -253,16 +253,15 @@ void WindowImpl::glfw_window_init(const WindowProps& props) {
                        static_cast<int>(m_data_.m_size.second),
                        m_data_.m_title.c_str(), selected_monitor, nullptr);
   XUZY_CHECK_(nullptr != m_glfw_window_) << "Could not create GLFW Window!";
+  
   glfwMakeContextCurrent(m_glfw_window_);
   glfw_update_size_limit();
+  // Dump backend vendor and version
+  m_monitor.driver_info();
 
   auto [x, y] = get_position();
   m_data_.m_position.first = x;
   m_data_.m_position.second = y;
-
-  // 为GLAD传入了用来加载系统相关的OpenGL函数指针地址的函数。
-  // int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-  // XUZY_CHECK_(status) << "Failed to initialize Glad!";
 
   glfwSetWindowUserPointer(m_glfw_window_, &m_data_);
   m_monitor.setup_vsync();  // Enable vsync

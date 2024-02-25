@@ -6,10 +6,6 @@ Monitor::Monitor(const WindowProps& p_props)
     : m_vsync{p_props.enable_vsync}, m_refresh_rate{p_props.refresh_rate} {
   LOG(INFO) << "GLFW version: " << glfwGetVersionString();
 
-  m_glfw_context_.m_major_version = p_props.context_major_version;
-  m_glfw_context_.m_minor_version = p_props.context_minor_version;
-  m_glfw_context_.m_debug_profile = p_props.debug_profile;
-
   // Initialize GLFW library
   if (!m_glfw_initialized) {
     int initialization_code = glfwInit();
@@ -24,16 +20,9 @@ Monitor::Monitor(const WindowProps& p_props)
     m_glfw_initialized = true;
   }
 
-  // Decide GL+GLSL versions
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,
-                 static_cast<int>(m_glfw_context_.m_major_version));
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR,
-                 static_cast<int>(m_glfw_context_.m_minor_version));
-  // 3.2+ only 使用核心模式
-  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-  // If OpenGL debug mode is open
-  if (m_glfw_context_.m_debug_profile)
-    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+  // Initialize Backend
+  m_context_ = AGraphicsContext::Create(p_props);
+  m_context_->init();
 
   glfwWindowHint(GLFW_RESIZABLE, p_props.resizable);
   glfwWindowHint(GLFW_DECORATED, p_props.decorated);
@@ -82,6 +71,10 @@ int32_t Monitor::get_refresh_rate() const { return m_refresh_rate; }
 
 void Monitor::set_refresh_rate(int32_t p_refresh_rate) {
   m_refresh_rate = p_refresh_rate;
+}
+
+void Monitor::driver_info() const {
+  if (nullptr != m_context_) m_context_->vendor_info();
 }
 
 }  // namespace xuzy::Window

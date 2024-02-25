@@ -10,19 +10,19 @@ namespace xuzy::Window {
 /**
  * @brief The Context handle the engine features setup
  */
-class Context {
+class AppContext {
  public:
   /**
    * Constructor
    * @param p_projectPath
    * @param p_projectName
    */
-  Context(const std::string& p_app_name, const std::string& p_version);
+  AppContext(const std::string& p_app_name, const std::string& p_version);
 
   /**
    * Destructor
    */
-  ~Context();
+  ~AppContext();
 
   /**
    * @brief Return built-in GLFWwindow
