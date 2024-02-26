@@ -1,5 +1,7 @@
 #pragma once
 
+#include "renderer/buffers/AVertex_array.hpp"
+
 namespace xuzy::Renderer {
 
 class ARendererAPI {
@@ -7,6 +9,14 @@ class ARendererAPI {
   enum class API { None = 0, OpenGL = 1 };
 
  public:
+  /**
+   * @brief Concrete RendererAPI creater
+   */
+  static Scope<ARendererAPI> Create();
+
+  /**
+   * @brief Destructor
+   */
   virtual ~ARendererAPI() = default;
 
   /**
@@ -41,9 +51,16 @@ class ARendererAPI {
    */
   virtual void clear() = 0;
 
-  static API get_api() { return s_api; }
+  /**
+   * @brief Draw the VertexArray based on its indices
+   * @param p_vertex_array
+   * @param index_count
+   */
+  virtual void draw_indexed(
+      const Ref<Renderer::Buffer::AVertexArray>& p_vertex_array,
+      uint32_t p_index_count = 0) = 0;
 
-  static Scope<ARendererAPI> Create();
+  static API get_api() { return s_api; }
 
  private:
   static API s_api;

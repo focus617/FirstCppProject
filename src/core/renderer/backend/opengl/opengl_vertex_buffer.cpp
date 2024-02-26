@@ -1,6 +1,6 @@
-#include <glad/glad.h>
-
 #include "renderer/backend/opengl/opengl_vertex_buffer.hpp"
+
+#include <glad/glad.h>
 
 namespace xuzy::Renderer::Buffer {
 
@@ -31,12 +31,10 @@ void OpenGLVertexBuffer::set_data(const void* p_data, uint32_t p_size) {
   glBufferSubData(GL_ARRAY_BUFFER, 0, p_size, p_data);
 }
 
-// const BufferLayout& OpenGLVertexBuffer::get_layout() const {
+const BufferLayout& OpenGLVertexBuffer::get_layout() const { return m_layout_; }
 
-// }
-
-// void OpenGLVertexBuffer::set_layout(const BufferLayout& layout) {
-
-// }
+void OpenGLVertexBuffer::set_layout(const BufferLayout& p_layout) {
+  m_layout_ = p_layout;
+}
 
 }  // namespace xuzy::Renderer::Buffer

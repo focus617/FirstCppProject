@@ -61,4 +61,14 @@ void OpenGLRendererAPI::clear() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
+void OpenGLRendererAPI::draw_indexed(
+    const Ref<Renderer::Buffer::AVertexArray>& p_vertex_array,
+    uint32_t p_index_count) {
+  uint32_t count = p_index_count
+                       ? p_index_count
+                       : p_vertex_array->get_index_buffer()->get_count();
+  glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
+  glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 }  // namespace xuzy::Renderer

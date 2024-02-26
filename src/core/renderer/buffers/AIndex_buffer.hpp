@@ -8,7 +8,8 @@ namespace xuzy::Renderer::Buffer {
  * @brief Generic EBO
  * Limitation: currently only supports 32-bit index buffers
  */
-class AIndexBuffer {
+class XUZY_API AIndexBuffer {
+ public:
   /**
    * @brief Concrete indexbuffer creater
    * @param p_indices
@@ -16,7 +17,6 @@ class AIndexBuffer {
    */
   static Ref<AIndexBuffer> Create(uint32_t* p_indices, uint32_t p_count);
 
- public:
   /**
    * @brief Destructor
    */
@@ -36,7 +36,6 @@ class AIndexBuffer {
    * @brief Returns the indices count in buffer
    */
   virtual uint32_t get_count() const = 0;
-
 };
 
 }  // namespace xuzy::Renderer::Buffer

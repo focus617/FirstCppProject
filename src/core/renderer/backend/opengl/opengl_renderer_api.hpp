@@ -37,6 +37,15 @@ class OpenGLRendererAPI : public ARendererAPI {
    * (With Renderer::set_clear_color()) or by using the OpenGL default one.
    */
   virtual void clear() override;
+
+  /**
+   * @brief Draw the VertexArray based on its indices
+   * @param p_vertex_array
+   * @param index_count
+   */
+  virtual void draw_indexed(
+      const Ref<Renderer::Buffer::AVertexArray>& p_vertex_array,
+      uint32_t p_index_count = 0) override;
 };
 
 }  // namespace xuzy::Renderer

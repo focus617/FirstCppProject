@@ -2,14 +2,17 @@
 
 #include <vector>
 
+#include "renderer/buffers/buffer_layout.hpp"
+
 namespace xuzy::Renderer::Buffer {
 
 /**
  * @brief Generic VBO
  */
-class AVertexBuffer {
+class XUZY_API AVertexBuffer {
+ public:
   /**
-   * @brief Concrete vertexbuffer creater
+   * @brief Concrete VertexBuffer creater
    * @param p_size Total size of vertices in byte
    */
   static Ref<AVertexBuffer> Create(uint32_t p_size);
@@ -21,7 +24,6 @@ class AVertexBuffer {
    */
   static Ref<AVertexBuffer> Create(void* p_vertices, uint32_t p_size);
 
- public:
   /**
    * @brief Destructor
    */
@@ -48,12 +50,12 @@ class AVertexBuffer {
   /**
    * @brief Returnd the Layout of the VBO
    */
-  // virtual const BufferLayout& get_layout() const = 0;
+  virtual const BufferLayout& get_layout() const = 0;
 
   /**
    * @brief Setup the Layout of the VBO
    */
-  // virtual void set_layout(const BufferLayout& layout) = 0;
+  virtual void set_layout(const BufferLayout& layout) = 0;
 };
 
 }  // namespace xuzy::Renderer::Buffer

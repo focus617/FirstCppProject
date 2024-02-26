@@ -6,7 +6,7 @@ namespace xuzy::Renderer {
 /**
  * @brief OpenGL shader program wrapper
  */
-class OpenGLShader : public Shader {
+class OpenGLShader : public AShader {
  public:
   OpenGLShader(const std::string& p_filepath);
 

@@ -15,14 +15,15 @@ namespace xuzy::Renderer {
 /**
  * @brief Generic shader program wrapper
  */
-class Shader {
+class XUZY_API AShader {
   // friend class Loaders::ShaderLoader;
 
+ public:
    /**
    * @brief Concrete shader creater
    * @param p_filepath
    */
-  static Ref<Shader> Create(const std::string& p_filepath);
+  static Ref<AShader> Create(const std::string& p_filepath);
 
    /**
    * @brief Concrete shader creater
@@ -30,15 +31,14 @@ class Shader {
    * @param p_vertex_src    Vertex source code
    * @param p_fragment_src  Fragment source code
    */
-  static Ref<Shader> Create(const std::string& p_name,
+  static Ref<AShader> Create(const std::string& p_name,
                             const std::string& p_vertex_src,
                             const std::string& p_fragment_src);
 
- public:
   /**
    * @brief Default destructer
    */
-  virtual ~Shader() = default;
+  virtual ~AShader() = default;
 
   /**
    * @brief Bind the program

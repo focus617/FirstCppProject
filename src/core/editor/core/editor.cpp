@@ -14,6 +14,8 @@ Editor::Editor(const std::string& t_app_name, const std::string& t_version)
     : WindowApp{std::move(t_app_name), std::move(t_version)} {
   Ref<UI::PanelManager> panel_manager = CreateRef<UI::PanelManager>();
 
+  push_layer(panel_manager);
+
   auto main_menu =
       panel_manager->CreatePanel<Panels::MainMenuBar>("MainMenuBar");
 
@@ -33,8 +35,6 @@ Editor::Editor(const std::string& t_app_name, const std::string& t_version)
     sprintf(label, "MyObject %d", i);
     child_panel->CreateWidget<UI::Widgets::Text::TextSelectable>(label);
   }
-
-  push_layer(panel_manager);
 }
 
 }  // namespace xuzy::Editor

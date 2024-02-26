@@ -52,12 +52,12 @@ class OpenGLVertexBuffer : public AVertexBuffer {
   /**
    * @brief Returnd the Layout of the VBO
    */
-  // virtual const BufferLayout& get_layout() const override;
+  virtual const BufferLayout& get_layout() const override;
 
   /**
    * @brief Setup the Layout of the VBO
    */
-  // virtual void set_layout(const BufferLayout& layout) override;
+  virtual void set_layout(const BufferLayout& layout) override;
 
   /**
    * @brief Returnd the ID of the VBO
@@ -66,7 +66,7 @@ class OpenGLVertexBuffer : public AVertexBuffer {
 
  private:
   uint32_t m_renderer_id_;
-  // BufferLayout m_layout_;
+  BufferLayout m_layout_;
 };
 
 }  // namespace xuzy::Renderer::Buffer
