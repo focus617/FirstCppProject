@@ -5,8 +5,8 @@
 namespace xuzy::Window {
 
 LayerStack::~LayerStack() {
-  for (Ref<ALayer> layer : m_layers_) {
-    layer->on_detach();
+  for (auto it = m_layers_.rbegin(); it != m_layers_.rend(); ++it) {
+    (*it)->on_detach();
   }
   m_layers_.clear();
 }
@@ -41,9 +41,9 @@ void LayerStack::pop_overlay(const Ref<ALayer>& overlay) {
   }
 }
 
-void LayerStack::on_draw(){
-  for (auto it = begin(); it != end(); ++it) {
-      (*it)->on_draw();
+void LayerStack::on_draw() {
+  for (auto& layer : m_layers_) {
+    layer->on_draw();
   }
 }
 

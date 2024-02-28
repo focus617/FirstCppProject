@@ -33,8 +33,11 @@ class XUZY_API ExampleLayer : public xuzy::Window::ALayer {
   virtual void on_draw() override;
 
  private:
-  Ref<Renderer::AShader> m_shader_;
-  Ref<Renderer::Buffer::AVertexArray> m_vertex_array_;
+  Ref<Renderer::AShader> m_triangle_shader_;
+  Ref<Renderer::Buffer::AVertexArray> m_triangle_vertex_array_;
+
+  Ref<Renderer::AShader> m_square_shader_;
+  Ref<Renderer::Buffer::AVertexArray> m_square_vertex_array_;
 };
 
 }  // namespace xuzy::UI

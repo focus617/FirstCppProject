@@ -27,8 +27,8 @@ void UIManager::on_attach() {
   // Setup Dear ImGui style
   apply_style(UI::Style::IMGUI_DARK_STYLE);
 
-  // Enable Docking
-  enable_docking(m_enable_docking);
+  // Setup Docking
+  setup_docking();
 
   // Load Fonts
   load_fonts();
@@ -47,7 +47,7 @@ void UIManager::on_detach() {
 void UIManager::on_update() {}
 
 void UIManager::on_draw() {
-  if (m_canvas_) m_canvas_->on_draw();
+  if (nullptr != m_canvas_) m_canvas_->on_draw();
 }
 
 void UIManager::begin_render() {
@@ -258,13 +258,17 @@ void UIManager::apply_style(UI::Style p_style) {
 bool UIManager::is_docking_enabled() const { return m_enable_docking; }
 
 void UIManager::enable_docking(bool p_value) {
-  if (p_value)
+  m_enable_docking = p_value;
+  setup_docking();
+}
+
+void UIManager::setup_docking(){
+  if (m_enable_docking)
     ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
   else
     ImGui::GetIO().ConfigFlags &= ~ImGuiConfigFlags_DockingEnable;
 
-  m_enable_docking = p_value;
-  if (m_canvas_) m_canvas_->make_dockspace(p_value);
+  if (nullptr != m_canvas_) m_canvas_->make_dockspace(m_enable_docking);
 }
 
 void UIManager::enable_layout_save(bool p_value) {
@@ -295,13 +299,13 @@ float UIManager::get_layout_auto_save_frequency(float p_frequeny) {
 void UIManager::set_canvas(Ref<UI::Canvas> p_canvas) {
   remove_canvas();
   m_canvas_ = p_canvas;
-  
-  m_canvas_->make_dockspace(m_enable_docking);
+
+  if (nullptr != m_canvas_) {
+    m_canvas_->make_dockspace(m_enable_docking);
+  }
 }
 
-void UIManager::remove_canvas() {
-  m_canvas_ = nullptr;
-}
+void UIManager::remove_canvas() { m_canvas_.reset(); }
 
 void UIManager::on_event(Ref<Events::Event> event, bool& handled) {
   handled = false;

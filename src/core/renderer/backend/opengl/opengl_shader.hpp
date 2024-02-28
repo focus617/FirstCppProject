@@ -2,6 +2,9 @@
 
 #include "renderer/resources/shader/AShader.hpp"
 
+// TODO: REMOVE!
+typedef unsigned int GLenum;
+
 namespace xuzy::Renderer {
 /**
  * @brief OpenGL shader program wrapper
@@ -11,6 +14,9 @@ class OpenGLShader : public AShader {
   OpenGLShader(const std::string& p_filepath);
 
   OpenGLShader(const std::string& p_name, const std::string& p_vertex_src,
+               const std::string& p_fragment_src);
+
+  OpenGLShader(const std::string& p_vertex_src,
                const std::string& p_fragment_src);
 
   virtual ~OpenGLShader();
@@ -160,6 +166,14 @@ class OpenGLShader : public AShader {
 
   // static bool IsEngineUBOMember(const std::string& p_uniformName);
 
+  std::string ReadFile(const std::string& filepath);
+  std::unordered_map<GLenum, std::string> PreProcess(const std::string& source);
+
+  void CompileOrGetVulkanBinaries(
+      const std::unordered_map<GLenum, std::string>& p_shader_sources);
+  void CompileOrGetOpenGLBinaries();
+  void CreateProgram();
+
  private:
   uint32_t m_renderer_id_;
   std::string m_filepath_;
@@ -167,6 +181,9 @@ class OpenGLShader : public AShader {
 
   //   std::vector<UniformInfo> uniforms;
   std::unordered_map<std::string, int> m_uniform_location_cache;
+
+  std::unordered_map<GLenum, std::vector<uint32_t>> m_VulkanSPIRV;
+  std::unordered_map<GLenum, std::vector<uint32_t>> m_OpenGLSPIRV;
 };
 
 }  // namespace xuzy::Renderer

@@ -25,8 +25,8 @@ Ref<AShader> AShader::Create(const std::string& p_filepath) {
 }
 
 Ref<AShader> AShader::Create(const std::string& p_name,
-                           const std::string& p_vertex_src,
-                           const std::string& p_fragment_src) {
+                             const std::string& p_vertex_src,
+                             const std::string& p_fragment_src) {
   switch (Renderer::get_api()) {
     case ARendererAPI::API::None: {
       LOG(ERROR) << "RendererAPI::None is currently not supported!";
@@ -35,6 +35,23 @@ Ref<AShader> AShader::Create(const std::string& p_name,
 
     case ARendererAPI::API::OpenGL: {
       return CreateRef<OpenGLShader>(p_name, p_vertex_src, p_fragment_src);
+    }
+  }
+
+  LOG(ERROR) << "Unknown RendererAPI!";
+  return nullptr;
+}
+
+Ref<AShader> AShader::Create(const std::string& p_vertex_src,
+                             const std::string& p_fragment_src) {
+  switch (Renderer::get_api()) {
+    case ARendererAPI::API::None: {
+      LOG(ERROR) << "RendererAPI::None is currently not supported!";
+      return nullptr;
+    }
+
+    case ARendererAPI::API::OpenGL: {
+      return CreateRef<OpenGLShader>(p_vertex_src, p_fragment_src);
     }
   }
 

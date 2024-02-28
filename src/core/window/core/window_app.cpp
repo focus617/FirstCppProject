@@ -13,7 +13,7 @@ WindowApp::WindowApp(const std::string& p_app_name,
                                            m_context_.glsl_version,
                                            UI::Style::IMGUI_DARK_STYLE);
 
-  m_ui_manager_-> set_canvas(CreateRef<UI::Canvas>());
+  m_ui_manager_->set_canvas(CreateRef<UI::Canvas>());
 
   m_layerstack_.push_layer(m_ui_manager_);
 }
@@ -25,13 +25,14 @@ void WindowApp::launch_tasks() {}
 void WindowApp::main_loop() {
   while (m_running_) {
     if (!m_minimized_) {
-      for (Ref<Window::ALayer> layer : m_layerstack_) layer->on_update();
-
       m_ui_manager_->begin_render();
       m_layerstack_.on_draw();
       m_ui_manager_->end_render();
+
+      for (Ref<Window::ALayer> layer : m_layerstack_) layer->on_update();
+      
+      m_context_.m_window_->on_update();
     }
-    m_context_.m_window_->on_update();
   }
 }
 

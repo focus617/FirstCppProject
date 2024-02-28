@@ -18,7 +18,6 @@ void Renderer::end_scene() {}
 void Renderer::submit(const Ref<AShader>& p_shader,
                       const Ref<Buffer::AVertexArray>& p_vertex_array) {
   p_shader->bind();
-
   p_vertex_array->bind();
   RenderCommand::draw_indexed(p_vertex_array);
 }

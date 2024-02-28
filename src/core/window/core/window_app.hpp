@@ -24,11 +24,11 @@ class XUZY_API WindowApp : public App {
   }
   // inline XUZY_API Ref<UIManager> get_imgui() { return m_ui_manager_; }
 
-  template <typename T>
-  void push_layer() {
+  template <typename T, typename... Args>
+  void push_layer(Args&&... args) {
     static_assert(std::is_base_of<Window::ALayer, T>::value,
                   "Pushed type is not subclass of Layer!");
-    m_layerstack_.push_layer(CreateRef<T>());
+    m_layerstack_.push_layer(CreateRef<T>(std::forward<Args>(args)...));
   }
 
   XUZY_API void push_layer(const Ref<Window::ALayer>& layer) {

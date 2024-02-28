@@ -39,7 +39,7 @@ class AppContext {
   /* Settings */ 
   Window::WindowProps m_props_;
 
-  Scope<Window::AWindow> m_window_;
+  Ref<Window::AWindow> m_window_;
 };
 
 }  // namespace xuzy::Window

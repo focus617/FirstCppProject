@@ -152,6 +152,7 @@ class XUZY_API UIManager : public xuzy::Window::ALayer {
    */
   void imgui_init();
   void imgui_toolbar();
+  void setup_docking();
 
  private:
   std::string m_layout_config_filename = "imgui.ini";

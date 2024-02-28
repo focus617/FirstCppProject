@@ -15,8 +15,8 @@
 namespace xuzy::Window {
 
 // class WindowImpl
-AWindow* AWindow::Create(const WindowProps& p_props) {
-  return new WindowImpl(p_props);
+Ref<AWindow> AWindow::Create(const WindowProps& p_props) {
+  return CreateRef<WindowImpl>(p_props);
 }
 
 WindowImpl::WindowImpl(const WindowProps& props) : m_monitor(props) {
@@ -253,7 +253,7 @@ void WindowImpl::glfw_window_init(const WindowProps& props) {
                        static_cast<int>(m_data_.m_size.second),
                        m_data_.m_title.c_str(), selected_monitor, nullptr);
   XUZY_CHECK_(nullptr != m_glfw_window_) << "Could not create GLFW Window!";
-  
+
   glfwMakeContextCurrent(m_glfw_window_);
   glfw_update_size_limit();
   // Dump backend vendor and version
@@ -277,17 +277,17 @@ void WindowImpl::glfw_cursors_init() {
 
 void WindowImpl::glfw_setup_callback() {
   // Set GLFW callbacks
-  glfwSetWindowPosCallback(m_glfw_window_, [](GLFWwindow* window, int xpos,
-                                              int ypos) {
-    WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-    data.m_position.first = xpos;
-    data.m_position.second = ypos;
-    // Produce event
-    auto event =
-        CreateRef<Events::WindowMovedEvent>(Events::WindowMovedEvent(xpos, ypos));
-    // Publish to application
-    data.event_dispatcher.dispatch(event);
-  });
+  glfwSetWindowPosCallback(
+      m_glfw_window_, [](GLFWwindow* window, int xpos, int ypos) {
+        WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+        data.m_position.first = xpos;
+        data.m_position.second = ypos;
+        // Produce event
+        auto event = CreateRef<Events::WindowMovedEvent>(
+            Events::WindowMovedEvent(xpos, ypos));
+        // Publish to application
+        data.event_dispatcher.dispatch(event);
+      });
 
   glfwSetWindowSizeCallback(
       m_glfw_window_, [](GLFWwindow* window, int width, int height) {
@@ -304,7 +304,8 @@ void WindowImpl::glfw_setup_callback() {
   glfwSetWindowCloseCallback(m_glfw_window_, [](GLFWwindow* window) {
     WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
-    auto event = CreateRef<Events::WindowCloseEvent>(Events::WindowCloseEvent());
+    auto event =
+        CreateRef<Events::WindowCloseEvent>(Events::WindowCloseEvent());
     // Publish to application
     data.event_dispatcher.dispatch(event);
   });
@@ -322,22 +323,22 @@ void WindowImpl::glfw_setup_callback() {
 
       switch (action) {
         case GLFW_PRESS: {
-          auto event =
-              CreateRef<Events::KeyPressedEvent>(Events::KeyPressedEvent(key, 0));
+          auto event = CreateRef<Events::KeyPressedEvent>(
+              Events::KeyPressedEvent(key, 0));
           // Publish to application
           data.event_dispatcher.dispatch(event);
           break;
         }
         case GLFW_RELEASE: {
-          auto event =
-              CreateRef<Events::KeyReleasedEvent>(Events::KeyReleasedEvent(key));
+          auto event = CreateRef<Events::KeyReleasedEvent>(
+              Events::KeyReleasedEvent(key));
           // Publish to application
           data.event_dispatcher.dispatch(event);
           break;
         }
         case GLFW_REPEAT: {
-          auto event =
-              CreateRef<Events::KeyPressedEvent>(Events::KeyPressedEvent(key, 1));
+          auto event = CreateRef<Events::KeyPressedEvent>(
+              Events::KeyPressedEvent(key, 1));
           // Publish to application
           data.event_dispatcher.dispatch(event);
           break;

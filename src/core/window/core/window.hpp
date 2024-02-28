@@ -20,6 +20,12 @@ class XUZY_API AWindow {
   using EventCallbackFn = std::function<void(Ref<Events::Event>, bool&)>;
 
   /**
+   * @brief Concrete window creater
+   * @param p_props Window Settings
+   */
+  static Ref<AWindow> Create(const WindowProps& p_props);
+
+  /**
    * @brief Destructor of the window
    */
   virtual ~AWindow() {}
@@ -35,9 +41,6 @@ class XUZY_API AWindow {
 
   // EventDispatcher for Window
   Events::EventDispatcher<void()> event_dispatcher;
-
-  // To be defined in concrete window class
-  static AWindow* Create(const WindowProps& props);
 };
 
 }  // namespace xuzy::Window
