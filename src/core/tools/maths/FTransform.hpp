@@ -11,7 +11,7 @@ namespace xuzy::Maths
 	* @brief Mathematic representation of a 3D transformation with float
 	* precision
 	*/
-	class FTransform
+	class XUZY_API FTransform
 	{
 	public:
 		/**

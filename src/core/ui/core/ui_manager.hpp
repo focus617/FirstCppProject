@@ -42,7 +42,7 @@ class XUZY_API UIManager : public xuzy::Window::ALayer {
   virtual void on_detach() override;
 
   virtual void on_draw() override;
-  virtual void on_update() override;
+  virtual void on_update(Renderer::Times::Timestep p_ts) override;
   virtual void on_event(Ref<Events::Event> event, bool& handled) override;
 
   void begin_render();

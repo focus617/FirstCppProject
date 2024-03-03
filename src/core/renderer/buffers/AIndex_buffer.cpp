@@ -3,7 +3,7 @@
 #include "renderer/buffers/AIndex_buffer.hpp"
 
 #include "renderer/backend/opengl/opengl_index_buffer.hpp"
-#include "renderer/core/renderer.hpp"
+#include "renderer/renderer/renderer.hpp"
 
 namespace xuzy::Renderer::Buffer {
 

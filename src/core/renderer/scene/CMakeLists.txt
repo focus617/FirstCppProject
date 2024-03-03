@@ -1,11 +1,6 @@
 # 添加子目录
-add_subdirectory(renderer)
-add_subdirectory(backend)
-add_subdirectory(buffers)
-add_subdirectory(scene)
-add_subdirectory(geometry)
-add_subdirectory(resources)
-add_subdirectory(utils)
+add_subdirectory(camera)
+add_subdirectory(light)
 
 #添加子目录的源文件给_SUB_SOURCES
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}  _SUB_SOURCES)

@@ -75,7 +75,7 @@ class OpenGLShader : public AShader {
    * @param p_mat4
    */
   virtual void set_mat4(const std::string& p_name,
-                        const Maths::FMatrix4& p_mat4) override;
+                        const glm::mat4& p_mat4) override;
 
   /**
    * @brief Query the shader name
@@ -124,21 +124,7 @@ class OpenGLShader : public AShader {
    * @brief Returns the mat4 uniform value identified by the given name
    * @param p_name
    */
-  virtual Maths::FMatrix4 get_mat4(const std::string& p_name) override;
-
-  /**
-   * @brief Returns information about the uniform identified by the
-   * given name or nullptr if not found
-   * @param p_name
-   */
-  // virtual const UniformInfo* get_info(const std::string& p_name)
-  // const override;
-
-  /**
-   * @brief Query the uniforms from the program and store them in the
-   * uniform vector
-   */
-  // virtual void query_uniforms() override;
+  virtual glm::mat4 get_mat4(const std::string& p_name) override;
 
  private:
   uint32_t get_uniform_location(const std::string& p_name);
@@ -154,17 +140,13 @@ class OpenGLShader : public AShader {
   void set_uniform_vec4(const std::string& p_name,
                         const Maths::FVector4& p_vec4);
   void set_uniform_mat4(const std::string& p_name,
-                        const Maths::FMatrix4& p_mat4);
+                        const glm::mat4& p_mat4);
   int get_uniform_int(const std::string& p_name);
   float get_uniform_float(const std::string& p_name);
   Maths::FVector2 get_uniform_vec2(const std::string& p_name);
   Maths::FVector3 get_uniform_vec3(const std::string& p_name);
   Maths::FVector4 get_uniform_vec4(const std::string& p_name);
-  Maths::FMatrix4 get_uniform_mat4(const std::string& p_name);
-
-  // const UniformInfo* get_uniform_info(const std::string& p_name) const;
-
-  // static bool IsEngineUBOMember(const std::string& p_uniformName);
+  glm::mat4 get_uniform_mat4(const std::string& p_name);
 
   std::string ReadFile(const std::string& filepath);
   std::unordered_map<GLenum, std::string> PreProcess(const std::string& source);
@@ -179,7 +161,6 @@ class OpenGLShader : public AShader {
   std::string m_filepath_;
   std::string m_name_;
 
-  //   std::vector<UniformInfo> uniforms;
   std::unordered_map<std::string, int> m_uniform_location_cache;
 
   std::unordered_map<GLenum, std::vector<uint32_t>> m_VulkanSPIRV;

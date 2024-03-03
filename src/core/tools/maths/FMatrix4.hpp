@@ -21,7 +21,7 @@ namespace xuzy::Maths
 	/**
 	* @brief Mathematic representation of a 4x4 Matrix of floats
 	*/
-	struct FMatrix4
+	struct XUZY_API FMatrix4
 	{
 		float data[16];
 		static const FMatrix4 Identity;
@@ -365,12 +365,23 @@ namespace xuzy::Maths
 
         /**
         * @brief Returns an orthographic matrix
-        * @param p_size
-        * @param p_aspectRatio
+        * @param p_left
+        * @param p_right
+		* @param p_top
+        * @param p_down
+        */
+        static FMatrix4 CreateOrthographic(const float p_left, const float p_right, const float p_top, const float p_bottom);
+
+        /**
+        * @brief Returns an orthographic matrix
+        * @param p_left
+        * @param p_right
+		* @param p_top
+        * @param p_down
         * @param p_zNear
         * @param p_zFar
         */
-        static FMatrix4 CreateOrthographic(const float p_size, const float p_aspectRatio, const float p_zNear, const float p_zFar);
+        static FMatrix4 CreateOrthographic(const float p_left, const float p_right, const float p_top, const float p_bottom, const float p_zNear, const float p_zFar);
 
 		/**
 		* @brief Return view matrix

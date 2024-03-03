@@ -4,7 +4,7 @@
 
 #include "renderer/backend/opengl/opengl_renderer_api.hpp"
 #include "renderer/backend/opengl/opengl_shader.hpp"
-#include "renderer/core/renderer.hpp"
+#include "renderer/renderer/renderer.hpp"
 
 namespace xuzy::Renderer {
 

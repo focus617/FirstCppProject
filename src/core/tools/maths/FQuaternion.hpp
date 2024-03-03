@@ -12,7 +12,7 @@ namespace xuzy::Maths
 	/**
 	* @brief Mathematic representation of a Quaternion with float precision
 	*/
-	struct FQuaternion
+	struct XUZY_API FQuaternion
 	{
 	public:
 		float x;

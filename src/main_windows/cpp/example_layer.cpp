@@ -1,15 +1,15 @@
 #include "example_layer.hpp"
 
-#include "renderer/buffers/AIndex_buffer.hpp"
-#include "renderer/buffers/AVertex_buffer.hpp"
-#include "renderer/buffers/buffer_layout.hpp"
-#include "renderer/core/render_command.hpp"
-#include "renderer/core/renderer.hpp"
-#include "renderer/resources/shader/AShader.hpp"
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 namespace xuzy::UI {
 
-ExampleLayer::ExampleLayer() : ALayer("ExampleLayer") {
+ExampleLayer::ExampleLayer()
+    : ALayer("ExampleLayer"),
+      m_camera_(-1.6f, 1.6f, -0.9f, 0.9f),
+      m_camera_position_(0.0f),
+      m_camera_rotation_(0.0f) {
   /******* Color Triangle ***********/
   m_triangle_vertex_array_ = Renderer::Buffer::AVertexArray::Create();
 
@@ -39,6 +39,9 @@ ExampleLayer::ExampleLayer() : ALayer("ExampleLayer") {
 			layout(location = 0) in vec3 a_Position;
 			layout(location = 1) in vec4 a_Color;
 
+            uniform mat4 u_ViewProjection;
+            uniform mat4 u_Transform;
+
 			out vec3 v_Position;
 			out vec4 v_Color;
 
@@ -46,7 +49,7 @@ ExampleLayer::ExampleLayer() : ALayer("ExampleLayer") {
 			{
 				v_Position = a_Position;
 				v_Color = a_Color;
-				gl_Position = vec4(a_Position - 0.5, 1.0);	
+				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);	
 			}
 		)";
 
@@ -70,8 +73,12 @@ ExampleLayer::ExampleLayer() : ALayer("ExampleLayer") {
   /******* Blue Square ***********/
   m_square_vertex_array_ = Renderer::Buffer::AVertexArray::Create();
 
-  float square_vertices[3 * 4] = {-0.75f, -0.75f, 0.0f, 0.75f,  -0.75f, 0.0f,
-                                  0.75f,  0.75f,  0.0f, -0.75f, 0.75f,  0.0f};
+  float square_vertices[3 * 4] = {
+			-0.5f, -0.5f, 0.0f,
+			 0.5f, -0.5f, 0.0f,
+			 0.5f,  0.5f, 0.0f,
+			-0.5f,  0.5f, 0.0f
+		};
 
   Ref<Renderer::Buffer::AVertexBuffer> square_vertex_buffer =
       Renderer::Buffer::AVertexBuffer::Create(square_vertices,
@@ -93,12 +100,15 @@ ExampleLayer::ExampleLayer() : ALayer("ExampleLayer") {
 			
 			layout(location = 0) in vec3 a_Position;
 
+			uniform mat4 u_ViewProjection;
+            uniform mat4 u_Transform;
+
 			out vec3 v_Position;
 
 			void main()
 			{
 				v_Position = a_Position;
-				gl_Position = vec4(a_Position, 1.0);	
+				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);	
 			}
 		)";
 
@@ -109,9 +119,11 @@ ExampleLayer::ExampleLayer() : ALayer("ExampleLayer") {
 
 			in vec3 v_Position;
 
+      uniform vec3 u_Color;
+
 			void main()
 			{
-				color = vec4(0.2, 0.3, 0.8, 1.0);
+				color = vec4(u_Color, 1.0);
 			}
 		)";
 
@@ -121,13 +133,49 @@ ExampleLayer::ExampleLayer() : ALayer("ExampleLayer") {
 
 ExampleLayer::~ExampleLayer() {}
 
-void ExampleLayer::on_update() {
+void ExampleLayer::on_update(Renderer::Times::Timestep p_ts) {
+  if (Window::Inputs::InputManager::is_key_pressed(Window::Inputs::Key::Left)) {
+    m_camera_position_.x += m_camera_move_speed_ * p_ts;
+  } else if (Window::Inputs::InputManager::is_key_pressed(
+                 Window::Inputs::Key::Right)) {
+    m_camera_position_.x -= m_camera_move_speed_ * p_ts;
+  } else if (Window::Inputs::InputManager::is_key_pressed(
+                 Window::Inputs::Key::Up)) {
+    m_camera_position_.y -= m_camera_move_speed_ * p_ts;
+  } else if (Window::Inputs::InputManager::is_key_pressed(
+                 Window::Inputs::Key::Down)) {
+    m_camera_position_.y += m_camera_move_speed_ * p_ts;
+  }
+
+  if (Window::Inputs::InputManager::is_key_pressed(Window::Inputs::Key::A)) {
+    m_camera_rotation_ += m_camera_rotate_speed_ * p_ts;
+  } else if (Window::Inputs::InputManager::is_key_pressed(
+                 Window::Inputs::Key::Z)) {
+    m_camera_rotation_ -= m_camera_rotate_speed_ * p_ts;
+  }
+
   Renderer::RenderCommand::set_clear_color(0.1f, 0.1f, 0.1f, 1.0f);
   Renderer::RenderCommand::clear();
 
-  Renderer::Renderer::begin_scene();
+  m_camera_.set_position(m_camera_position_);
+  m_camera_.set_rotation(m_camera_rotation_);
 
-  Renderer::Renderer::submit(m_square_shader_, m_square_vertex_array_);
+  Renderer::Renderer::begin_scene(m_camera_);
+
+  m_square_shader_->bind();
+  m_square_shader_->set_vec3("u_Color", m_square_color_);
+
+  glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
+
+  for (int y = 0; y < 20; y++) {
+    for (int x = 0; x < 20; x++) {
+      glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
+      glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
+      Renderer::Renderer::submit(m_square_shader_, m_square_vertex_array_,
+                                 transform);
+    }
+  }
+
   Renderer::Renderer::submit(m_triangle_shader_, m_triangle_vertex_array_);
 
   Renderer::Renderer::end_scene();

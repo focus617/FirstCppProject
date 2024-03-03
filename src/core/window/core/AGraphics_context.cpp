@@ -1,6 +1,6 @@
 #include "window/core/AGraphics_context.hpp"
 
-#include "renderer/core/renderer.hpp"
+#include "renderer/renderer/renderer.hpp"
 #include "window/backend_glfw/opengl_context.hpp"
 
 namespace xuzy::Window {

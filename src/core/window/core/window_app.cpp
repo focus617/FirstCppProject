@@ -24,13 +24,18 @@ void WindowApp::launch_tasks() {}
 
 void WindowApp::main_loop() {
   while (m_running_) {
+    float time = (float)glfwGetTime();
+    Renderer::Times::Timestep timestep = time - m_last_frame_time_;
+    m_last_frame_time_ = time;
+
     if (!m_minimized_) {
       m_ui_manager_->begin_render();
       m_layerstack_.on_draw();
       m_ui_manager_->end_render();
 
-      for (Ref<Window::ALayer> layer : m_layerstack_) layer->on_update();
-      
+      for (Ref<Window::ALayer> layer : m_layerstack_)
+        layer->on_update(timestep);
+
       m_context_.m_window_->on_update();
     }
   }

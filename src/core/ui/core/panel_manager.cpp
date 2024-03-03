@@ -10,7 +10,7 @@ namespace xuzy::UI {
 
 #define Input xuzy::Window::Inputs
 
-void PanelManager::on_update() {
+void PanelManager::on_update(Renderer::Times::Timestep p_ts) {
   // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to
   // tell if dear imgui wants to use your inputs.
   // - When io.WantCaptureMouse is true, do not dispatch mouse input data

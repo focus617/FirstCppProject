@@ -11,8 +11,10 @@
 namespace xuzy::Maths {
 
 const FMatrix4 FMatrix4::Identity =
-    FMatrix4(1.f, 0.f, 0.f, 0.f, 0.f, 1.f, 0.f, 0.f, 0.f, 0.f, 1.f, 0.f, 0.f,
-             0.f, 0.f, 1.f);
+    FMatrix4(1.f, 0.f, 0.f, 0.f, 
+             0.f, 1.f, 0.f, 0.f,
+             0.f, 0.f, 1.f, 0.f,
+             0.f, 0.f, 0.f, 1.f);
 
 FMatrix4::FMatrix4() { memcpy(this->data, Identity.data, 16 * sizeof(float)); }
 
@@ -462,22 +464,29 @@ FMatrix4 FMatrix4::CreatePerspective(const float p_fov,
   return CreateFrustum(-width, width, -height, height, p_zNear, p_zFar);
 }
 
-FMatrix4 FMatrix4::CreateOrthographic(const float p_size,
-                                      const float p_aspectRatio,
+FMatrix4 FMatrix4::CreateOrthographic(const float p_left, const float p_right,
+                                      const float p_top, const float p_bottom) {
+  auto ortho = FMatrix4::Identity;
+
+  ortho(0, 0) = 2.0f / (p_right - p_left);
+  ortho(1, 1) = 2.0f / (p_top - p_bottom);
+  ortho(2, 2) = 1.0f;
+  ortho(0, 3) = -(p_right + p_left) / (p_right - p_left);
+  ortho(1, 3) = -(p_top + p_bottom) / (p_top - p_bottom);
+
+  return ortho;
+}
+
+FMatrix4 FMatrix4::CreateOrthographic(const float p_left, const float p_right,
+                                      const float p_top, const float p_bottom,
                                       const float p_zNear, const float p_zFar) {
   auto ortho = FMatrix4::Identity;
 
-  const auto right = p_size * p_aspectRatio;
-  const auto left = -right;
-
-  const auto top = p_size;
-  const auto bottom = -top;
-
-  ortho(0, 0) = 2.0f / (right - left);
-  ortho(1, 1) = 2.0f / (top - bottom);
+  ortho(0, 0) = 2.0f / (p_right - p_left);
+  ortho(1, 1) = 2.0f / (p_top - p_bottom);
   ortho(2, 2) = -2.0f / (p_zFar - p_zNear);
-  ortho(0, 3) = -(right + left) / (right - left);
-  ortho(1, 3) = -(top + bottom) / (top - bottom);
+  ortho(0, 3) = -(p_right + p_left) / (p_right - p_left);
+  ortho(1, 3) = -(p_top + p_bottom) / (p_top - p_bottom);
   ortho(2, 3) = -(p_zFar + p_zNear) / (p_zFar - p_zNear);
   ortho(3, 3) = 1.0f;
 

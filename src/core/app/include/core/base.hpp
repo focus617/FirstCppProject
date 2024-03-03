@@ -4,7 +4,12 @@
 
 #include "visibility_control.hpp"
 
+/**
+ * @brief Defines some utility macros.
+ */
 namespace xuzy {
+
+#define BIT(x) (1 << x)
 
 template <typename T>
 using Scope = std::unique_ptr<T>;
@@ -27,12 +32,6 @@ namespace internal {
 XUZY_API bool IsTrue(bool condition);
 
 }  // namespace internal
-
-}  // namespace xuzy
-
-#define BIT(x) (1 << x)
-
-// Defines some utility macros.
 
 // The GNU compiler emits a warning if nested "if" statements are followed by
 // an "else" statement and braces are not used to explicitly disambiguate the
@@ -70,16 +69,18 @@ XUZY_API bool IsTrue(bool condition);
 #  ifdef NDEBUG
 #    define XUZY_CHECK_(condition)           \
       XUZY_AMBIGUOUS_ELSE_BLOCKER_           \
-      if (xuzy::internal::IsTrue(condition)) \
+      if (internal::IsTrue(condition)) \
         ;                                    \
       else                                   \
         LOG(FATAL) << "Condition " #condition " failed. "
 #  else
 #    define XUZY_CHECK_(condition)           \
       XUZY_AMBIGUOUS_ELSE_BLOCKER_           \
-      if (xuzy::internal::IsTrue(condition)) \
+      if (internal::IsTrue(condition)) \
         ;                                    \
       else                                   \
         LOG(WARNING) << "Condition " #condition " failed. "
 #  endif  // ifdef NDEBUG
 #endif    // !defined(XUZY_CHECK_)
+
+}  // namespace xuzy

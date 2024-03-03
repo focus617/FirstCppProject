@@ -33,4 +33,9 @@ install(
   EXPORT gladTargets
   FILE gladTargets.cmake
   DESTINATION share/cmake/glad)
-install(FILES "gladConfig.cmake" "${CMAKE_CURRENT_BINARY_DIR}/gladConfigVersion.cmake" DESTINATION share/cmake/glad)
+
+install(FILES
+  "gladConfig.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/gladConfigVersion.cmake" 
+  DESTINATION share/cmake/glad
+ )

@@ -239,7 +239,6 @@ bool WindowImpl::is_focused() const {
 
 bool WindowImpl::is_decorated() const {
   return glfwGetWindowAttrib(m_glfw_window_, GLFW_DECORATED) == GLFW_TRUE;
-  ;
 }
 
 void WindowImpl::glfw_window_init(const WindowProps& props) {
@@ -247,7 +246,7 @@ void WindowImpl::glfw_window_init(const WindowProps& props) {
   // 如果要创造全屏窗口，就需要一个控制器
   if (m_data_.m_fullscreen) selected_monitor = m_monitor.get_primariy_monitor();
 
-  // Create window with graphics context
+    // Create window with graphics context
   m_glfw_window_ =
       glfwCreateWindow(static_cast<int>(m_data_.m_size.first),
                        static_cast<int>(m_data_.m_size.second),
@@ -256,6 +255,7 @@ void WindowImpl::glfw_window_init(const WindowProps& props) {
 
   glfwMakeContextCurrent(m_glfw_window_);
   glfw_update_size_limit();
+
   // Dump backend vendor and version
   m_monitor.driver_info();
 

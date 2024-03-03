@@ -5,7 +5,7 @@ namespace xuzy::Maths
 	/**
 	* @brief Mathematic representation of a 2D vector of floats
 	*/
-	struct FVector4
+	struct XUZY_API FVector4
 	{
 		static const FVector4 One;
 		static const FVector4 Zero;

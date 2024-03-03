@@ -11,7 +11,7 @@ namespace xuzy::Maths
 	/**
 	* @brief Mathematic representation of a 3x3 Matrix of floats
 	*/
-	struct FMatrix3
+	struct XUZY_API FMatrix3
 	{
 		float data[9];
 		static const FMatrix3 Identity;

@@ -54,6 +54,7 @@ class XUZY_API WindowApp : public App {
   Ref<UI::UIManager> m_ui_manager_;
 
   Window::LayerStack m_layerstack_;
+  float m_last_frame_time_ = 0.0f;
 };
 
 }  // namespace xuzy

@@ -1,6 +1,7 @@
 #include "renderer/backend/opengl/opengl_shader.hpp"
 
 #include <glad/glad.h>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <fstream>
 
@@ -296,7 +297,7 @@ void OpenGLShader::set_vec4(const std::string& p_name,
 }
 
 void OpenGLShader::set_mat4(const std::string& p_name,
-                            const Maths::FMatrix4& p_mat4) {
+                            const glm::mat4& p_mat4) {
   set_uniform_mat4(p_name, p_mat4);
 }
 
@@ -320,7 +321,7 @@ Maths::FVector4 OpenGLShader::get_vec4(const std::string& p_name) {
   return get_uniform_vec4(p_name);
 }
 
-Maths::FMatrix4 OpenGLShader::get_mat4(const std::string& p_name) {
+glm::mat4 OpenGLShader::get_mat4(const std::string& p_name) {
   return get_uniform_mat4(p_name);
 }
 
@@ -368,8 +369,9 @@ void OpenGLShader::set_uniform_vec4(const std::string& p_name,
 }
 
 void OpenGLShader::set_uniform_mat4(const std::string& p_name,
-                                    const Maths::FMatrix4& p_mat4) {
-  glUniformMatrix4fv(get_uniform_location(p_name), 1, GL_TRUE, &p_mat4.data[0]);
+                                    const glm::mat4& p_mat4) {
+  glUniformMatrix4fv(get_uniform_location(p_name), 1, GL_FALSE,
+                     glm::value_ptr(p_mat4));
 }
 
 int OpenGLShader::get_uniform_int(const std::string& p_name) {
@@ -402,10 +404,10 @@ Maths::FVector4 OpenGLShader::get_uniform_vec4(const std::string& p_name) {
   return reinterpret_cast<Maths::FVector4&>(values);
 }
 
-Maths::FMatrix4 OpenGLShader::get_uniform_mat4(const std::string& p_name) {
+glm::mat4 OpenGLShader::get_uniform_mat4(const std::string& p_name) {
   GLfloat values[16];
   glGetUniformfv(m_renderer_id_, get_uniform_location(p_name), values);
-  return reinterpret_cast<Maths::FMatrix4&>(values);
+  return reinterpret_cast<glm::mat4&>(values);
 }
 
 // UniformInfo* OpenGLShader::get_uniform_info(const std::string& p_name){}

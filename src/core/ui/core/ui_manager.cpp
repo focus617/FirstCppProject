@@ -44,7 +44,7 @@ void UIManager::on_detach() {
   ImGui::DestroyContext();
 }
 
-void UIManager::on_update() {}
+void UIManager::on_update(Renderer::Times::Timestep p_ts) {}
 
 void UIManager::on_draw() {
   if (nullptr != m_canvas_) m_canvas_->on_draw();

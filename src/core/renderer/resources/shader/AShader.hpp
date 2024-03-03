@@ -1,13 +1,11 @@
 #pragma once
 
+#include <glm/glm.hpp>
 #include <unordered_map>
 
-#include "tools/maths/FMatrix4.hpp"
 #include "tools/maths/FVector2.hpp"
 #include "tools/maths/FVector3.hpp"
 #include "tools/maths/FVector4.hpp"
-
-// #include "renderer/resources/info.hpp"
 
 namespace xuzy::Renderer {
 // namespace Loaders { class ShaderLoader; }
@@ -110,7 +108,7 @@ class XUZY_API AShader {
    * @param p_mat4
    */
   virtual void set_mat4(const std::string& p_name,
-                        const Maths::FMatrix4& p_mat4) = 0;
+                        const glm::mat4& p_mat4) = 0;
 
   /**
    * @brief Query the shader name
@@ -151,21 +149,8 @@ class XUZY_API AShader {
    * @brief Returns the mat4 uniform value identified by the given name
    * @param p_name
    */
-  virtual Maths::FMatrix4 get_mat4(const std::string& p_name) = 0;
+  virtual glm::mat4 get_mat4(const std::string& p_name) = 0;
 
-  /**
-   * @brief Returns information about the uniform identified by the
-   * given name or nullptr if not found
-   * @param p_name
-   */
-  // virtual const UniformInfo* get_info(const std::string& p_name)
-  // const = 0;
-
-  /**
-   * @brief Query the uniforms from the program and store them in the
-   * uniform vector
-   */
-  // virtual void query_uniforms() = 0;
 };
 
 }  // namespace xuzy::Renderer

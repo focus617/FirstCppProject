@@ -3,7 +3,7 @@
 #include "renderer/buffers/AVertex_buffer.hpp"
 
 #include "renderer/backend/opengl/opengl_vertex_buffer.hpp"
-#include "renderer/core/renderer.hpp"
+#include "renderer/renderer/renderer.hpp"
 
 namespace xuzy::Renderer::Buffer {
 
