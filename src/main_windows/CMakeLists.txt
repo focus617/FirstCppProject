@@ -72,3 +72,5 @@ install(FILES
     Windows-App.json
     DESTINATION bin
 )
+
+install(DIRECTORY assets/textures/ DESTINATION assets/textures)

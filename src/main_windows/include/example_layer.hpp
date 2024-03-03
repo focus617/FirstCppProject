@@ -1,7 +1,6 @@
 #pragma once
 
 #include "renderer/renderer.h"
-
 #include "tools/maths/FVector3.hpp"
 
 namespace xuzy::UI {
@@ -34,8 +33,12 @@ class XUZY_API ExampleLayer : public xuzy::Window::ALayer {
   Ref<Renderer::AShader> m_triangle_shader_;
   Ref<Renderer::Buffer::AVertexArray> m_triangle_vertex_array_;
 
-  Ref<Renderer::AShader> m_square_shader_;
+  Ref<Renderer::AShader> m_flat_square_shader_;
+  Ref<Renderer::AShader> m_texture_square_shader_;
   Ref<Renderer::Buffer::AVertexArray> m_square_vertex_array_;
+
+  Ref<Renderer::ATexture2D> m_texture_, m_cherno_logo_texture_;
+
   Maths::FVector3 m_square_color_ = Maths::FVector3(0.2f, 0.3f, 0.8f);
 
   Renderer::Camera::OrthographicCamera m_camera_;

@@ -150,14 +150,16 @@ void UIManager::imgui_init() {
 }
 
 bool UIManager::load_fonts() {
-  load_font("SimKai", "../fonts/SimKai.ttf", m_font_size_pixels_);
-  load_font("DroidSans", "../fonts/DroidSans.ttf", m_font_size_pixels_);
-  load_font("ProggyClean", "../fonts/ProggyClean.ttf", m_font_size_pixels_);
-  load_font("Roboto-Medium", "../fonts/Roboto-Medium.ttf", m_font_size_pixels_);
-  load_font("Cousine-Regular", "../fonts/Cousine-Regular.ttf",
+  load_font("SimKai", "../assets/fonts/SimKai.ttf", m_font_size_pixels_);
+  load_font("DroidSans", "../assets/fonts/DroidSans.ttf", m_font_size_pixels_);
+  load_font("ProggyClean", "../assets/fonts/ProggyClean.ttf",
             m_font_size_pixels_);
-  load_font("LiberationSans-Regular", "../fonts/LiberationSans-Regular.ttf",
+  load_font("Roboto-Medium", "../assets/fonts/Roboto-Medium.ttf",
             m_font_size_pixels_);
+  load_font("Cousine-Regular", "../assets/fonts/Cousine-Regular.ttf",
+            m_font_size_pixels_);
+  load_font("LiberationSans-Regular",
+            "../assets/fonts/LiberationSans-Regular.ttf", m_font_size_pixels_);
   return true;
 }
 
@@ -262,7 +264,7 @@ void UIManager::enable_docking(bool p_value) {
   setup_docking();
 }
 
-void UIManager::setup_docking(){
+void UIManager::setup_docking() {
   if (m_enable_docking)
     ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
   else

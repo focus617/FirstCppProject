@@ -73,19 +73,19 @@ ExampleLayer::ExampleLayer()
   /******* Blue Square ***********/
   m_square_vertex_array_ = Renderer::Buffer::AVertexArray::Create();
 
-  float square_vertices[3 * 4] = {
-			-0.5f, -0.5f, 0.0f,
-			 0.5f, -0.5f, 0.0f,
-			 0.5f,  0.5f, 0.0f,
-			-0.5f,  0.5f, 0.0f
-		};
-
+  float square_vertices[5 * 4] = {
+      -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,  // bottom-left corner
+      0.5f,  -0.5f, 0.0f, 1.0f, 0.0f,  // bottom-right corner
+      0.5f,  0.5f,  0.0f, 1.0f, 1.0f,  // top-right corner
+      -0.5f, 0.5f,  0.0f, 0.0f, 1.0f   // top-left corner
+  };
   Ref<Renderer::Buffer::AVertexBuffer> square_vertex_buffer =
       Renderer::Buffer::AVertexBuffer::Create(square_vertices,
                                               sizeof(square_vertices));
 
   Renderer::Buffer::BufferLayout square_layout = {
-      {Renderer::Buffer::ShaderDataType::FVec3, "a_Position"}};
+      {Renderer::Buffer::ShaderDataType::FVec3, "a_Position"},
+      {Renderer::Buffer::ShaderDataType::FVec2, "a_TexCoord"}};
   square_vertex_buffer->set_layout(square_layout);
   m_square_vertex_array_->add_vertex_buffer(square_vertex_buffer);
 
@@ -95,7 +95,7 @@ ExampleLayer::ExampleLayer()
           square_indices, sizeof(square_indices) / sizeof(uint32_t));
   m_square_vertex_array_->set_index_buffer(square_index_buffer);
 
-  std::string square_vertex_src = R"(
+  std::string flat_square_vertex_src = R"(
 			#version 330 core
 			
 			layout(location = 0) in vec3 a_Position;
@@ -112,7 +112,7 @@ ExampleLayer::ExampleLayer()
 			}
 		)";
 
-  std::string square_fragment_src = R"(
+  std::string flat_square_fragment_src = R"(
 			#version 330 core
 			
 			layout(location = 0) out vec4 color;
@@ -127,8 +127,50 @@ ExampleLayer::ExampleLayer()
 			}
 		)";
 
-  m_square_shader_ =
-      Renderer::AShader::Create(square_vertex_src, square_fragment_src);
+  m_flat_square_shader_ = Renderer::AShader::Create(flat_square_vertex_src,
+                                                    flat_square_fragment_src);
+
+  std::string texture_square_vertex_src = R"(
+			#version 330 core
+			
+			layout(location = 0) in vec3 a_Position;
+      layout(location = 1) in vec2 a_TexCoord;
+
+			uniform mat4 u_ViewProjection;
+      uniform mat4 u_Transform;
+
+      out vec2 v_TexCoord;
+
+			void main()
+			{
+				v_TexCoord = a_TexCoord;
+				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);	
+			}
+		)";
+
+  std::string texture_square_fragment_src = R"(
+			#version 330 core
+			
+			layout(location = 0) out vec4 color;
+
+			in vec2 v_TexCoord;
+
+      uniform sampler2D u_Texture;
+
+			void main()
+			{
+				color = texture(u_Texture, v_TexCoord);
+			}
+		)";
+
+  m_texture_square_shader_ = Renderer::AShader::Create(
+      texture_square_vertex_src, texture_square_fragment_src);
+
+  m_texture_ =
+      Renderer::ATexture2D::Create("../assets/textures/Checkerboard.png");
+
+  m_texture_square_shader_->bind();
+  m_texture_square_shader_->set_int("u_Texture", 0);
 }
 
 ExampleLayer::~ExampleLayer() {}
@@ -162,8 +204,8 @@ void ExampleLayer::on_update(Renderer::Times::Timestep p_ts) {
 
   Renderer::Renderer::begin_scene(m_camera_);
 
-  m_square_shader_->bind();
-  m_square_shader_->set_vec3("u_Color", m_square_color_);
+  m_flat_square_shader_->bind();
+  m_flat_square_shader_->set_vec3("u_Color", m_square_color_);
 
   glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
@@ -171,12 +213,18 @@ void ExampleLayer::on_update(Renderer::Times::Timestep p_ts) {
     for (int x = 0; x < 20; x++) {
       glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
       glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
-      Renderer::Renderer::submit(m_square_shader_, m_square_vertex_array_,
+      Renderer::Renderer::submit(m_flat_square_shader_, m_square_vertex_array_,
                                  transform);
     }
   }
 
-  Renderer::Renderer::submit(m_triangle_shader_, m_triangle_vertex_array_);
+  m_texture_->bind();
+
+  Renderer::Renderer::submit(m_texture_square_shader_, m_square_vertex_array_,
+                             glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+
+  // Triangle
+  // Renderer::Renderer::submit(m_triangle_shader_, m_triangle_vertex_array_);
 
   Renderer::Renderer::end_scene();
 }

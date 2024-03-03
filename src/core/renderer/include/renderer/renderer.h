@@ -8,6 +8,7 @@
 #include "renderer/buffers/AVertex_array.hpp"
 
 #include "renderer/resources/shader/AShader.hpp"
+#include "renderer/resources/material/ATexture.hpp"
 
 #include "renderer/renderer/renderer.hpp"
 #include "renderer/renderer/render_command.hpp"

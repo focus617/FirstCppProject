@@ -3,6 +3,7 @@ add_subdirectory(event)
 add_subdirectory(file_system)
 add_subdirectory(maths)
 add_subdirectory(time)
+add_subdirectory(stb_image)
 add_subdirectory(utils)
 
 #添加子目录的源文件给_SUB_SOURCES

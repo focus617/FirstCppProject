@@ -2,13 +2,12 @@
 
 #include "window_impl.hpp"
 
+#include <stb_image.h>
+
 #include "tools/event/application_event.hpp"
 #include "tools/event/key_event.hpp"
 #include "tools/event/mouse_event.hpp"
 #include "ui/imgui/imgui.h"
-
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
 
 #define GL_SILENCE_DEPRECATION
 

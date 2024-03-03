@@ -2,7 +2,6 @@
 
 #include "renderer/resources/shader/AShader.hpp"
 
-#include "renderer/backend/opengl/opengl_renderer_api.hpp"
 #include "renderer/backend/opengl/opengl_shader.hpp"
 #include "renderer/renderer/renderer.hpp"
 

@@ -70,11 +70,6 @@ set(GLM_INCLUDE_DIR
   CACHE PATH "GLM include directory"
 )
 
-set(STBIMAGE_INCLUDE_DIR
-  ${PROJECT_SOURCE_DIR}/extern/stb_image
-  CACHE PATH "STB IMAGE include directory"
-)
-
 # 指定头文件路径
 target_include_directories(core
   PUBLIC 
@@ -83,6 +78,7 @@ target_include_directories(core
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/classloader/include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/editor/include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/renderer/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/tools/stb_image>
     $<INSTALL_INTERFACE:include/core>
   PRIVATE
     ${PROJECT_BINARY_DIR}/src
@@ -90,7 +86,6 @@ target_include_directories(core
     ${GLFW_INCLUDE_DIR}
     ${GLAD_INCLUDE_DIR}
     ${GLM_INCLUDE_DIR}
-    ${STBIMAGE_INCLUDE_DIR}
 )
 
 # Precompiled headers
@@ -137,4 +132,4 @@ install(FILES
     DESTINATION share/cmake/core
 )
 # 安装字体
-install(DIRECTORY resources/fonts/ DESTINATION fonts)
+install(DIRECTORY resources/fonts/ DESTINATION assets/fonts)
