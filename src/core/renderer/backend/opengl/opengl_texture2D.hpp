@@ -43,7 +43,8 @@ class OpenGLTexture2D : public ATexture2D {
   bool m_is_loaded_ = false;
   uint32_t m_width_, m_height_;
   uint32_t m_renderer_id_;
-  GLenum m_internal_format_, m_data_format_;
+  GLenum m_data_format_;
+  GLenum m_internal_format_;  // describe how opengl storge the texture data
 };
 
 }  // namespace xuzy::Renderer

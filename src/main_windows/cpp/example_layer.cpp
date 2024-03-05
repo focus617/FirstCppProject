@@ -6,10 +6,7 @@
 namespace xuzy::UI {
 
 ExampleLayer::ExampleLayer()
-    : ALayer("ExampleLayer"),
-      m_camera_(-1.6f, 1.6f, -0.9f, 0.9f),
-      m_camera_position_(0.0f),
-      m_camera_rotation_(0.0f) {
+    : ALayer("ExampleLayer"), m_camera_controller_(1280.0f / 720.0f, true) {
   /******* Color Triangle ***********/
   m_triangle_vertex_array_ = Renderer::Buffer::AVertexArray::Create();
 
@@ -67,8 +64,8 @@ ExampleLayer::ExampleLayer()
 			}
 		)";
 
-  m_triangle_shader_ =
-      Renderer::AShader::Create(triangle_vertex_src, triangle_fragment_src);
+  m_triangle_shader_ = Renderer::AShader::Create(
+      "flat_triangle_shader", triangle_vertex_src, triangle_fragment_src);
 
   /******* Blue Square ***********/
   m_square_vertex_array_ = Renderer::Buffer::AVertexArray::Create();
@@ -127,85 +124,37 @@ ExampleLayer::ExampleLayer()
 			}
 		)";
 
-  m_flat_square_shader_ = Renderer::AShader::Create(flat_square_vertex_src,
-                                                    flat_square_fragment_src);
-
-  std::string texture_square_vertex_src = R"(
-			#version 330 core
-			
-			layout(location = 0) in vec3 a_Position;
-      layout(location = 1) in vec2 a_TexCoord;
-
-			uniform mat4 u_ViewProjection;
-      uniform mat4 u_Transform;
-
-      out vec2 v_TexCoord;
-
-			void main()
-			{
-				v_TexCoord = a_TexCoord;
-				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);	
-			}
-		)";
-
-  std::string texture_square_fragment_src = R"(
-			#version 330 core
-			
-			layout(location = 0) out vec4 color;
-
-			in vec2 v_TexCoord;
-
-      uniform sampler2D u_Texture;
-
-			void main()
-			{
-				color = texture(u_Texture, v_TexCoord);
-			}
-		)";
-
-  m_texture_square_shader_ = Renderer::AShader::Create(
-      texture_square_vertex_src, texture_square_fragment_src);
+  m_flat_square_shader_ = Renderer::AShader::Create(
+      "flat_square_shader", flat_square_vertex_src, flat_square_fragment_src);
+  m_shader_library_.add(m_flat_square_shader_);
 
   m_texture_ =
       Renderer::ATexture2D::Create("../assets/textures/Checkerboard.png");
+  m_cherno_logo_texture_ =
+      Renderer::ATexture2D::Create("../assets/textures/ChernoLogo.png");
 
-  m_texture_square_shader_->bind();
-  m_texture_square_shader_->set_int("u_Texture", 0);
+  // Test ShaderLibrary
+  auto texture_square_shader =
+      m_shader_library_.load("../assets/shaders/opengl/Texture.glsl");
+  texture_square_shader->bind();
+  texture_square_shader->set_int("u_Texture", 0);
 }
 
 ExampleLayer::~ExampleLayer() {}
 
 void ExampleLayer::on_update(Renderer::Times::Timestep p_ts) {
-  if (Window::Inputs::InputManager::is_key_pressed(Window::Inputs::Key::Left)) {
-    m_camera_position_.x += m_camera_move_speed_ * p_ts;
-  } else if (Window::Inputs::InputManager::is_key_pressed(
-                 Window::Inputs::Key::Right)) {
-    m_camera_position_.x -= m_camera_move_speed_ * p_ts;
-  } else if (Window::Inputs::InputManager::is_key_pressed(
-                 Window::Inputs::Key::Up)) {
-    m_camera_position_.y -= m_camera_move_speed_ * p_ts;
-  } else if (Window::Inputs::InputManager::is_key_pressed(
-                 Window::Inputs::Key::Down)) {
-    m_camera_position_.y += m_camera_move_speed_ * p_ts;
-  }
-
-  if (Window::Inputs::InputManager::is_key_pressed(Window::Inputs::Key::A)) {
-    m_camera_rotation_ += m_camera_rotate_speed_ * p_ts;
-  } else if (Window::Inputs::InputManager::is_key_pressed(
-                 Window::Inputs::Key::Z)) {
-    m_camera_rotation_ -= m_camera_rotate_speed_ * p_ts;
-  }
+  // Update camera controller
+  m_camera_controller_.on_update(p_ts);
 
   Renderer::RenderCommand::set_clear_color(0.1f, 0.1f, 0.1f, 1.0f);
   Renderer::RenderCommand::clear();
 
-  m_camera_.set_position(m_camera_position_);
-  m_camera_.set_rotation(m_camera_rotation_);
+  Renderer::Renderer::begin_scene(m_camera_controller_.get_camera());
 
-  Renderer::Renderer::begin_scene(m_camera_);
+  auto flat_square_shader = m_shader_library_.get("flat_square_shader");
 
-  m_flat_square_shader_->bind();
-  m_flat_square_shader_->set_vec3("u_Color", m_square_color_);
+  flat_square_shader->bind();
+  flat_square_shader->set_vec3("u_Color", m_square_color_);
 
   glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
@@ -213,14 +162,18 @@ void ExampleLayer::on_update(Renderer::Times::Timestep p_ts) {
     for (int x = 0; x < 20; x++) {
       glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
       glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
-      Renderer::Renderer::submit(m_flat_square_shader_, m_square_vertex_array_,
+      Renderer::Renderer::submit(flat_square_shader, m_square_vertex_array_,
                                  transform);
     }
   }
 
-  m_texture_->bind();
+  auto texture_square_shader = m_shader_library_.get("Texture");
 
-  Renderer::Renderer::submit(m_texture_square_shader_, m_square_vertex_array_,
+  m_texture_->bind();
+  Renderer::Renderer::submit(texture_square_shader, m_square_vertex_array_,
+                             glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+  m_cherno_logo_texture_->bind();
+  Renderer::Renderer::submit(texture_square_shader, m_square_vertex_array_,
                              glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 
   // Triangle
@@ -228,7 +181,9 @@ void ExampleLayer::on_update(Renderer::Times::Timestep p_ts) {
 
   Renderer::Renderer::end_scene();
 }
-void ExampleLayer::on_event(Ref<Events::Event> event, bool& handled) {}
+void ExampleLayer::on_event(Ref<Events::Event> event, bool& handled) {
+  m_camera_controller_.on_event(event, handled);
+}
 
 void ExampleLayer::on_draw() {}
 

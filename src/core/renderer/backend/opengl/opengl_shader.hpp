@@ -16,9 +16,6 @@ class OpenGLShader : public AShader {
   OpenGLShader(const std::string& p_name, const std::string& p_vertex_src,
                const std::string& p_fragment_src);
 
-  OpenGLShader(const std::string& p_vertex_src,
-               const std::string& p_fragment_src);
-
   virtual ~OpenGLShader();
 
   /**
@@ -139,8 +136,7 @@ class OpenGLShader : public AShader {
                         const Maths::FVector3& p_vec3);
   void set_uniform_vec4(const std::string& p_name,
                         const Maths::FVector4& p_vec4);
-  void set_uniform_mat4(const std::string& p_name,
-                        const glm::mat4& p_mat4);
+  void set_uniform_mat4(const std::string& p_name, const glm::mat4& p_mat4);
   int get_uniform_int(const std::string& p_name);
   float get_uniform_float(const std::string& p_name);
   Maths::FVector2 get_uniform_vec2(const std::string& p_name);
@@ -148,23 +144,26 @@ class OpenGLShader : public AShader {
   Maths::FVector4 get_uniform_vec4(const std::string& p_name);
   glm::mat4 get_uniform_mat4(const std::string& p_name);
 
-  std::string ReadFile(const std::string& filepath);
-  std::unordered_map<GLenum, std::string> PreProcess(const std::string& source);
+  std::string read_file(const std::string& p_filepath);
+  bool pre_process(const std::string& p_source);
+  void compile();
 
-  void CompileOrGetVulkanBinaries(
-      const std::unordered_map<GLenum, std::string>& p_shader_sources);
-  void CompileOrGetOpenGLBinaries();
-  void CreateProgram();
+  // void CompileOrGetVulkanBinaries(
+  //     const std::unordered_map<GLenum, std::string>& p_shader_sources);
+  // void CompileOrGetOpenGLBinaries();
+  // void create_program();
 
  private:
   uint32_t m_renderer_id_;
   std::string m_filepath_;
   std::string m_name_;
 
-  std::unordered_map<std::string, int> m_uniform_location_cache;
+  std::unordered_map<std::string, int> m_uniform_location_cache_;
 
-  std::unordered_map<GLenum, std::vector<uint32_t>> m_VulkanSPIRV;
-  std::unordered_map<GLenum, std::vector<uint32_t>> m_OpenGLSPIRV;
+  std::unordered_map<GLenum, std::string> m_shader_source_code_;
+
+  // std::unordered_map<GLenum, std::vector<uint32_t>> m_VulkanSPIRV;
+  // std::unordered_map<GLenum, std::vector<uint32_t>> m_OpenGLSPIRV;
 };
 
 }  // namespace xuzy::Renderer

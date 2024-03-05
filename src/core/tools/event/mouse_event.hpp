@@ -7,7 +7,7 @@
 
 namespace xuzy::Events {
 
-class MouseMovedEvent : public Event {
+class XUZY_API MouseMovedEvent : public Event {
  public:
   MouseMovedEvent(const float x, const float y) : m_mouse_x(x), m_mouse_y(y) {}
 
@@ -27,7 +27,7 @@ class MouseMovedEvent : public Event {
   float m_mouse_x, m_mouse_y;
 };
 
-class MouseScrolledEvent : public Event {
+class XUZY_API MouseScrolledEvent : public Event {
  public:
   MouseScrolledEvent(const float xOffset, const float yOffset)
       : m_x_offset(xOffset), m_y_offset(yOffset) {}
@@ -48,7 +48,7 @@ class MouseScrolledEvent : public Event {
   float m_x_offset, m_y_offset;
 };
 
-class MouseButtonEvent : public Event {
+class XUZY_API MouseButtonEvent : public Event {
  public:
   xuzy::Window::Inputs::MouseCode get_mouse_button() const { return m_button; }
 
@@ -62,7 +62,7 @@ class MouseButtonEvent : public Event {
   xuzy::Window::Inputs::MouseCode m_button;
 };
 
-class MouseButtonPressedEvent : public MouseButtonEvent {
+class XUZY_API MouseButtonPressedEvent : public MouseButtonEvent {
  public:
   MouseButtonPressedEvent(const xuzy::Window::Inputs::MouseCode button)
       : MouseButtonEvent(button) {}
@@ -76,7 +76,7 @@ class MouseButtonPressedEvent : public MouseButtonEvent {
   EVENT_CLASS_ID(MouseButtonPressed)
 };
 
-class MouseButtonReleasedEvent : public MouseButtonEvent {
+class XUZY_API MouseButtonReleasedEvent : public MouseButtonEvent {
  public:
   MouseButtonReleasedEvent(const xuzy::Window::Inputs::MouseCode button)
       : MouseButtonEvent(button) {}

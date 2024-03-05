@@ -14,12 +14,18 @@
 #include "renderer/renderer/render_command.hpp"
 
 #include "renderer/scene/camera/orthographic_camera.hpp"
-
-#include "tools/event/key_event.hpp"
+#include "renderer/scene/camera/orthographic_camera_controller.hpp"
 
 #include "window/core/layer.hpp"
+#include "window/core/time_step.hpp"
 #include "window/inputs/input_manager.hpp"
 #include "window/inputs/key_codes.h"
 #include "window/inputs/key_state.h"
 #include "window/inputs/mouse_codes.h"
 #include "window/inputs/mouse_state.h"
+
+#include "tools/event/event.hpp"
+#include "tools/event/key_event.hpp"
+#include "tools/event/application_event.hpp"
+#include "tools/event/mouse_event.hpp"
+#include "tools/event/event_dispatcher.hpp"

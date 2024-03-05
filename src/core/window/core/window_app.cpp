@@ -1,10 +1,13 @@
 #include "window_app.hpp"
 
+#include "renderer/renderer/renderer.hpp"
+
 namespace xuzy {
 
 WindowApp::WindowApp(const std::string& p_app_name,
                      const std::string& p_version)
     : App{p_app_name, p_version}, m_context_{p_app_name, p_version} {
+  // Window was created inside m_context_
   m_context_.m_window_->set_event_callback(std::bind(&WindowApp::on_event, this,
                                                      std::placeholders::_1,
                                                      std::placeholders::_2));
@@ -16,6 +19,8 @@ WindowApp::WindowApp(const std::string& p_app_name,
   m_ui_manager_->set_canvas(CreateRef<UI::Canvas>());
 
   m_layerstack_.push_layer(m_ui_manager_);
+
+  Renderer::Renderer::init();
 }
 
 WindowApp::~WindowApp() { close(); }
@@ -55,7 +60,6 @@ void WindowApp::on_event(Ref<Events::Event> event, bool& handled) {
       handled = OnWindowResize(
           std::static_pointer_cast<Events::WindowResizeEvent>(event));
       break;
-      ;
 
     default:
       LOG(INFO) << "Other Event: " << *event << std::endl;
@@ -72,13 +76,13 @@ void WindowApp::on_event(Ref<Events::Event> event, bool& handled) {
 }
 
 bool WindowApp::OnWindowClose(Ref<Events::WindowCloseEvent> e) {
-  LOG(INFO) << "Window Close Clicked (Event: " << *e << ")" << std::endl;
+  LOG(INFO) << "Window Close Clicked Event: " << *e << std::endl;
   m_running_ = false;
   return true;
 }
 
 bool WindowApp::OnWindowResize(Ref<Events::WindowResizeEvent> e) {
-  LOG(INFO) << "Window Resized (Event: " << *e << ")" << std::endl;
+  LOG(INFO) << "Window Resized Event: " << *e << std::endl;
 
   if ((e->get_width() == 0) || (e->get_height() == 0)) {
     m_minimized_ = true;

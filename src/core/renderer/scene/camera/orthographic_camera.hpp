@@ -4,11 +4,17 @@
 
 namespace xuzy::Renderer::Camera {
 
+/**
+ * @brief A pure data class which represents orthographic projection and
+ * view matrix.
+ */
+
 class XUZY_API OrthographicCamera {
  public:
+  /**
+   * @brief Construction
+   */
   OrthographicCamera(float p_left, float p_right, float p_bottom, float p_top);
-
-  void set_projection_matrix(float p_left, float p_right, float p_top, float p_bottom);
 
   const glm::vec3& get_position() const { return m_position_; }
 
@@ -23,6 +29,9 @@ class XUZY_API OrthographicCamera {
     m_rotation_ = p_rotation;
     recalculate_view_matrix();
   }
+
+  void set_projection_matrix(float p_left, float p_right, float p_bottom,
+                             float p_top);
 
   const glm::mat4& get_projection_matrix() const {
     return m_projection_matrix_;

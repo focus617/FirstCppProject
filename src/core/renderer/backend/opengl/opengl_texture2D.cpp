@@ -43,10 +43,10 @@ OpenGLTexture2D::OpenGLTexture2D(const std::string& p_path) {
       data_format = GL_RGB;
     }
 
+    XUZY_CHECK_(internal_format & data_format) << "Format not supported!";
+
     m_internal_format_ = internal_format;
     m_data_format_ = data_format;
-
-    XUZY_CHECK_(internal_format & data_format) << "Format not supported!";
 
     glCreateTextures(GL_TEXTURE_2D, 1, &m_renderer_id_);
     glTextureStorage2D(m_renderer_id_, 1, internal_format, m_width_, m_height_);
@@ -61,6 +61,8 @@ OpenGLTexture2D::OpenGLTexture2D(const std::string& p_path) {
                         m_data_format_, GL_UNSIGNED_BYTE, data);
 
     stbi_image_free(data);
+  } else {
+    LOG(ERROR) << "Texture file loaded error!";
   }
 }
 

@@ -18,7 +18,7 @@ class XUZY_API AShader {
 
  public:
   /**
-   * @brief Concrete shader creater
+   * @brief Concrete shader creater based on shader file
    * @param p_filepath
    */
   static Ref<AShader> Create(const std::string& p_filepath);
@@ -31,14 +31,6 @@ class XUZY_API AShader {
    */
   static Ref<AShader> Create(const std::string& p_name,
                              const std::string& p_vertex_src,
-                             const std::string& p_fragment_src);
-
-  /**
-   * @brief Concrete shader creater
-   * @param p_vertex_src    Vertex source code
-   * @param p_fragment_src  Fragment source code
-   */
-  static Ref<AShader> Create(const std::string& p_vertex_src,
                              const std::string& p_fragment_src);
 
   /**

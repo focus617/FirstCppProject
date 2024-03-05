@@ -73,4 +73,4 @@ install(FILES
     DESTINATION bin
 )
 
-install(DIRECTORY assets/textures/ DESTINATION assets/textures)
+install(DIRECTORY assets/ DESTINATION assets)

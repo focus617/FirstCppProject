@@ -7,7 +7,7 @@ namespace xuzy::Renderer {
 class OpenGLRendererAPI : public ARendererAPI {
  public:
   /**
-   * @brief Initialize .
+   * @brief Initialize OpenGL.
    */
   virtual void init() override;
 

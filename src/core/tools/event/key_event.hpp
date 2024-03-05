@@ -2,12 +2,12 @@
 
 #include <sstream>
 
-#include "event.hpp"
+#include "tools/event/event.hpp"
 #include "window/inputs/key_codes.h"
 
 namespace xuzy::Events {
 
-class KeyEvent : public Event {
+class XUZY_API KeyEvent : public Event {
  public:
   xuzy::Window::Inputs::KeyCode get_key_code() const { return m_key_code; }
 
@@ -19,7 +19,7 @@ class KeyEvent : public Event {
   xuzy::Window::Inputs::KeyCode m_key_code;
 };
 
-class KeyPressedEvent : public KeyEvent {
+class XUZY_API KeyPressedEvent : public KeyEvent {
  public:
   KeyPressedEvent(const xuzy::Window::Inputs::KeyCode keycode,
                   const uint16_t repeatCount)
@@ -40,7 +40,7 @@ class KeyPressedEvent : public KeyEvent {
   uint16_t m_repeat_count;
 };
 
-class KeyReleasedEvent : public KeyEvent {
+class XUZY_API KeyReleasedEvent : public KeyEvent {
  public:
   KeyReleasedEvent(const xuzy::Window::Inputs::KeyCode keycode)
       : KeyEvent(keycode) {}
@@ -54,7 +54,7 @@ class KeyReleasedEvent : public KeyEvent {
   EVENT_CLASS_ID(KeyReleased)
 };
 
-class KeyTypedEvent : public KeyEvent {
+class XUZY_API KeyTypedEvent : public KeyEvent {
  public:
   KeyTypedEvent(const xuzy::Window::Inputs::KeyCode keycode)
       : KeyEvent(keycode) {}
