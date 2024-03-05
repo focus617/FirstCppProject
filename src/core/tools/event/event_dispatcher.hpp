@@ -24,8 +24,6 @@ class EventDispatcher;
 
 /**
  * @brief 特例: 对事件类Event进行了模板化
- * 
- * 
  * 使用变参模板自定义事件绑定的委托函数参数列表，可以接受多个不同类型的参数。
  */
 template <typename ReturnType, typename... Args>

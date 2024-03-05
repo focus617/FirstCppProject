@@ -4,13 +4,15 @@
 
 namespace xuzy {
 
+#define BIND_EVENT_FN(x) \
+  std::bind(&WindowApp::x, this, std::placeholders::_1, std::placeholders::_2)
+
 WindowApp::WindowApp(const std::string& p_app_name,
                      const std::string& p_version)
     : App{p_app_name, p_version}, m_context_{p_app_name, p_version} {
-  // Window was created inside m_context_
-  m_context_.m_window_->set_event_callback(std::bind(&WindowApp::on_event, this,
-                                                     std::placeholders::_1,
-                                                     std::placeholders::_2));
+  // Setup event callback for Window::AWindow
+  // Note: Window was created inside m_context_
+  m_context_.m_window_->set_event_callback(BIND_EVENT_FN(on_event));
 
   m_ui_manager_ = CreateRef<UI::UIManager>(m_context_.get_native_window(),
                                            m_context_.glsl_version,
@@ -90,6 +92,9 @@ bool WindowApp::OnWindowResize(Ref<Events::WindowResizeEvent> e) {
   }
 
   m_minimized_ = false;
+
+  // Notify Renderer 
+  Renderer::Renderer::on_window_resize(e->get_width(), e->get_height());
 
   return false;
 }

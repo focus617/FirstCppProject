@@ -59,7 +59,6 @@ void OrthographicCameraController::on_event(Ref<Events::Event> event,
       break;
 
     default:
-      LOG(INFO) << "Other Event: " << *event << std::endl;
       break;
   }
 }
