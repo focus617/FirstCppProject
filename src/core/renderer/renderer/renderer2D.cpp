@@ -75,7 +75,6 @@ void Renderer2D::draw_quad(const Maths::FVector3& p_position,
                      {p_position.x, p_position.y, p_position.z}) *
       glm::scale(glm::mat4(1.0f), {p_size.x, p_size.y, 1.0f});
 
-  s_data->texture_shader->bind();
   s_data->texture_shader->set_fvec4("u_Color", p_color);
   s_data->texture_shader->set_mat4("u_Transform", transform);
 
@@ -99,7 +98,6 @@ void Renderer2D::draw_quad(const Maths::FVector3& p_position,
                      {p_position.x, p_position.y, p_position.z}) *
       glm::scale(glm::mat4(1.0f), {p_size.x, p_size.y, 1.0f});
 
-  s_data->texture_shader->bind();
   s_data->texture_shader->set_fvec4("u_Color", Maths::FVector4::One);
   s_data->texture_shader->set_mat4("u_Transform", transform);
 

@@ -27,10 +27,6 @@ void Sandbox2D::on_update(Renderer::Times::Timestep p_ts) {
 
   Renderer::Renderer2D::begin_scene(m_camera_controller_.get_camera());
 
-  Renderer::Renderer2D::draw_quad(Maths::FVector3(0.0f, 0.0f, -0.1f),
-                                  Maths::FVector2(10.0f, 10.0f),
-                                  m_check_board_texture_);
-
   Renderer::Renderer2D::draw_quad(Maths::FVector2(-1.0f, 0.0f),
                                   Maths::FVector2(0.8f, 0.8f),
                                   Maths::FVector4(0.8f, 0.2f, 0.3f, 1.0f));
@@ -38,6 +34,10 @@ void Sandbox2D::on_update(Renderer::Times::Timestep p_ts) {
   Renderer::Renderer2D::draw_quad(Maths::FVector2(0.5f, -0.5f),
                                   Maths::FVector2(0.5f, 0.75f),
                                   Maths::FVector4(0.2f, 0.3f, 0.8f, 1.0f));
+
+  Renderer::Renderer2D::draw_quad(Maths::FVector3(0.0f, 0.0f, -0.1f),
+                                  Maths::FVector2(10.0f, 10.0f),
+                                  m_check_board_texture_);
 
   Renderer::Renderer2D::end_scene();
 }

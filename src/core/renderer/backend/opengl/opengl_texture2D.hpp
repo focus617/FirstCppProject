@@ -19,6 +19,12 @@ class OpenGLTexture2D : public ATexture2D {
   virtual uint32_t get_height() const override { return m_height_; }
   virtual uint32_t get_renderer_id() const override { return m_renderer_id_; }
 
+  /**
+   * @brief Setup the data of entire texture
+   * @param p_data
+   * @param p_size
+   * Note: p_size == m_width_ * m_height_ * bytes_per_pixel
+   */
   virtual void set_data(void* p_data, uint32_t p_size) override;
 
   /**

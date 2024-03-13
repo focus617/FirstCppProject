@@ -4,10 +4,11 @@ namespace xuzy::Window {
 
 Monitor::Monitor(const WindowProps& p_props)
     : m_vsync{p_props.enable_vsync}, m_refresh_rate{p_props.refresh_rate} {
-  LOG(INFO) << "GLFW version: " << glfwGetVersionString();
-
   // Initialize GLFW library
   if (!m_glfw_initialized) {
+    LOG(INFO) << "Initializing GLFW...";
+    LOG(INFO) << "GLFW version: " << glfwGetVersionString();
+
     int initialization_code = glfwInit();
     XUZY_CHECK_(GLFW_TRUE == initialization_code)
         << "Could not intialize GLFW!";
@@ -36,6 +37,8 @@ Monitor::Monitor(const WindowProps& p_props)
 }
 
 Monitor::~Monitor() {
+  LOG(INFO) << "Terminating GLFW...";
+
   if (m_glfw_initialized) {
     glfwTerminate();
     m_glfw_initialized = false;
