@@ -1,6 +1,7 @@
 #include "window_app.hpp"
 
 #include "renderer/renderer/renderer.hpp"
+#include "renderer/renderer/renderer2D.hpp"
 
 namespace xuzy {
 
@@ -23,9 +24,13 @@ WindowApp::WindowApp(const std::string& p_app_name,
   m_layerstack_.push_layer(m_ui_manager_);
 
   Renderer::Renderer::init();
+  Renderer::Renderer2D::init();
 }
 
-WindowApp::~WindowApp() { close(); }
+WindowApp::~WindowApp() {
+  Renderer::Renderer2D::shutdown();
+  close();
+}
 
 void WindowApp::launch_tasks() {}
 
@@ -93,7 +98,7 @@ bool WindowApp::OnWindowResize(Ref<Events::WindowResizeEvent> e) {
 
   m_minimized_ = false;
 
-  // Notify Renderer 
+  // Notify Renderer
   Renderer::Renderer::on_window_resize(e->get_width(), e->get_height());
 
   return false;

@@ -193,7 +193,10 @@ void OpenGLShader::compile() {
   }
 
   // Always detach shaders after a successful link.
-  for (auto id : opengl_shader_ids) glDetachShader(program, id);
+  for (auto id : opengl_shader_ids) {
+    glDetachShader(program, id);
+    glDeleteShader(id);
+  }
 }
 
 // void OpenGLShader::CompileOrGetVulkanBinaries(
@@ -257,19 +260,19 @@ void OpenGLShader::set_float(const std::string& p_name, float p_value) {
   set_uniform_float(p_name, p_value);
 }
 
-void OpenGLShader::set_vec2(const std::string& p_name,
-                            const Maths::FVector2& p_vec2) {
-  set_uniform_vec2(p_name, p_vec2);
+void OpenGLShader::set_fvec2(const std::string& p_name,
+                            const Maths::FVector2& p_fvec2) {
+  set_uniform_fvec2(p_name, p_fvec2);
 }
 
-void OpenGLShader::set_vec3(const std::string& p_name,
-                            const Maths::FVector3& p_vec3) {
-  set_uniform_vec3(p_name, p_vec3);
+void OpenGLShader::set_fvec3(const std::string& p_name,
+                            const Maths::FVector3& p_fvec3) {
+  set_uniform_fvec3(p_name, p_fvec3);
 }
 
-void OpenGLShader::set_vec4(const std::string& p_name,
-                            const Maths::FVector4& p_vec4) {
-  set_uniform_vec4(p_name, p_vec4);
+void OpenGLShader::set_fvec4(const std::string& p_name,
+                            const Maths::FVector4& p_fvec4) {
+  set_uniform_fvec4(p_name, p_fvec4);
 }
 
 void OpenGLShader::set_mat4(const std::string& p_name,
@@ -285,16 +288,16 @@ float OpenGLShader::get_float(const std::string& p_name) {
   return get_uniform_float(p_name);
 }
 
-Maths::FVector2 OpenGLShader::get_vec2(const std::string& p_name) {
-  return get_uniform_vec2(p_name);
+Maths::FVector2 OpenGLShader::get_fvec2(const std::string& p_name) {
+  return get_uniform_fvec2(p_name);
 }
 
-Maths::FVector3 OpenGLShader::get_vec3(const std::string& p_name) {
-  return get_uniform_vec3(p_name);
+Maths::FVector3 OpenGLShader::get_fvec3(const std::string& p_name) {
+  return get_uniform_fvec3(p_name);
 }
 
-Maths::FVector4 OpenGLShader::get_vec4(const std::string& p_name) {
-  return get_uniform_vec4(p_name);
+Maths::FVector4 OpenGLShader::get_fvec4(const std::string& p_name) {
+  return get_uniform_fvec4(p_name);
 }
 
 glm::mat4 OpenGLShader::get_mat4(const std::string& p_name) {
@@ -328,20 +331,20 @@ void OpenGLShader::set_uniform_float(const std::string& p_name, float p_value) {
   glUniform1f(get_uniform_location(p_name), p_value);
 }
 
-void OpenGLShader::set_uniform_vec2(const std::string& p_name,
-                                    const Maths::FVector2& p_vec2) {
-  glUniform2f(get_uniform_location(p_name), p_vec2.x, p_vec2.y);
+void OpenGLShader::set_uniform_fvec2(const std::string& p_name,
+                                    const Maths::FVector2& p_fvec2) {
+  glUniform2f(get_uniform_location(p_name), p_fvec2.x, p_fvec2.y);
 }
 
-void OpenGLShader::set_uniform_vec3(const std::string& p_name,
-                                    const Maths::FVector3& p_vec3) {
-  glUniform3f(get_uniform_location(p_name), p_vec3.x, p_vec3.y, p_vec3.z);
+void OpenGLShader::set_uniform_fvec3(const std::string& p_name,
+                                    const Maths::FVector3& p_fvec3) {
+  glUniform3f(get_uniform_location(p_name), p_fvec3.x, p_fvec3.y, p_fvec3.z);
 }
 
-void OpenGLShader::set_uniform_vec4(const std::string& p_name,
-                                    const Maths::FVector4& p_vec4) {
-  glUniform4f(get_uniform_location(p_name), p_vec4.x, p_vec4.y, p_vec4.z,
-              p_vec4.w);
+void OpenGLShader::set_uniform_fvec4(const std::string& p_name,
+                                    const Maths::FVector4& p_fvec4) {
+  glUniform4f(get_uniform_location(p_name), p_fvec4.x, p_fvec4.y, p_fvec4.z,
+              p_fvec4.w);
 }
 
 void OpenGLShader::set_uniform_mat4(const std::string& p_name,
@@ -362,19 +365,19 @@ float OpenGLShader::get_uniform_float(const std::string& p_name) {
   return value;
 }
 
-Maths::FVector2 OpenGLShader::get_uniform_vec2(const std::string& p_name) {
+Maths::FVector2 OpenGLShader::get_uniform_fvec2(const std::string& p_name) {
   GLfloat values[2];
   glGetUniformfv(m_renderer_id_, get_uniform_location(p_name), values);
   return reinterpret_cast<Maths::FVector2&>(values);
 }
 
-Maths::FVector3 OpenGLShader::get_uniform_vec3(const std::string& p_name) {
+Maths::FVector3 OpenGLShader::get_uniform_fvec3(const std::string& p_name) {
   GLfloat values[3];
   glGetUniformfv(m_renderer_id_, get_uniform_location(p_name), values);
   return reinterpret_cast<Maths::FVector3&>(values);
 }
 
-Maths::FVector4 OpenGLShader::get_uniform_vec4(const std::string& p_name) {
+Maths::FVector4 OpenGLShader::get_uniform_fvec4(const std::string& p_name) {
   GLfloat values[4];
   glGetUniformfv(m_renderer_id_, get_uniform_location(p_name), values);
   return reinterpret_cast<Maths::FVector4&>(values);

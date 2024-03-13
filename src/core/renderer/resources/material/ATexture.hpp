@@ -31,10 +31,4 @@ class XUZY_API ATexture {
   virtual bool operator==(const ATexture& other) const = 0;
 };
 
-class XUZY_API ATexture2D : public ATexture {
- public:
-  static Ref<ATexture2D> Create(uint32_t p_width, uint32_t p_height);
-  static Ref<ATexture2D> Create(const std::string& p_path);
-};
-
 }  // namespace xuzy::Renderer

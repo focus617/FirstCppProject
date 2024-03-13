@@ -116,7 +116,7 @@ ExampleLayer::ExampleLayer()
 
 			in vec3 v_Position;
 
-      uniform vec3 u_Color;
+            uniform vec3 u_Color;
 
 			void main()
 			{
@@ -135,7 +135,7 @@ ExampleLayer::ExampleLayer()
 
   // Test ShaderLibrary
   auto texture_square_shader =
-      m_shader_library_.load("../assets/shaders/opengl/Texture.glsl");
+      m_shader_library_.load("../assets/shaders/opengl/texture.glsl");
   texture_square_shader->bind();
   texture_square_shader->set_int("u_Texture", 0);
 }
@@ -154,7 +154,7 @@ void ExampleLayer::on_update(Renderer::Times::Timestep p_ts) {
   auto flat_square_shader = m_shader_library_.get("flat_square_shader");
 
   flat_square_shader->bind();
-  flat_square_shader->set_vec3("u_Color", m_square_color_);
+  flat_square_shader->set_fvec3("u_Color", m_square_color_);
 
   glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
@@ -167,7 +167,7 @@ void ExampleLayer::on_update(Renderer::Times::Timestep p_ts) {
     }
   }
 
-  auto texture_square_shader = m_shader_library_.get("Texture");
+  auto texture_square_shader = m_shader_library_.get("texture");
 
   m_texture_->bind();
   Renderer::Renderer::submit(texture_square_shader, m_square_vertex_array_,

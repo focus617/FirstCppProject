@@ -36,6 +36,14 @@ class OpenGLShader : public AShader {
   virtual void set_int(const std::string& p_name, int p_value) override;
 
   /**
+   * @brief Send a int array to the GPU
+   * @param p_name
+   * @param p_value
+   */
+  virtual void set_int_arry(const std::string& p_name, int* p_values,
+                            uint32_t count) override;
+
+  /**
    * @brief Send a float to the GPU
    * @param p_name
    * @param p_value
@@ -47,24 +55,24 @@ class OpenGLShader : public AShader {
    * @param p_name
    * @param p_vec2
    */
-  virtual void set_vec2(const std::string& p_name,
-                        const Maths::FVector2& p_vec2) override;
+  virtual void set_fvec2(const std::string& p_name,
+                        const Maths::FVector2& p_fvec2) override;
 
   /**
    * @brief Send a vec3 to the GPU
    * @param p_name
    * @param p_vec3
    */
-  virtual void set_vec3(const std::string& p_name,
-                        const Maths::FVector3& p_vec3) override;
+  virtual void set_fvec3(const std::string& p_name,
+                        const Maths::FVector3& p_fvec3) override;
 
   /**
    * @brief Send a vec4 to the GPU
    * @param p_name
    * @param p_vec4
    */
-  virtual void set_vec4(const std::string& p_name,
-                        const Maths::FVector4& p_vec4) override;
+  virtual void set_fvec4(const std::string& p_name,
+                        const Maths::FVector4& p_fvec4) override;
 
   /**
    * @brief Send a mat4 to the GPU
@@ -86,14 +94,6 @@ class OpenGLShader : public AShader {
   virtual int get_int(const std::string& p_name) override;
 
   /**
-   * @brief Send a int array to the GPU
-   * @param p_name
-   * @param p_value
-   */
-  virtual void set_int_arry(const std::string& p_name, int* p_values,
-                            uint32_t count) override;
-
-  /**
    * @brief Returns the float uniform value identified by the given name
    * @param p_name
    */
@@ -103,19 +103,19 @@ class OpenGLShader : public AShader {
    * @brief Returns the vec2 uniform value identified by the given name
    * @param p_name
    */
-  virtual Maths::FVector2 get_vec2(const std::string& p_name) override;
+  virtual Maths::FVector2 get_fvec2(const std::string& p_name) override;
 
   /**
    * @brief Returns the vec3 uniform value identified by the given name
    * @param p_name
    */
-  virtual Maths::FVector3 get_vec3(const std::string& p_name) override;
+  virtual Maths::FVector3 get_fvec3(const std::string& p_name) override;
 
   /**
    * @brief Returns the vec4 uniform value identified by the given name
    * @param p_name
    */
-  virtual Maths::FVector4 get_vec4(const std::string& p_name) override;
+  virtual Maths::FVector4 get_fvec4(const std::string& p_name) override;
 
   /**
    * @brief Returns the mat4 uniform value identified by the given name
@@ -130,18 +130,19 @@ class OpenGLShader : public AShader {
   void set_uniform_int_array(const std::string& p_name, int* p_values,
                              uint32_t count);
   void set_uniform_float(const std::string& p_name, float p_value);
-  void set_uniform_vec2(const std::string& p_name,
-                        const Maths::FVector2& p_vec2);
-  void set_uniform_vec3(const std::string& p_name,
-                        const Maths::FVector3& p_vec3);
-  void set_uniform_vec4(const std::string& p_name,
-                        const Maths::FVector4& p_vec4);
+  void set_uniform_fvec2(const std::string& p_name,
+                        const Maths::FVector2& p_fvec2);
+  void set_uniform_fvec3(const std::string& p_name,
+                        const Maths::FVector3& p_fvec3);
+  void set_uniform_fvec4(const std::string& p_name,
+                        const Maths::FVector4& p_fvec4);
   void set_uniform_mat4(const std::string& p_name, const glm::mat4& p_mat4);
+
   int get_uniform_int(const std::string& p_name);
   float get_uniform_float(const std::string& p_name);
-  Maths::FVector2 get_uniform_vec2(const std::string& p_name);
-  Maths::FVector3 get_uniform_vec3(const std::string& p_name);
-  Maths::FVector4 get_uniform_vec4(const std::string& p_name);
+  Maths::FVector2 get_uniform_fvec2(const std::string& p_name);
+  Maths::FVector3 get_uniform_fvec3(const std::string& p_name);
+  Maths::FVector4 get_uniform_fvec4(const std::string& p_name);
   glm::mat4 get_uniform_mat4(const std::string& p_name);
 
   std::string read_file(const std::string& p_filepath);

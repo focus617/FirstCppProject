@@ -18,6 +18,9 @@ class XUZY_API OrthographicCameraController {
   OrthographicCamera& get_camera() { return m_camera_; }
   const OrthographicCamera& get_camera() const { return m_camera_; }
 
+  float get_zoom_level() const { return m_zoom_level_; }
+  void set_zoom_level(float p_level) { m_zoom_level_ = p_level; }
+
  private:
   bool on_mouse_scrolled(Ref<Events::MouseScrolledEvent> e);
   bool on_window_resized(Ref<Events::WindowResizeEvent> e);
@@ -31,7 +34,7 @@ class XUZY_API OrthographicCameraController {
   bool m_enable_rotation_;
 
   glm::vec3 m_camera_position_ = {0.0f, 0.0f, 0.0f};
-  float m_camera_rotation_ = 0.0f;
+  float m_camera_rotation_ = 0.0f; //In degrees, in the anti-clockwise direction
   float m_camera_translation_speed_ = 5.0f, m_camera_rotate_speed_ = 180.0f;
 };
 

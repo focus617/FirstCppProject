@@ -9,8 +9,10 @@
 
 #include "renderer/resources/shader/AShader.hpp"
 #include "renderer/resources/material/ATexture.hpp"
+#include "renderer/resources/material/ATexture2D.hpp"
 
 #include "renderer/renderer/renderer.hpp"
+#include "renderer/renderer/renderer2D.hpp"
 #include "renderer/renderer/render_command.hpp"
 
 #include "renderer/scene/camera/orthographic_camera.hpp"

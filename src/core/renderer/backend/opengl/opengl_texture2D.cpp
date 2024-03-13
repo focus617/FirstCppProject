@@ -51,12 +51,14 @@ OpenGLTexture2D::OpenGLTexture2D(const std::string& p_path) {
     glCreateTextures(GL_TEXTURE_2D, 1, &m_renderer_id_);
     glTextureStorage2D(m_renderer_id_, 1, internal_format, m_width_, m_height_);
 
-    glTextureParameteri(m_renderer_id_, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTextureParameteri(m_renderer_id_, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
+    // 为当前绑定的纹理对象设置环绕、过滤方式
     glTextureParameteri(m_renderer_id_, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTextureParameteri(m_renderer_id_, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
+    glTextureParameteri(m_renderer_id_, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTextureParameteri(m_renderer_id_, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    // 加载并生成纹理
     glTextureSubImage2D(m_renderer_id_, 0, 0, 0, m_width_, m_height_,
                         m_data_format_, GL_UNSIGNED_BYTE, data);
 

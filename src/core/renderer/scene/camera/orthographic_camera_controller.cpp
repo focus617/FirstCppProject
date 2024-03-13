@@ -87,7 +87,7 @@ bool OrthographicCameraController::on_window_resized(
   m_camera_.set_projection_matrix(-m_aspect_ratio_ * m_zoom_level_,
                                   m_aspect_ratio_ * m_zoom_level_,
                                   -m_zoom_level_, m_zoom_level_);
-  return true;
+  return false;
 }
 
 }  // namespace xuzy::Renderer::Camera

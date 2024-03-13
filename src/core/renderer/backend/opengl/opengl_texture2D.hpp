@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 
-#include "renderer/resources/material/ATexture.hpp"
+#include "renderer/resources/material/ATexture2D.hpp"
 
 namespace xuzy::Renderer {
 

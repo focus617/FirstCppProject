@@ -75,24 +75,24 @@ class XUZY_API AShader {
    * @param p_name
    * @param p_vec2
    */
-  virtual void set_vec2(const std::string& p_name,
-                        const Maths::FVector2& p_vec2) = 0;
+  virtual void set_fvec2(const std::string& p_name,
+                        const Maths::FVector2& p_fvec2) = 0;
 
   /**
    * @brief Send a vec3 to the GPU
    * @param p_name
    * @param p_vec3
    */
-  virtual void set_vec3(const std::string& p_name,
-                        const Maths::FVector3& p_vec3) = 0;
+  virtual void set_fvec3(const std::string& p_name,
+                        const Maths::FVector3& p_fvec3) = 0;
 
   /**
    * @brief Send a vec4 to the GPU
    * @param p_name
    * @param p_vec4
    */
-  virtual void set_vec4(const std::string& p_name,
-                        const Maths::FVector4& p_vec4) = 0;
+  virtual void set_fvec4(const std::string& p_name,
+                        const Maths::FVector4& p_fvec4) = 0;
 
   /**
    * @brief Send a mat4 to the GPU
@@ -123,19 +123,19 @@ class XUZY_API AShader {
    * @brief Returns the vec2 uniform value identified by the given name
    * @param p_name
    */
-  virtual Maths::FVector2 get_vec2(const std::string& p_name) = 0;
+  virtual Maths::FVector2 get_fvec2(const std::string& p_name) = 0;
 
   /**
    * @brief Returns the vec3 uniform value identified by the given name
    * @param p_name
    */
-  virtual Maths::FVector3 get_vec3(const std::string& p_name) = 0;
+  virtual Maths::FVector3 get_fvec3(const std::string& p_name) = 0;
 
   /**
    * @brief Returns the vec4 uniform value identified by the given name
    * @param p_name
    */
-  virtual Maths::FVector4 get_vec4(const std::string& p_name) = 0;
+  virtual Maths::FVector4 get_fvec4(const std::string& p_name) = 0;
 
   /**
    * @brief Returns the mat4 uniform value identified by the given name
