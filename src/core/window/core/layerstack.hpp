@@ -31,6 +31,19 @@ class XUZY_API LayerStack : public API::IDrawable {
   }
   std::vector<Ref<ALayer>>::reverse_iterator rend() { return m_layers_.rend(); }
 
+  std::vector<Ref<ALayer>>::const_iterator begin() const {
+    return m_layers_.begin();
+  }
+  std::vector<Ref<ALayer>>::const_iterator end() const {
+    return m_layers_.end();
+  }
+  std::vector<Ref<ALayer>>::const_reverse_iterator rbegin() const {
+    return m_layers_.rbegin();
+  }
+  std::vector<Ref<ALayer>>::const_reverse_iterator rend() const {
+    return m_layers_.rend();
+  }
+
  private:
   std::vector<Ref<ALayer>> m_layers_;
   unsigned int m_Layer_insert_index_ = 0;
