@@ -1,3 +1,5 @@
+#include "pch.h"
+
 #include "sandbox2D.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -19,30 +21,44 @@ void Sandbox2D::on_attach() {
 void Sandbox2D::on_detach() { LOG(INFO) << "Sandbox2D OnDetach"; }
 
 void Sandbox2D::on_update(Renderer::Times::Timestep p_ts) {
-  // Update camera controller
-  m_camera_controller_.on_update(p_ts);
+  XUZY_PROFILE_FUNCTION();
 
-  Renderer::RenderCommand::set_clear_color(0.1f, 0.1f, 0.1f, 1.0f);
-  Renderer::RenderCommand::clear();
+  // Update
+  {
+    XUZY_PROFILE_SCOPE("CameraController::on_update");
+    m_camera_controller_.on_update(p_ts);
+  }
 
-  Renderer::Renderer2D::begin_scene(m_camera_controller_.get_camera());
+  // Render
+  {
+    XUZY_PROFILE_SCOPE("Renderer Prep");
+    Renderer::RenderCommand::set_clear_color(0.1f, 0.1f, 0.1f, 1.0f);
+    Renderer::RenderCommand::clear();
+  }
 
-  Renderer::Renderer2D::draw_quad(Maths::FVector2(-1.0f, 0.0f),
-                                  Maths::FVector2(0.8f, 0.8f),
-                                  Maths::FVector4(0.8f, 0.2f, 0.3f, 1.0f));
+  {
+    XUZY_PROFILE_SCOPE("Renderer Draw");
+    Renderer::Renderer2D::begin_scene(m_camera_controller_.get_camera());
 
-  Renderer::Renderer2D::draw_quad(Maths::FVector2(0.5f, -0.5f),
-                                  Maths::FVector2(0.5f, 0.75f),
-                                  Maths::FVector4(0.2f, 0.3f, 0.8f, 1.0f));
+    Renderer::Renderer2D::draw_quad(Maths::FVector2(-1.0f, 0.0f),
+                                    Maths::FVector2(0.8f, 0.8f),
+                                    Maths::FVector4(0.8f, 0.2f, 0.3f, 1.0f));
 
-  Renderer::Renderer2D::draw_quad(Maths::FVector3(0.0f, 0.0f, -0.1f),
-                                  Maths::FVector2(10.0f, 10.0f),
-                                  m_check_board_texture_);
+    Renderer::Renderer2D::draw_quad(Maths::FVector2(0.5f, -0.5f),
+                                    Maths::FVector2(0.5f, 0.75f),
+                                    Maths::FVector4(0.2f, 0.3f, 0.8f, 1.0f));
 
-  Renderer::Renderer2D::end_scene();
+    Renderer::Renderer2D::draw_quad(Maths::FVector3(0.0f, 0.0f, -0.1f),
+                                    Maths::FVector2(10.0f, 10.0f),
+                                    m_check_board_texture_);
+
+    Renderer::Renderer2D::end_scene();
+  }
 }
 
 void Sandbox2D::on_event(Ref<Events::Event> event, bool& handled) {
+  XUZY_PROFILE_FUNCTION();
+
   m_camera_controller_.on_event(event, handled);
 }
 

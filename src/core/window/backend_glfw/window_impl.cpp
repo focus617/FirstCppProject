@@ -1,5 +1,3 @@
-#include "pch.h"
-
 #include "window_impl.hpp"
 
 #include <stb_image.h>
@@ -21,6 +19,8 @@ Ref<AWindow> AWindow::Create(const WindowProps& p_props) {
 static uint8_t s_glfw_window_count = 0;
 
 WindowImpl::WindowImpl(const WindowProps& props) : m_monitor(props) {
+  XUZY_PROFILE_FUNCTION();
+
   m_data_.m_title = props.title;
   m_data_.m_size =
       std::pair<unsigned int, unsigned int>(props.width, props.height);
@@ -43,11 +43,15 @@ WindowImpl::WindowImpl(const WindowProps& props) : m_monitor(props) {
 }
 
 WindowImpl::~WindowImpl() {
+  XUZY_PROFILE_FUNCTION();
+
   glfw_cursors_destroy();
   glfw_window_shutdown();
 }
 
 void WindowImpl::on_update() {
+  XUZY_PROFILE_FUNCTION();
+  
   // Swap the back buffer with the front buffer
   glfwSwapBuffers(m_glfw_window_);
 
@@ -243,6 +247,8 @@ bool WindowImpl::is_decorated() const {
 }
 
 void WindowImpl::glfw_window_init(const WindowProps& props) {
+  XUZY_PROFILE_FUNCTION();
+  
   GLFWmonitor* selected_monitor = nullptr;
   // 如果要创造全屏窗口，就需要一个控制器
   if (m_data_.m_fullscreen) selected_monitor = m_monitor.get_primariy_monitor();
@@ -270,17 +276,23 @@ void WindowImpl::glfw_window_init(const WindowProps& props) {
 }
 
 void WindowImpl::glfw_window_shutdown() {
+  XUZY_PROFILE_FUNCTION();
+  
   glfwDestroyWindow(m_glfw_window_);
   --s_glfw_window_count;
 }
 
 void WindowImpl::glfw_cursors_init() {
+  XUZY_PROFILE_FUNCTION();
+  
   glfw_cursors_create();
   set_cursor_mode(m_data_.m_cursor_mode);
   set_cursor_shape(m_data_.m_cursor_shape);
 }
 
 void WindowImpl::glfw_setup_callback() {
+  XUZY_PROFILE_FUNCTION();
+  
   // Set GLFW callbacks
   glfwSetWindowPosCallback(
       m_glfw_window_, [](GLFWwindow* window, int xpos, int ypos) {
@@ -438,6 +450,8 @@ void WindowImpl::glfw_setup_callback() {
 }
 
 void WindowImpl::glfw_update_size_limit() const {
+  XUZY_PROFILE_FUNCTION();
+  
   glfwSetWindowSizeLimits(m_glfw_window_,
                           static_cast<int>(m_data_.m_minimum_size.first),
                           static_cast<int>(m_data_.m_minimum_size.second),

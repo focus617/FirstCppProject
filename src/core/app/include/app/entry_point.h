@@ -13,17 +13,23 @@ int main(int argc, char* argv[]) {
   // Initialize Google’s logging library.
   init_logger(argv[0]);
 
+  XUZY_PROFILE_BEGIN_SESSION("Startup", "Profile-Startup.json");
   // defined in specific application, e.g. restful_server.cpp
   xuzy::App* app = xuzy::CreateApplication();
+  XUZY_PROFILE_END_SESSION();
 
   app->set_cli_parser(new CLI_Parser());
 
+  XUZY_PROFILE_BEGIN_SESSION("Runtime", "Profile-Runtime.json");
   app->main(argc, argv);
+  XUZY_PROFILE_END_SESSION();
 
+  XUZY_PROFILE_BEGIN_SESSION("Shutdown", "Profile-Shutdown.json");
   // Cleanup
   delete app;
   close_logger();
-
+  XUZY_PROFILE_END_SESSION();
+  
   return EXIT_SUCCESS;
 }
 

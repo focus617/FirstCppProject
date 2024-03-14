@@ -47,10 +47,14 @@ void UIManager::on_detach() {
 void UIManager::on_update(Renderer::Times::Timestep p_ts) {}
 
 void UIManager::on_draw() {
+  XUZY_PROFILE_FUNCTION();
+
   if (nullptr != m_canvas_) m_canvas_->on_draw();
 }
 
 void UIManager::begin_render() {
+  XUZY_PROFILE_FUNCTION();
+
   // Start a new frame
   ImGui_ImplOpenGL3_NewFrame();
   ImGui_ImplGlfw_NewFrame();
@@ -71,6 +75,8 @@ void UIManager::begin_render() {
 }
 
 void UIManager::end_render() {
+  XUZY_PROFILE_FUNCTION();
+
   ImGui::PopStyleVar(1);
 
   // Setup display size
@@ -122,6 +128,8 @@ void UIManager::imgui_toolbar() {
 }
 
 void UIManager::imgui_init() {
+  XUZY_PROFILE_FUNCTION();
+
   // Setup Dear ImGui context
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();

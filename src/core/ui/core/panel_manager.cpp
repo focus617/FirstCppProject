@@ -44,6 +44,8 @@ void PanelManager::on_event(Ref<Events::Event> event, bool& handled) {
 }
 
 void PanelManager::on_draw() {
+  XUZY_PROFILE_FUNCTION();
+
   for (auto& panel : m_panels_) panel->on_draw();
 
   // Tempoaray add here

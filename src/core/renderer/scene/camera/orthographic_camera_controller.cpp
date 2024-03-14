@@ -14,6 +14,8 @@ OrthographicCameraController::OrthographicCameraController(
       m_enable_rotation_(p_enable_rotation) {}
 
 void OrthographicCameraController::on_update(Times::Timestep p_ts) {
+  XUZY_PROFILE_FUNCTION();
+
   if (Window::Inputs::InputManager::is_key_pressed(Window::Inputs::Key::A)) {
     m_camera_position_.x += m_camera_translation_speed_ * p_ts;
   } else if (Window::Inputs::InputManager::is_key_pressed(
@@ -40,11 +42,13 @@ void OrthographicCameraController::on_update(Times::Timestep p_ts) {
     m_camera_.set_rotation(m_camera_rotation_);
   }
 
-    m_camera_translation_speed_ = m_zoom_level_;
+  m_camera_translation_speed_ = m_zoom_level_;
 }
 
 void OrthographicCameraController::on_event(Ref<Events::Event> event,
                                             bool& handled) {
+  XUZY_PROFILE_FUNCTION();
+
   handled = false;
 
   switch (event->get_event_id()) {

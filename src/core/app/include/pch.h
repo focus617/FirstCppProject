@@ -37,6 +37,8 @@
 #include "core/platform.hpp"
 #include "core/visibility_control.hpp"
 
+#include "tools/benchmark/instrumentor.hpp"
+
 #ifdef XUZY_OS_WINDOWS
 #  include <Windows.h>
 #endif
