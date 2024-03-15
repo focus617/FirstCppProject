@@ -14,6 +14,8 @@ struct Renderer2D_Storage {
 static Renderer2D_Storage* s_data;
 
 void Renderer2D::init() {
+  XUZY_PROFILE_FUNCTION();
+
   s_data = new Renderer2D_Storage();
   s_data->quad_vertex_array = Buffer::AVertexArray::Create();
 
@@ -47,35 +49,48 @@ void Renderer2D::init() {
   s_data->texture_shader->set_int("u_Texture", 0);
 }
 
-void Renderer2D::shutdown() { delete s_data; }
+void Renderer2D::shutdown() {
+  XUZY_PROFILE_FUNCTION();
+
+  delete s_data;
+}
 
 void Renderer2D::on_window_resize(uint32_t p_width, uint32_t p_height) {
+  XUZY_PROFILE_FUNCTION();
+
   RenderCommand::set_viewport(0, 0, p_width, p_height);
 }
 
 void Renderer2D::begin_scene(Camera::OrthographicCamera& p_camera) {
+  XUZY_PROFILE_FUNCTION();
+
   s_data->texture_shader->bind();
   s_data->texture_shader->set_mat4("u_ViewProjection",
                                    p_camera.get_view_projection_matrix());
 }
 
-void Renderer2D::end_scene() {}
+void Renderer2D::end_scene() { XUZY_PROFILE_FUNCTION(); }
 
 void Renderer2D::draw_quad(const Maths::FVector2& p_position,
                            const Maths::FVector2& p_size,
                            const Maths::FVector4& p_color) {
+  XUZY_PROFILE_FUNCTION();
+
   draw_quad(Maths::FVector3(p_position.x, p_position.y, 0.0f), p_size, p_color);
 }
 
 void Renderer2D::draw_quad(const Maths::FVector3& p_position,
                            const Maths::FVector2& p_size,
                            const Maths::FVector4& p_color) {
+  XUZY_PROFILE_FUNCTION();
+
   glm::mat4 transform =
       glm::translate(glm::mat4(1.0f),
                      {p_position.x, p_position.y, p_position.z}) *
       glm::scale(glm::mat4(1.0f), {p_size.x, p_size.y, 1.0f});
 
   s_data->texture_shader->set_fvec4("u_Color", p_color);
+  s_data->texture_shader->set_float("u_TilingFactor", 1.0f);
   s_data->texture_shader->set_mat4("u_Transform", transform);
 
   s_data->white_texture->bind();
@@ -85,20 +100,97 @@ void Renderer2D::draw_quad(const Maths::FVector3& p_position,
 
 void Renderer2D::draw_quad(const Maths::FVector2& p_position,
                            const Maths::FVector2& p_size,
-                           const Ref<ATexture2D>& p_texture) {
+                           const Ref<ATexture2D>& p_texture,
+                           float p_tiling_factor,
+                           const Maths::FVector4& p_tint_color) {
+  XUZY_PROFILE_FUNCTION();
+
   draw_quad(Maths::FVector3(p_position.x, p_position.y, 0.0f), p_size,
-            p_texture);
+            p_texture, p_tiling_factor, p_tint_color);
 }
 
 void Renderer2D::draw_quad(const Maths::FVector3& p_position,
                            const Maths::FVector2& p_size,
-                           const Ref<ATexture2D>& p_texture) {
+                           const Ref<ATexture2D>& p_texture,
+                           float p_tiling_factor,
+                           const Maths::FVector4& p_tint_color) {
+  XUZY_PROFILE_FUNCTION();
+
   glm::mat4 transform =
       glm::translate(glm::mat4(1.0f),
                      {p_position.x, p_position.y, p_position.z}) *
       glm::scale(glm::mat4(1.0f), {p_size.x, p_size.y, 1.0f});
 
-  s_data->texture_shader->set_fvec4("u_Color", Maths::FVector4::One);
+  s_data->texture_shader->set_fvec4("u_Color", p_tint_color);
+  s_data->texture_shader->set_float("u_TilingFactor", p_tiling_factor);
+  s_data->texture_shader->set_mat4("u_Transform", transform);
+
+  p_texture->bind();
+  s_data->quad_vertex_array->bind();
+  RenderCommand::draw_indexed(s_data->quad_vertex_array);
+}
+
+void Renderer2D::draw_rotated_quad(const Maths::FVector2& p_position,
+                                   const Maths::FVector2& p_size,
+                                   float p_rotation,
+                                   const Maths::FVector4& p_color) {
+  XUZY_PROFILE_FUNCTION();
+
+  draw_rotated_quad(Maths::FVector3(p_position.x, p_position.y, 0.0f), p_size,
+                    p_rotation, p_color);
+}
+
+void Renderer2D::draw_rotated_quad(const Maths::FVector3& p_position,
+                                   const Maths::FVector2& p_size,
+                                   float p_rotation,
+                                   const Maths::FVector4& p_color) {
+  XUZY_PROFILE_FUNCTION();
+
+  glm::mat4 transform =
+      glm::translate(glm::mat4(1.0f),
+                     {p_position.x, p_position.y, p_position.z}) *
+      glm::rotate(glm::mat4(1.0f), glm::radians(p_rotation),
+                  {0.0f, 0.0f, 1.0f}) *
+      glm::scale(glm::mat4(1.0f), {p_size.x, p_size.y, 1.0f});
+
+  s_data->texture_shader->set_fvec4("u_Color", p_color);
+  s_data->texture_shader->set_float("u_TilingFactor", 1.0f);
+  s_data->texture_shader->set_mat4("u_Transform", transform);
+
+  s_data->white_texture->bind();
+  s_data->quad_vertex_array->bind();
+  RenderCommand::draw_indexed(s_data->quad_vertex_array);
+}
+
+void Renderer2D::draw_rotated_quad(const Maths::FVector2& p_position,
+                                   const Maths::FVector2& p_size,
+                                   float p_rotation,
+                                   const Ref<ATexture2D>& p_texture,
+                                   float p_tiling_factor,
+                                   const Maths::FVector4& p_tint_color) {
+  XUZY_PROFILE_FUNCTION();
+
+  draw_rotated_quad(Maths::FVector3(p_position.x, p_position.y, 0.0f), p_size,
+                    p_rotation, p_texture, p_tiling_factor, p_tint_color);
+}
+
+void Renderer2D::draw_rotated_quad(const Maths::FVector3& p_position,
+                                   const Maths::FVector2& p_size,
+                                   float p_rotation,
+                                   const Ref<ATexture2D>& p_texture,
+                                   float p_tiling_factor,
+                                   const Maths::FVector4& p_tint_color) {
+  XUZY_PROFILE_FUNCTION();
+
+  glm::mat4 transform =
+      glm::translate(glm::mat4(1.0f),
+                     {p_position.x, p_position.y, p_position.z}) *
+      glm::rotate(glm::mat4(1.0f), glm::radians(p_rotation),
+                  {0.0f, 0.0f, 1.0f}) *
+      glm::scale(glm::mat4(1.0f), {p_size.x, p_size.y, 1.0f});
+
+  s_data->texture_shader->set_fvec4("u_Color", p_tint_color);
+  s_data->texture_shader->set_float("u_TilingFactor", p_tiling_factor);
   s_data->texture_shader->set_mat4("u_Transform", transform);
 
   p_texture->bind();
