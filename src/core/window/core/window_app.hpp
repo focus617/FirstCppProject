@@ -19,10 +19,10 @@ class XUZY_API WindowApp : public App {
                               const std::string& p_version);
   XUZY_API ~WindowApp();
 
-  inline XUZY_API Window::AWindow& get_window() {
+  XUZY_API Window::AWindow& get_window() {
     return *(m_context_.m_window_);
   }
-  // inline XUZY_API Ref<UIManager> get_imgui() { return m_ui_manager_; }
+  // XUZY_API Ref<UIManager> get_imgui() { return m_ui_manager_; }
 
   template <typename T, typename... Args>
   void push_layer(Args&&... args) {

@@ -60,7 +60,7 @@ class XUZY_API AShader {
    * @param p_name
    * @param p_value
    */
-  virtual void set_int_arry(const std::string& p_name, int* p_values,
+  virtual void set_int_array(const std::string& p_name, int* p_values,
                             uint32_t count) = 0;
 
   /**

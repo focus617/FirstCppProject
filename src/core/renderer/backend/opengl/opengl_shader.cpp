@@ -251,7 +251,7 @@ void OpenGLShader::set_int(const std::string& p_name, int p_value) {
   set_uniform_int(p_name, p_value);
 }
 
-void OpenGLShader::set_int_arry(const std::string& p_name, int* p_values,
+void OpenGLShader::set_int_array(const std::string& p_name, int* p_values,
                                 uint32_t count) {
   set_uniform_int_array(p_name, p_values, count);
 }

@@ -16,6 +16,7 @@ class XUZY_API Renderer2D {
 
   static void begin_scene(Camera::OrthographicCamera& p_camera);
   static void end_scene();
+  static void flush();
 
   // Primitives
 

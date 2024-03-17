@@ -11,7 +11,7 @@ Monitor::Monitor(const WindowProps& p_props)
 
     int initialization_code = glfwInit();
     XUZY_CHECK_(GLFW_TRUE == initialization_code)
-        << "Could not intialize GLFW!";
+        << "Could not initialize GLFW!";
 
     // Error Callback needed by GLFW
     auto glfw_error_callback = [](int p_error, const char* p_description) {
