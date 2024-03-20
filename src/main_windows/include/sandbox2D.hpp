@@ -32,12 +32,6 @@ class XUZY_API Sandbox2D : public xuzy::Window::ALayer {
 
  private:
   Renderer::Camera::OrthographicCameraController m_camera_controller_;
-
-  // Temp
-  Ref<Renderer::AShader> m_flat_square_shader_;
-  Ref<Renderer::Buffer::AVertexArray> m_square_vertex_array_;
-  Maths::FVector4 m_square_color_ = Maths::FVector4(0.2f, 0.3f, 0.8f, 1.0f);
-
   Ref<Renderer::ATexture2D> m_check_board_texture_;
 };
 

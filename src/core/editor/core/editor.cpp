@@ -1,12 +1,14 @@
 #include "editor/core/editor.hpp"
 
 #include "editor/panels/editor_main_menubar.hpp"
+#include "renderer/renderer.h"
 #include "ui/core/panel_manager.hpp"
 #include "ui/panels/panel_menubar.hpp"
 #include "ui/panels/panel_window.hpp"
 #include "ui/widgets/plot/plot.hpp"
 #include "ui/widgets/plot/plot_line.hpp"
 #include "ui/widgets/text/text_selectable.hpp"
+#include "ui/widgets/text/text_labelled.hpp"
 
 namespace xuzy::Editor {
 
@@ -35,6 +37,13 @@ Editor::Editor(const std::string& t_app_name, const std::string& t_version)
     sprintf(label, "MyObject %d", i);
     child_panel->CreateWidget<UI::Widgets::Text::TextSelectable>(label);
   }
+
+  auto stat_panel =
+      panel_manager->CreatePanel<UI::Panels::PanelWindow>("Statistics", true);
+  auto stats = Renderer::Renderer2D::get_stats();
+  stat_panel->CreateWidget<UI::Widgets::Text::Text>("Renderer2D Stats:");
+  stat_panel->CreateWidget<UI::Widgets::Text::TextLabelled>(
+      std::to_string(stats.draw_calls), "Draw Calls");
 }
 
 }  // namespace xuzy::Editor

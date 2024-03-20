@@ -19,9 +19,11 @@ class XUZY_API OrthographicCameraController {
   const OrthographicCamera& get_camera() const { return m_camera_; }
 
   float get_zoom_level() const { return m_zoom_level_; }
-  void set_zoom_level(float p_level) { m_zoom_level_ = p_level; }
+  void set_zoom_level(float p_level);
 
  private:
+  void calculate_view(); 
+
   bool on_mouse_scrolled(Ref<Events::MouseScrolledEvent> e);
   bool on_window_resized(Ref<Events::WindowResizeEvent> e);
 

@@ -39,7 +39,7 @@ class XUZY_API Renderer2D {
    * @param p_position translate
    * @param p_size     scale
    * @param p_texture  texture
-   * @param p_tiling_factor 
+   * @param p_tiling_factor
    * @param p_tint_color color
    */
   static void draw_quad(
@@ -73,7 +73,7 @@ class XUZY_API Renderer2D {
    * @param p_size     scale
    * @param p_rotation in degree
    * @param p_texture  texture
-   * @param p_tiling_factor 
+   * @param p_tiling_factor
    * @param p_tint_color color
    */
   static void draw_rotated_quad(
@@ -87,6 +87,20 @@ class XUZY_API Renderer2D {
       float p_rotation, const Ref<ATexture2D>& p_texture,
       float p_tiling_factor = 1.0f,
       const Maths::FVector4& p_tint_color = Maths::FVector4::One);
+
+  // Stats
+  struct Statistics {
+    uint32_t draw_calls = 0;
+    uint32_t quad_count = 0;
+
+    uint32_t get_total_vertex_count() { return quad_count * 4; }
+    uint32_t get_total_index_count() { return quad_count * 6; }
+  };
+  static void reset_stats();
+  static Statistics get_stats();
+
+ private:
+  static void flush_and_reset();
 };
 
 }  // namespace xuzy::Renderer

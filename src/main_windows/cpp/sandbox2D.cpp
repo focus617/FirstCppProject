@@ -30,35 +30,55 @@ void Sandbox2D::on_update(Renderer::Times::Timestep p_ts) {
   }
 
   // Render
+  Renderer::Renderer2D::reset_stats();
   {
     XUZY_PROFILE_SCOPE("Renderer Prep");
     Renderer::RenderCommand::set_clear_color(0.1f, 0.1f, 0.1f, 1.0f);
     Renderer::RenderCommand::clear();
   }
 
+  static float rotation = 0.0f;
+  rotation += p_ts * 50.0f;
+
   {
     XUZY_PROFILE_SCOPE("Renderer Draw");
     Renderer::Renderer2D::begin_scene(m_camera_controller_.get_camera());
+    // Background
+    Renderer::Renderer2D::draw_quad(Maths::FVector3(0.0f, 0.0f, -0.1f),
+                                    Maths::FVector2(20.0f, 20.0f),
+                                    m_check_board_texture_, 10.0f);
 
-    // Renderer::Renderer2D::draw_rotated_quad(Maths::FVector2(-1.0f, 0.0f),
-    //                                 Maths::FVector2(0.8f, 0.8f), -45.0f,
-    //                                 Maths::FVector4(0.8f, 0.2f, 0.3f, 1.0f));
+    // Red Square 1
+    Renderer::Renderer2D::draw_rotated_quad(
+        Maths::FVector2(1.0f, 0.0f), Maths::FVector2(0.8f, 0.8f), rotation,
+        Maths::FVector4(0.8f, 0.2f, 0.3f, 1.0f));
+
+    // Red Square 2
     Renderer::Renderer2D::draw_quad(Maths::FVector2(-1.0f, 0.0f),
                                     Maths::FVector2(0.8f, 0.8f),
                                     Maths::FVector4(0.8f, 0.2f, 0.3f, 1.0f));
 
+    // Blue Square
     Renderer::Renderer2D::draw_quad(Maths::FVector2(0.5f, -0.5f),
                                     Maths::FVector2(0.5f, 0.75f),
                                     Maths::FVector4(0.2f, 0.3f, 0.8f, 1.0f));
 
-    Renderer::Renderer2D::draw_quad(Maths::FVector3(-1.0f, -1.0f, -0.1f),
-                                    Maths::FVector2(10.0f, 10.0f),
-                                    m_check_board_texture_, 10.0f);
-
+    // CheckBoard Square
     Renderer::Renderer2D::draw_rotated_quad(Maths::FVector3(0.0f, 0.0f, 0.0f),
-                                    Maths::FVector2(1.0f, 1.0f), 45.0f,
-                                    m_check_board_texture_, 20.0f);
+                                            Maths::FVector2(1.0f, 1.0f), 45.0f,
+                                            m_check_board_texture_, 20.0f);
 
+    Renderer::Renderer2D::end_scene();
+
+    Renderer::Renderer2D::begin_scene(m_camera_controller_.get_camera());
+    for (float y = -5.0f; y < 5.0f; y += 0.5f) {
+      for (float x = -5.0f; x < 5.0f; x += 0.5f) {
+        Maths::FVector4 color = {(x + 5.0f) / 10.0f, 0.4f, (y + 5.0f) / 10.0f,
+                                 0.7f};
+        Renderer::Renderer2D::draw_quad(Maths::FVector2(x, y),
+                                        Maths::FVector2(0.45f, 0.45f), color);
+      }
+    }
     Renderer::Renderer2D::end_scene();
   }
 }

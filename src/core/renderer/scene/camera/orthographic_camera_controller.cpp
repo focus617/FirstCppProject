@@ -45,6 +45,17 @@ void OrthographicCameraController::on_update(Times::Timestep p_ts) {
   m_camera_translation_speed_ = m_zoom_level_;
 }
 
+void OrthographicCameraController::set_zoom_level(float p_level) {
+  m_zoom_level_ = std::max(p_level, 0.25f);
+  calculate_view();
+}
+
+void OrthographicCameraController::calculate_view() {
+  m_camera_.set_projection_matrix(-m_aspect_ratio_ * m_zoom_level_,
+                                  m_aspect_ratio_ * m_zoom_level_,
+                                  -m_zoom_level_, m_zoom_level_);
+}
+
 void OrthographicCameraController::on_event(Ref<Events::Event> event,
                                             bool& handled) {
   XUZY_PROFILE_FUNCTION();
@@ -73,9 +84,7 @@ bool OrthographicCameraController::on_mouse_scrolled(
 
   m_zoom_level_ -= e->get_y_offset() * 0.25f;
   m_zoom_level_ = std::max(m_zoom_level_, 0.25f);
-  m_camera_.set_projection_matrix(-m_aspect_ratio_ * m_zoom_level_,
-                                  m_aspect_ratio_ * m_zoom_level_,
-                                  -m_zoom_level_, m_zoom_level_);
+  calculate_view();
   return true;
 }
 
@@ -88,9 +97,7 @@ bool OrthographicCameraController::on_window_resized(
   }
 
   m_aspect_ratio_ = (float)e->get_width() / (float)e->get_height();
-  m_camera_.set_projection_matrix(-m_aspect_ratio_ * m_zoom_level_,
-                                  m_aspect_ratio_ * m_zoom_level_,
-                                  -m_zoom_level_, m_zoom_level_);
+  calculate_view();
   return false;
 }
 
