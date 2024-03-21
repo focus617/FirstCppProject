@@ -52,6 +52,16 @@ class XUZY_API Renderer2D {
       const Ref<ATexture2D>& p_texture, float p_tiling_factor = 1.0f,
       const Maths::FVector4& p_tint_color = Maths::FVector4::One);
 
+  static void draw_quad(
+      const Maths::FVector2& p_position, const Maths::FVector2& p_size,
+      const Ref<SubTexture2D>& p_subtexture, float p_tiling_factor = 1.0f,
+      const Maths::FVector4& p_tint_color = Maths::FVector4::One);
+
+  static void draw_quad(
+      const Maths::FVector3& p_position, const Maths::FVector2& p_size,
+      const Ref<SubTexture2D>& p_subtexture, float p_tiling_factor = 1.0f,
+      const Maths::FVector4& p_tint_color = Maths::FVector4::One);
+
   /**
    * @brief Draw quad with rotation and color
    * @param p_position translate
@@ -88,6 +98,17 @@ class XUZY_API Renderer2D {
       float p_tiling_factor = 1.0f,
       const Maths::FVector4& p_tint_color = Maths::FVector4::One);
 
+  static void draw_rotated_quad(
+      const Maths::FVector2& p_position, const Maths::FVector2& p_size,
+      float p_rotation, const Ref<SubTexture2D>& p_subtexture,
+      float p_tiling_factor = 1.0f,
+      const Maths::FVector4& p_tint_color = Maths::FVector4::One);
+
+  static void draw_rotated_quad(
+      const Maths::FVector3& p_position, const Maths::FVector2& p_size,
+      float p_rotation, const Ref<SubTexture2D>& p_subtexture,
+      float p_tiling_factor = 1.0f,
+      const Maths::FVector4& p_tint_color = Maths::FVector4::One);
   // Stats
   struct Statistics {
     uint32_t draw_calls = 0;

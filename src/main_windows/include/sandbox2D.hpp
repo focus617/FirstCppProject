@@ -32,7 +32,14 @@ class XUZY_API Sandbox2D : public xuzy::Window::ALayer {
 
  private:
   Renderer::Camera::OrthographicCameraController m_camera_controller_;
+
   Ref<Renderer::ATexture2D> m_check_board_texture_;
+  Ref<Renderer::ATexture2D> m_sprite_texture_;
+
+  Ref<Renderer::SubTexture2D> m_default_subtexture_;
+  
+  uint32_t m_map_width_, m_map_height;
+  std::unordered_map<char, Ref<Renderer::SubTexture2D>> s_texture_map_;
 };
 
 }  // namespace xuzy::UI

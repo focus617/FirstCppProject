@@ -10,6 +10,7 @@
 #include "renderer/resources/shader/AShader.hpp"
 #include "renderer/resources/material/ATexture.hpp"
 #include "renderer/resources/material/ATexture2D.hpp"
+#include "renderer/resources/material/subtexture2D.hpp"
 
 #include "renderer/renderer/renderer.hpp"
 #include "renderer/renderer/renderer2D.hpp"
