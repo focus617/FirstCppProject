@@ -10,7 +10,7 @@ namespace xuzy::UI::Widgets::Visual
 	/**
 	* @brief Simple widget that display an image
 	*/
-	class Image : public AWidget
+	class XUZY_API Image : public AWidget
 	{
 	public:
 		/**

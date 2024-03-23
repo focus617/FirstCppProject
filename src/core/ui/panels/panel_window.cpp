@@ -153,6 +153,9 @@ void PanelWindow::_on_draw_impl() {
 
     if (ImGui::Begin((name + m_panel_id).c_str(),
                      closable ? &m_opened : nullptr, windowFlags)) {
+      content_region_size = 
+        Internal::Converter::ToFVector2(ImGui::GetContentRegionAvail());
+
       m_hovered = ImGui::IsWindowHovered();
       m_focused = ImGui::IsWindowFocused();
 
@@ -163,7 +166,7 @@ void PanelWindow::_on_draw_impl() {
 
       if (!m_opened) invoke_close_event();
 
-      on_update();
+      APanelTransformable::_on_draw_impl();
 
       if (m_must_scroll_to_bottom) {
         ImGui::SetScrollY(ImGui::GetScrollMaxY());

@@ -7,6 +7,8 @@
 #include "renderer/buffers/AIndex_buffer.hpp"
 #include "renderer/buffers/AVertex_array.hpp"
 
+#include "renderer/buffers/AFrame_buffer.hpp"
+
 #include "renderer/resources/shader/AShader.hpp"
 #include "renderer/resources/material/ATexture.hpp"
 #include "renderer/resources/material/ATexture2D.hpp"

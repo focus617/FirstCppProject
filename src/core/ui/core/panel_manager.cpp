@@ -1,10 +1,9 @@
 #include "ui/core/panel_manager.hpp"
 
 #include "tools/event/key_event.hpp"
+#include "ui/implot/implot.h"
 #include "window/inputs/input_manager.hpp"
 #include "window/inputs/key_state.h"
-
-#include "ui/implot/implot.h"
 
 namespace xuzy::UI {
 
@@ -20,6 +19,8 @@ void PanelManager::on_update(Renderer::Times::Timestep p_ts) {
   // data to your main application, or clear/overwrite your copy of the
   // keyboard data. Generally you may always pass all inputs to dear imgui,
   // and hide them from your application based on those two flags.
+  for (auto& panel : m_panels_) panel->on_update(p_ts);
+
   handle_shortcuts();
 }
 
@@ -32,15 +33,9 @@ void PanelManager::handle_shortcuts(float p_deltaTime) {
 }
 
 void PanelManager::on_event(Ref<Events::Event> event, bool& handled) {
-  if (event->get_event_id() == Events::EventId::KeyPressed) {
-    Ref<Events::KeyPressedEvent> e =
-        std::static_pointer_cast<Events::KeyPressedEvent>(event);
-    if (e->get_key_code() == Input::Key::Tab) {
-      LOG(INFO) << "Tab key is pressed (event)!";
-      handled = true;
-    }
-    LOG(INFO) << "KeyCode is " << (char)(e->get_key_code());
-  }
+  XUZY_PROFILE_FUNCTION();
+
+  for (auto& panel : m_panels_) panel->on_event(event, handled);
 }
 
 void PanelManager::on_draw() {

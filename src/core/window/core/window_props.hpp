@@ -160,8 +160,8 @@ struct WindowProps {
    */
   bool debug_profile = false;
 
-  WindowProps(const std::string& t = "Xuzy's App", uint16_t w = 1280,
-              uint16_t h = 720)
+  WindowProps(const std::string& t = "Xuzy's App", uint16_t w = 1920,
+              uint16_t h = 1080)
       : title(t), width(w), height(h) {}
 };
 

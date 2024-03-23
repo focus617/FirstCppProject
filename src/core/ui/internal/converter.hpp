@@ -11,7 +11,7 @@ namespace xuzy::UI::Internal
 	/**
 	* @brief Handles imgui conversion to/from overload types
 	*/
-	class Converter
+	class XUZY_API Converter
 	{
 	public:
 		/**

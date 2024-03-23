@@ -1,11 +1,14 @@
 #include "pch.h"
 
-#include "sandbox2D.hpp"
+#include "editor/panels/renderer2D_panel.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-namespace xuzy::UI {
+#include "ui/imgui/imgui.h"
+#include "ui/internal/converter.hpp"
+
+namespace xuzy::UI::Panels {
 
 static const uint32_t s_map_width = 24;
 static const char* s_map_tiles =
@@ -24,13 +27,12 @@ static const char* s_map_tiles =
     "WWWWWWWWWDDDWWWWWWWWWWWW"
     "WWWWWWWWWWWWWWWWWWWWWWWW";
 
-Sandbox2D::Sandbox2D()
-    : ALayer("Sandbox2DLayer"), m_camera_controller_(1280.0f / 720.0f, true) {}
-
-Sandbox2D::~Sandbox2D() {}
-
-void Sandbox2D::on_attach() {
-  LOG(INFO) << "Sandbox2D OnAttach";
+Renderer2DPanel::Renderer2DPanel(
+    const std::string& p_name, bool p_opened,
+    const Settings::PanelWindowSettings& p_panelSettings)
+    : PanelWindow(p_name, p_opened, p_panelSettings),
+      m_camera_controller_(1280.0f / 720.0f, true) {
+  LOG(INFO) << "Renderer2DPanel Created";
 
   Renderer::Buffer::FrameBufferSpecification fb_spec;
   fb_spec.width = 1280;
@@ -63,15 +65,15 @@ void Sandbox2D::on_attach() {
   m_camera_controller_.set_zoom_level(7.0f);
 }
 
-void Sandbox2D::on_detach() { LOG(INFO) << "Sandbox2D OnDetach"; }
+Renderer2DPanel::~Renderer2DPanel() { LOG(INFO) << "Renderer2DPanel Deleted."; }
 
-void Sandbox2D::on_update(Renderer::Times::Timestep p_ts) {
+void Renderer2DPanel::on_update(Renderer::Times::Timestep p_ts) {
   XUZY_PROFILE_FUNCTION();
 
   // Update
   {
     XUZY_PROFILE_SCOPE("CameraController::on_update");
-    m_camera_controller_.on_update(p_ts);
+    if (is_focused()) m_camera_controller_.on_update(p_ts);
   }
 
   // Render
@@ -79,44 +81,13 @@ void Sandbox2D::on_update(Renderer::Times::Timestep p_ts) {
   {
     XUZY_PROFILE_SCOPE("Renderer Prep");
 
-    // m_framebuffer_->bind();
+    m_framebuffer_->bind();
     Renderer::RenderCommand::set_clear_color(0.1f, 0.1f, 0.1f, 1.0f);
     Renderer::RenderCommand::clear();
   }
 
-  // static float rotation = 0.0f;
-  // rotation += p_ts * 50.0f;
-
   {
     XUZY_PROFILE_SCOPE("Renderer Draw");
-    // Renderer::Renderer2D::begin_scene(m_camera_controller_.get_camera());
-    // // Background
-    // Renderer::Renderer2D::draw_quad(Maths::FVector3(0.0f, 0.0f, -0.1f),
-    //                                 Maths::FVector2(20.0f, 20.0f),
-    //                                 m_check_board_texture_, 10.0f);
-
-    // // Red Square 1
-    // Renderer::Renderer2D::draw_rotated_quad(
-    //     Maths::FVector2(1.0f, 0.0f), Maths::FVector2(0.8f, 0.8f), rotation,
-    //     Maths::FVector4(0.8f, 0.2f, 0.3f, 1.0f));
-
-    // // Red Square 2
-    // Renderer::Renderer2D::draw_quad(Maths::FVector2(-1.0f, 0.0f),
-    //                                 Maths::FVector2(0.8f, 0.8f),
-    //                                 Maths::FVector4(0.8f, 0.2f, 0.3f, 1.0f));
-
-    // // Blue Square
-    // Renderer::Renderer2D::draw_quad(Maths::FVector2(0.5f, -0.5f),
-    //                                 Maths::FVector2(0.5f, 0.75f),
-    //                                 Maths::FVector4(0.2f, 0.3f, 0.8f, 1.0f));
-
-    // // CheckBoard Square
-    // Renderer::Renderer2D::draw_rotated_quad(Maths::FVector3(0.0f, 0.0f,
-    // 0.0f),
-    //                                         Maths::FVector2(1.0f, 1.0f), 45.0f,
-    //                                         m_check_board_texture_, 20.0f);
-
-    // Renderer::Renderer2D::end_scene();
 
     Renderer::Renderer2D::begin_scene(m_camera_controller_.get_camera());
 
@@ -139,16 +110,24 @@ void Sandbox2D::on_update(Renderer::Times::Timestep p_ts) {
     }
 
     Renderer::Renderer2D::end_scene();
-    // m_framebuffer_->unbind();
+    m_framebuffer_->unbind();
   }
 }
 
-void Sandbox2D::on_event(Ref<Events::Event> event, bool& handled) {
+void Renderer2DPanel::_on_draw_impl() { PanelWindow::_on_draw_impl(); }
+
+void Renderer2DPanel::on_event(Ref<Events::Event> event, bool& handled) {
   XUZY_PROFILE_FUNCTION();
+
+  // Handle global event, e.g. WindowResize
+  if (Events::EventId::WindowResize == event->get_event_id()) {
+    LOG(INFO) << "Event: " << *event << std::endl;
+
+    m_framebuffer_->resize((uint32_t)content_region_size.x,
+                           (uint32_t)content_region_size.y);
+  }
 
   m_camera_controller_.on_event(event, handled);
 }
 
-void Sandbox2D::on_draw() {}
-
-}  // namespace xuzy::UI
+}  // namespace xuzy::UI::Panels

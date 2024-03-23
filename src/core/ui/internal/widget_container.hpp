@@ -10,7 +10,7 @@ namespace xuzy::UI::Internal {
 /**
  * @brief The base class for any widget container
  */
-class WidgetContainer {
+class XUZY_API WidgetContainer {
  public:
   /**
    * @brief Constructor

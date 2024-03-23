@@ -11,9 +11,9 @@ namespace xuzy::UI::Panels
 {
 	/**
 	* @brief A PanelWindow is a panel that is localized and behave like
-	* a window (Movable, resizable...)
+	* a window (movable, resizable...)
 	*/
-	class PanelWindow : public APanelTransformable,
+	class XUZY_API PanelWindow : public APanelTransformable,
 						public std::enable_shared_from_this<PanelWindow>
 	{
 	public:
@@ -104,7 +104,7 @@ namespace xuzy::UI::Panels
 		void invoke_close_event();
 
 		/**
-        * @brief Event Handler for MenuItem ClickEvent
+        * @brief Event Handler (e.g. MenuItem ClickEvent)
         */
 		void event_handler(Ref<Events::Event> evt, bool& handled);		
 
@@ -114,6 +114,7 @@ namespace xuzy::UI::Panels
 	public:
 		std::string name;
 
+		Maths::FVector2 content_region_size = { 0.f, 0.f };
 		Maths::FVector2 min_size = { 0.f, 0.f };
 		Maths::FVector2 max_size = { 0.f, 0.f };
 

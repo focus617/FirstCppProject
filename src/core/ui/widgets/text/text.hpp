@@ -8,7 +8,7 @@ namespace xuzy::UI::Widgets::Text
 	/**
 	* @brief Simple widget to display text on a panel
 	*/
-	class Text : public DataWidget<std::string>
+	class XUZY_API Text : public DataWidget<std::string>
 	{
 	public:
 		/**

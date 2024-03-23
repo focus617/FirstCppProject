@@ -18,7 +18,7 @@ namespace xuzy::UI::Widgets {
  * It is basically a visual element that can be placed into a panel.
  * It is drawable and can receive plugins.
  */
-class AWidget
+class XUZY_API AWidget
     : public xuzy::Window::API::IDrawable, public Plugins::Pluginable
 {
  public:

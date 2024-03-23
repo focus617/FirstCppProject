@@ -12,7 +12,7 @@ namespace xuzy::UI::Panels {
 /**
  * APanelTransformable is a panel that is localized in the canvas
  */
-class APanelTransformable : public APanel {
+class XUZY_API APanelTransformable : public APanel {
  public:
   /**
    * Create a APanelTransformable
@@ -74,8 +74,7 @@ class APanelTransformable : public APanel {
   UI::Settings::VerticalAlignment get_vertical_alignment() const;
 
  protected:
-  void on_update();
-  virtual void _on_draw_impl() = 0;
+  virtual void _on_draw_impl() override;
 
  private:
   Maths::FVector2 calculate_position_alignment_offset(

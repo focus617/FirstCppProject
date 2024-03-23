@@ -94,7 +94,7 @@ void APanelTransformable::copy_imgui_size() {
   m_size = UI::Internal::Converter::ToFVector2(ImGui::GetWindowSize());
 }
 
-void APanelTransformable::on_update() {
+void APanelTransformable::_on_draw_impl() {
   if (!m_first_frame) {
     if (!auto_size) update_size();
     copy_imgui_size();
