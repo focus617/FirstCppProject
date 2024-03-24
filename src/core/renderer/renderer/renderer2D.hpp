@@ -12,8 +12,6 @@ class XUZY_API Renderer2D {
   static void init();
   static void shutdown();
 
-  static void on_window_resize(uint32_t p_width, uint32_t p_height);
-
   static void begin_scene(Camera::OrthographicCamera& p_camera);
   static void end_scene();
   static void flush();

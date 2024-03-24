@@ -1,4 +1,4 @@
-#include "window/backend_glfw/opengl_context.hpp"
+#include "window/backend/glfw/opengl_context.hpp"
 
 #include <glad/glad.h>  // Will drag system OpenGL headers
 #include <GLFW/glfw3.h>

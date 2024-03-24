@@ -114,10 +114,16 @@ void Renderer2DPanel::on_update(Renderer::Times::Timestep p_ts) {
   }
 }
 
-void Renderer2DPanel::_on_draw_impl() { PanelWindow::_on_draw_impl(); }
+void Renderer2DPanel::_on_draw_impl() {
+  ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{0, 0});
+  PanelWindow::_on_draw_impl();
+  ImGui::PopStyleVar();
+}
 
 void Renderer2DPanel::on_event(Ref<Events::Event> event, bool& handled) {
   XUZY_PROFILE_FUNCTION();
+
+  if (!is_hovered() || !is_focused()) return;
 
   // Handle global event, e.g. WindowResize
   if (Events::EventId::WindowResize == event->get_event_id()) {

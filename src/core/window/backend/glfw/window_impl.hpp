@@ -5,7 +5,7 @@
 #include "window/cursor/cursor_mode.h"
 #include "window/cursor/cursor_shape.h"
 #include "window/core/window.hpp"
-#include "window/backend_glfw/monitor.hpp"
+#include "window/backend/glfw/monitor.hpp"
 
 namespace xuzy::Window {
 

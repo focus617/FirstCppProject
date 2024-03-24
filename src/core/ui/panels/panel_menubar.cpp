@@ -19,7 +19,7 @@ void PanelMenuBar::register_panel(const std::string& p_name,
       p_name, "", true, true);
 
   menu_item->event_dispatcher +=
-      std::bind(&UI::Panels::PanelWindow::event_handler, &p_panel,
+      std::bind(&UI::Panels::PanelWindow::on_event, &p_panel,
                 std::placeholders::_1, std::placeholders::_2);
 
   m_panels_map_.emplace(p_name,

@@ -112,12 +112,6 @@ void Renderer2D::shutdown() {
   delete s_data;
 }
 
-void Renderer2D::on_window_resize(uint32_t p_width, uint32_t p_height) {
-  XUZY_PROFILE_FUNCTION();
-
-  RenderCommand::set_viewport(0, 0, p_width, p_height);
-}
-
 void Renderer2D::begin_scene(Camera::OrthographicCamera& p_camera) {
   XUZY_PROFILE_FUNCTION();
 
