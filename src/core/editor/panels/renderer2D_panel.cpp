@@ -76,6 +76,16 @@ void Renderer2DPanel::on_update(Renderer::Times::Timestep p_ts) {
     if (is_focused()) m_camera_controller_.on_update(p_ts);
   }
 
+  // Check if window resized
+  Renderer::Buffer::FrameBufferSpecification fb_spec =
+      m_framebuffer_->get_specification();
+  if (content_region_size.x > 0 && content_region_size.y > 0 &&
+      (fb_spec.width != content_region_size.x ||
+       fb_spec.height != content_region_size.y)) {
+    m_framebuffer_->resize((uint32_t)content_region_size.x,
+                           (uint32_t)content_region_size.y);
+  }
+
   // Render
   Renderer::Renderer2D::reset_stats();
   {
@@ -123,15 +133,7 @@ void Renderer2DPanel::_on_draw_impl() {
 void Renderer2DPanel::on_event(Ref<Events::Event> event, bool& handled) {
   XUZY_PROFILE_FUNCTION();
 
-  if (!is_hovered() || !is_focused()) return;
-
-  // Handle global event, e.g. WindowResize
-  if (Events::EventId::WindowResize == event->get_event_id()) {
-    LOG(INFO) << "Event: " << *event << std::endl;
-
-    m_framebuffer_->resize((uint32_t)content_region_size.x,
-                           (uint32_t)content_region_size.y);
-  }
+  if (!is_hovered() && !is_focused()) return;
 
   m_camera_controller_.on_event(event, handled);
 }

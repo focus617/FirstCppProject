@@ -99,7 +99,7 @@ void PanelWindow::invoke_close_event() {
 }
 
 void PanelWindow::on_event(Ref<Events::Event> evt, bool& handled) {
-  if(!is_hovered() || !is_focused()) return;
+  if(!is_hovered() && !is_focused()) return;
   
   LOG(INFO) << "Event: " << *evt << std::endl;
 
