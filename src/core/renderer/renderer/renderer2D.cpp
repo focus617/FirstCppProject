@@ -155,16 +155,7 @@ void Renderer2D::flush_and_reset() {
   s_data->texture_slot_index = 1;
 }
 
-void Renderer2D::draw_quad(const Maths::FVector2& p_position,
-                           const Maths::FVector2& p_size,
-                           const Maths::FVector4& p_color) {
-  XUZY_PROFILE_FUNCTION();
-
-  draw_quad(Maths::FVector3(p_position.x, p_position.y, 0.0f), p_size, p_color);
-}
-
-void Renderer2D::draw_quad(const Maths::FVector3& p_position,
-                           const Maths::FVector2& p_size,
+void Renderer2D::draw_quad(const glm::mat4& p_transform,
                            const Maths::FVector4& p_color) {
   XUZY_PROFILE_FUNCTION();
 
@@ -177,13 +168,8 @@ void Renderer2D::draw_quad(const Maths::FVector3& p_position,
       {0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f}};
   const float tiling_factor = 1.0f;
 
-  glm::mat4 transform =
-      glm::translate(glm::mat4(1.0f),
-                     {p_position.x, p_position.y, p_position.z}) *
-      glm::scale(glm::mat4(1.0f), {p_size.x, p_size.y, 1.0f});
-
   for (uint32_t i = 0; i < quad_vertex_count; i++) {
-    glm::vec4 vertex_position = transform * s_data->quad_vertex_positions[i];
+    glm::vec4 vertex_position = p_transform * s_data->quad_vertex_positions[i];
     s_data->quad_vertex_buffer_ptr->position = {
         vertex_position.x, vertex_position.y, vertex_position.z};
     s_data->quad_vertex_buffer_ptr->color = p_color;
@@ -197,19 +183,7 @@ void Renderer2D::draw_quad(const Maths::FVector3& p_position,
   s_data->stats.quad_count++;
 }
 
-void Renderer2D::draw_quad(const Maths::FVector2& p_position,
-                           const Maths::FVector2& p_size,
-                           const Ref<ATexture2D>& p_texture,
-                           float p_tiling_factor,
-                           const Maths::FVector4& p_tint_color) {
-  XUZY_PROFILE_FUNCTION();
-
-  draw_quad(Maths::FVector3(p_position.x, p_position.y, 0.0f), p_size,
-            p_texture, p_tiling_factor, p_tint_color);
-}
-
-void Renderer2D::draw_quad(const Maths::FVector3& p_position,
-                           const Maths::FVector2& p_size,
+void Renderer2D::draw_quad(const glm::mat4& p_transform,
                            const Ref<ATexture2D>& p_texture,
                            float p_tiling_factor,
                            const Maths::FVector4& p_tint_color) {
@@ -238,17 +212,12 @@ void Renderer2D::draw_quad(const Maths::FVector3& p_position,
     s_data->texture_slot_index++;
   }
 
-  glm::mat4 transform =
-      glm::translate(glm::mat4(1.0f),
-                     {p_position.x, p_position.y, p_position.z}) *
-      glm::scale(glm::mat4(1.0f), {p_size.x, p_size.y, 1.0f});
-
   constexpr size_t quad_vertex_count = 4;
   const Maths::FVector2 texture_coords[] = {
       {0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f}};
 
   for (uint32_t i = 0; i < quad_vertex_count; i++) {
-    glm::vec4 vertex_position = transform * s_data->quad_vertex_positions[i];
+    glm::vec4 vertex_position = p_transform * s_data->quad_vertex_positions[i];
     s_data->quad_vertex_buffer_ptr->position = {
         vertex_position.x, vertex_position.y, vertex_position.z};
     s_data->quad_vertex_buffer_ptr->color = p_tint_color;
@@ -262,19 +231,7 @@ void Renderer2D::draw_quad(const Maths::FVector3& p_position,
   s_data->stats.quad_count++;
 }
 
-void Renderer2D::draw_quad(const Maths::FVector2& p_position,
-                           const Maths::FVector2& p_size,
-                           const Ref<SubTexture2D>& p_subtexture,
-                           float p_tiling_factor,
-                           const Maths::FVector4& p_tint_color) {
-  XUZY_PROFILE_FUNCTION();
-
-  draw_quad(Maths::FVector3(p_position.x, p_position.y, 0.0f), p_size,
-            p_subtexture, p_tiling_factor, p_tint_color);
-}
-
-void Renderer2D::draw_quad(const Maths::FVector3& p_position,
-                           const Maths::FVector2& p_size,
+void Renderer2D::draw_quad(const glm::mat4& p_transform,
                            const Ref<SubTexture2D>& p_subtexture,
                            float p_tiling_factor,
                            const Maths::FVector4& p_tint_color) {
@@ -304,16 +261,11 @@ void Renderer2D::draw_quad(const Maths::FVector3& p_position,
     s_data->texture_slot_index++;
   }
 
-  glm::mat4 transform =
-      glm::translate(glm::mat4(1.0f),
-                     {p_position.x, p_position.y, p_position.z}) *
-      glm::scale(glm::mat4(1.0f), {p_size.x, p_size.y, 1.0f});
-
   constexpr size_t quad_vertex_count = 4;
   const Maths::FVector2* texture_coords = p_subtexture->get_tex_coords();
 
   for (uint32_t i = 0; i < quad_vertex_count; i++) {
-    glm::vec4 vertex_position = transform * s_data->quad_vertex_positions[i];
+    glm::vec4 vertex_position = p_transform * s_data->quad_vertex_positions[i];
     s_data->quad_vertex_buffer_ptr->position = {
         vertex_position.x, vertex_position.y, vertex_position.z};
     s_data->quad_vertex_buffer_ptr->color = p_tint_color;
@@ -325,6 +277,79 @@ void Renderer2D::draw_quad(const Maths::FVector3& p_position,
   s_data->quad_index_count += 6;
 
   s_data->stats.quad_count++;
+}
+
+void Renderer2D::draw_quad(const Maths::FVector2& p_position,
+                           const Maths::FVector2& p_size,
+                           const Maths::FVector4& p_color) {
+  XUZY_PROFILE_FUNCTION();
+
+  draw_quad(Maths::FVector3(p_position.x, p_position.y, 0.0f), p_size, p_color);
+}
+
+void Renderer2D::draw_quad(const Maths::FVector3& p_position,
+                           const Maths::FVector2& p_size,
+                           const Maths::FVector4& p_color) {
+  XUZY_PROFILE_FUNCTION();
+
+  glm::mat4 transform =
+      glm::translate(glm::mat4(1.0f),
+                     {p_position.x, p_position.y, p_position.z}) *
+      glm::scale(glm::mat4(1.0f), {p_size.x, p_size.y, 1.0f});
+
+  draw_quad(transform, p_color);
+}
+
+void Renderer2D::draw_quad(const Maths::FVector2& p_position,
+                           const Maths::FVector2& p_size,
+                           const Ref<ATexture2D>& p_texture,
+                           float p_tiling_factor,
+                           const Maths::FVector4& p_tint_color) {
+  XUZY_PROFILE_FUNCTION();
+
+  draw_quad(Maths::FVector3(p_position.x, p_position.y, 0.0f), p_size,
+            p_texture, p_tiling_factor, p_tint_color);
+}
+
+void Renderer2D::draw_quad(const Maths::FVector3& p_position,
+                           const Maths::FVector2& p_size,
+                           const Ref<ATexture2D>& p_texture,
+                           float p_tiling_factor,
+                           const Maths::FVector4& p_tint_color) {
+  XUZY_PROFILE_FUNCTION();
+
+  glm::mat4 transform =
+      glm::translate(glm::mat4(1.0f),
+                     {p_position.x, p_position.y, p_position.z}) *
+      glm::scale(glm::mat4(1.0f), {p_size.x, p_size.y, 1.0f});
+
+  draw_quad(transform, p_texture, p_tiling_factor, p_tint_color);
+}
+
+void Renderer2D::draw_quad(const Maths::FVector2& p_position,
+                           const Maths::FVector2& p_size,
+                           const Ref<SubTexture2D>& p_subtexture,
+                           float p_tiling_factor,
+                           const Maths::FVector4& p_tint_color) {
+  XUZY_PROFILE_FUNCTION();
+
+  draw_quad(Maths::FVector3(p_position.x, p_position.y, 0.0f), p_size,
+            p_subtexture, p_tiling_factor, p_tint_color);
+}
+
+void Renderer2D::draw_quad(const Maths::FVector3& p_position,
+                           const Maths::FVector2& p_size,
+                           const Ref<SubTexture2D>& p_subtexture,
+                           float p_tiling_factor,
+                           const Maths::FVector4& p_tint_color) {
+  XUZY_PROFILE_FUNCTION();
+
+  glm::mat4 transform =
+      glm::translate(glm::mat4(1.0f),
+                     {p_position.x, p_position.y, p_position.z}) *
+      glm::scale(glm::mat4(1.0f), {p_size.x, p_size.y, 1.0f});
+
+  draw_quad(transform, p_subtexture, p_tiling_factor, p_tint_color);
 }
 
 void Renderer2D::draw_rotated_quad(const Maths::FVector2& p_position,
@@ -343,9 +368,6 @@ void Renderer2D::draw_rotated_quad(const Maths::FVector3& p_position,
                                    const Maths::FVector4& p_color) {
   XUZY_PROFILE_FUNCTION();
 
-  if (s_data->quad_index_count >= Renderer2D_Data::MaxIndices)
-    flush_and_reset();
-
   glm::mat4 transform =
       glm::translate(glm::mat4(1.0f),
                      {p_position.x, p_position.y, p_position.z}) *
@@ -353,25 +375,7 @@ void Renderer2D::draw_rotated_quad(const Maths::FVector3& p_position,
                   {0.0f, 0.0f, 1.0f}) *
       glm::scale(glm::mat4(1.0f), {p_size.x, p_size.y, 1.0f});
 
-  constexpr size_t quad_vertex_count = 4;
-  const float texture_index = 0.0f;  // index of WhiteTexture
-  const Maths::FVector2 texture_coords[] = {
-      {0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f}};
-  const float tiling_factor = 1.0f;
-
-  for (uint32_t i = 0; i < quad_vertex_count; i++) {
-    glm::vec4 vertex_position = transform * s_data->quad_vertex_positions[i];
-    s_data->quad_vertex_buffer_ptr->position = {
-        vertex_position.x, vertex_position.y, vertex_position.z};
-    s_data->quad_vertex_buffer_ptr->color = p_color;
-    s_data->quad_vertex_buffer_ptr->tex_coord = texture_coords[i];
-    s_data->quad_vertex_buffer_ptr->tex_index = texture_index;
-    s_data->quad_vertex_buffer_ptr->tiling_factor = tiling_factor;
-    s_data->quad_vertex_buffer_ptr++;
-  }
-  s_data->quad_index_count += 6;
-
-  s_data->stats.quad_count++;
+  draw_quad(transform, p_color);
 }
 
 void Renderer2D::draw_rotated_quad(const Maths::FVector2& p_position,
@@ -394,29 +398,6 @@ void Renderer2D::draw_rotated_quad(const Maths::FVector3& p_position,
                                    const Maths::FVector4& p_tint_color) {
   XUZY_PROFILE_FUNCTION();
 
-  if (s_data->quad_index_count >= Renderer2D_Data::MaxIndices)
-    flush_and_reset();
-
-  // Seach texture index of Vertex attribute 'a_TexIndex'
-  float texture_index = 0.0f;
-
-  // First check if the texture has already occupied one of texture slot
-  for (uint32_t i = 1; i < s_data->texture_slot_index; i++) {
-    if (*s_data->texture_slots[i].get() == *p_texture.get()) {
-      texture_index = (float)i;
-      break;
-    }
-  }
-  // If the texture is a new one, assign next free texture slot to it.
-  if (texture_index == 0.0f) {
-    if (s_data->texture_slot_index >= Renderer2D_Data::MaxTextureSlots)
-      flush_and_reset();
-
-    texture_index = (float)s_data->texture_slot_index;
-    s_data->texture_slots[s_data->texture_slot_index] = p_texture;
-    s_data->texture_slot_index++;
-  }
-
   glm::mat4 transform =
       glm::translate(glm::mat4(1.0f),
                      {p_position.x, p_position.y, p_position.z}) *
@@ -424,23 +405,7 @@ void Renderer2D::draw_rotated_quad(const Maths::FVector3& p_position,
                   {0.0f, 0.0f, 1.0f}) *
       glm::scale(glm::mat4(1.0f), {p_size.x, p_size.y, 1.0f});
 
-  constexpr size_t quad_vertex_count = 4;
-  const Maths::FVector2 texture_coords[] = {
-      {0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f}};
-
-  for (uint32_t i = 0; i < quad_vertex_count; i++) {
-    glm::vec4 vertex_position = transform * s_data->quad_vertex_positions[i];
-    s_data->quad_vertex_buffer_ptr->position = {
-        vertex_position.x, vertex_position.y, vertex_position.z};
-    s_data->quad_vertex_buffer_ptr->color = p_tint_color;
-    s_data->quad_vertex_buffer_ptr->tex_coord = texture_coords[i];
-    s_data->quad_vertex_buffer_ptr->tex_index = texture_index;
-    s_data->quad_vertex_buffer_ptr->tiling_factor = p_tiling_factor;
-    s_data->quad_vertex_buffer_ptr++;
-  }
-  s_data->quad_index_count += 6;
-
-  s_data->stats.quad_count++;
+  draw_quad(transform, p_texture, p_tiling_factor, p_tint_color);
 
   // s_data->texture_shader->set_fvec4("u_Color", p_tint_color);
   // s_data->texture_shader->set_float("u_TilingFactor", p_tiling_factor);
@@ -471,53 +436,14 @@ void Renderer2D::draw_rotated_quad(const Maths::FVector3& p_position,
                                    const Maths::FVector4& p_tint_color) {
   XUZY_PROFILE_FUNCTION();
 
-  if (s_data->quad_index_count >= Renderer2D_Data::MaxIndices)
-    flush_and_reset();
-
-  // Seach texture index of Vertex attribute 'a_TexIndex'
-  float texture_index = 0.0f;
-  const Ref<ATexture2D> texture = p_subtexture->get_texture();
-
-  // First check if the texture has already occupied one of texture slot
-  for (uint32_t i = 1; i < s_data->texture_slot_index; i++) {
-    if (*s_data->texture_slots[i].get() == *texture.get()) {
-      texture_index = (float)i;
-      break;
-    }
-  }
-  // If the texture is a new one, assign next free texture slot to it.
-  if (texture_index == 0.0f) {
-    if (s_data->texture_slot_index >= Renderer2D_Data::MaxTextureSlots)
-      flush_and_reset();
-
-    texture_index = (float)s_data->texture_slot_index;
-    s_data->texture_slots[s_data->texture_slot_index] = texture;
-    s_data->texture_slot_index++;
-  }
-
   glm::mat4 transform =
       glm::translate(glm::mat4(1.0f),
                      {p_position.x, p_position.y, p_position.z}) *
       glm::rotate(glm::mat4(1.0f), glm::radians(p_rotation),
                   {0.0f, 0.0f, 1.0f}) *
       glm::scale(glm::mat4(1.0f), {p_size.x, p_size.y, 1.0f});
-
-  constexpr size_t quad_vertex_count = 4;
-  const Maths::FVector2* texture_coords = p_subtexture->get_tex_coords();
-
-  for (uint32_t i = 0; i < quad_vertex_count; i++) {
-    glm::vec4 vertex_position = transform * s_data->quad_vertex_positions[i];
-    s_data->quad_vertex_buffer_ptr->position = {
-        vertex_position.x, vertex_position.y, vertex_position.z};
-    s_data->quad_vertex_buffer_ptr->color = p_tint_color;
-    s_data->quad_vertex_buffer_ptr->tex_coord = texture_coords[i];
-    s_data->quad_vertex_buffer_ptr->tex_index = texture_index;
-    s_data->quad_vertex_buffer_ptr->tiling_factor = p_tiling_factor;
-    s_data->quad_vertex_buffer_ptr++;
-  }
-  s_data->quad_index_count += 6;
-
-  s_data->stats.quad_count++;
+  
+  draw_quad(transform, p_subtexture, p_tiling_factor, p_tint_color);
 }
 
 void Renderer2D::reset_stats() {

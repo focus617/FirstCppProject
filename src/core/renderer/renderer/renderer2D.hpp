@@ -17,6 +17,25 @@ class XUZY_API Renderer2D {
   static void flush();
 
   // Primitives
+  /**
+   * @brief Draw quad with transform and color
+   * @param p_transform transform
+   * @param p_color    color
+   */
+  static void draw_quad(const glm::mat4& p_transform,
+                        const Maths::FVector4& p_color);
+
+  static void draw_quad(
+      const glm::mat4& p_transform, 
+      const Ref<ATexture2D>& p_texture,
+      float p_tiling_factor = 1.0f,
+      const Maths::FVector4& p_tint_color = Maths::FVector4::One);
+
+  static void draw_quad(
+      const glm::mat4& p_transform, 
+      const Ref<SubTexture2D>& p_subtexture,
+      float p_tiling_factor = 1.0f,
+      const Maths::FVector4& p_tint_color = Maths::FVector4::One);
 
   /**
    * @brief Draw quad with transform and color
@@ -107,6 +126,7 @@ class XUZY_API Renderer2D {
       float p_rotation, const Ref<SubTexture2D>& p_subtexture,
       float p_tiling_factor = 1.0f,
       const Maths::FVector4& p_tint_color = Maths::FVector4::One);
+      
   // Stats
   struct Statistics {
     uint32_t draw_calls = 0;

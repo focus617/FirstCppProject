@@ -38,7 +38,7 @@ class XUZY_API AVertexArray {
   virtual void set_index_buffer(const Ref<AIndexBuffer>& p_index_buffer) = 0;
 
   /**
-   * @brief Returns VertexBuffer of this VertexArray
+   * @brief Returns VertexBuffers of this VertexArray
    */
   virtual const std::vector<Ref<AVertexBuffer>>& get_vertex_buffers() const = 0;
 

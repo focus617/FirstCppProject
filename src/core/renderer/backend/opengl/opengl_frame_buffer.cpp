@@ -9,6 +9,8 @@ OpenGLFrameBuffer::OpenGLFrameBuffer(const FrameBufferSpecification& p_spec)
   create_framebuffer();
 }
 
+static const uint32_t s_MaxFramebufferSize = 8192; // TODO: RenderCaps from GPU
+
 OpenGLFrameBuffer::~OpenGLFrameBuffer() { delete_framebuffer(); }
 
 void OpenGLFrameBuffer::create_framebuffer() {
@@ -54,6 +56,12 @@ void OpenGLFrameBuffer::unbind() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
 
 void OpenGLFrameBuffer::resize(uint32_t p_width, uint32_t p_height) {
   LOG(INFO) << "New Size: " << p_width << ", " << p_height;
+
+  if (p_width == 0 || p_height == 0 || p_width > s_MaxFramebufferSize ||
+      p_height > s_MaxFramebufferSize) {
+    LOG(WARNING) << "Attempted to resize to wrong value.";
+    return;
+  }
 
   m_specification_.width = p_width;
   m_specification_.height = p_height;
