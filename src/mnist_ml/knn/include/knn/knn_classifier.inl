@@ -25,38 +25,23 @@ KnnClassifier<T, L>::~KnnClassifier() {
 }
 
 template <typename T, typename L>
-void KnnClassifier<T, L>::set_training_data(
-    std::vector<Data::Data<T, L>*>* p_vector) {
-  training_data_ = p_vector;
+void KnnClassifier<T, L>::set_k(int p_value) {
+  k_ = p_value;
 }
-
-template <typename T, typename L>
-void KnnClassifier<T, L>::set_test_data(std::vector<Data::Data<T, L>*>* p_vector) {
-  test_data_ = p_vector;
-}
-
-template <typename T, typename L>
-void KnnClassifier<T, L>::set_validation_data(
-    std::vector<Data::Data<T, L>*>* p_vector) {
-  validation_data_ = p_vector;
-}
-
-template <typename T, typename L>
-void KnnClassifier<T, L>::set_k(int p_value) { k_ = p_value; }
 
 template <typename T, typename L>
 double KnnClassifier<T, L>::validate_performance() {
-  return performance(validation_data_, true);
+  return performance(this->validation_data_, true);
 }
 
 template <typename T, typename L>
 double KnnClassifier<T, L>::test_performance() {
-  return performance(test_data_, false);
+  return performance(this->test_data_, false);
 }
 
 template <typename T, typename L>
-double KnnClassifier<T, L>::performance(std::vector<Data::Data<T, L>*>* p_data_set,
-                                     bool show_detail) {
+double KnnClassifier<T, L>::performance(
+    std::vector<Data::Data<T, L>*>* p_data_set, bool show_detail) {
   int correct_count = 0;
   int data_index = 0;
 
@@ -88,25 +73,25 @@ void KnnClassifier<T, L>::find_knearest(Data::Data<T, L>* p_query_point) {
   int index = 0;
   for (int i = 0; i < k_; i++) {
     if (i == 0) {
-      for (unsigned j = 0; j < training_data_->size(); j++) {
+      for (unsigned j = 0; j < this->training_data_->size(); j++) {
         double distance =
-            calculate_distance(p_query_point, training_data_->at(j));
-        training_data_->at(j)->set_distance(distance);
+            calculate_distance(p_query_point, this->training_data_->at(j));
+        this->training_data_->at(j)->set_distance(distance);
         if (distance < min) {
           min = distance;
           index = j;
         }
       }
     } else {
-      for (unsigned j = 0; j < training_data_->size(); j++) {
-        double distance = training_data_->at(j)->get_distance();
+      for (unsigned j = 0; j < this->training_data_->size(); j++) {
+        double distance = this->training_data_->at(j)->get_distance();
         if (distance > previous_min && distance < min) {
           min = distance;
           index = j;
         }
       }
     }
-    neighbors_->push_back(training_data_->at(index));
+    neighbors_->push_back(this->training_data_->at(index));
     previous_min = min;
     min = std::numeric_limits<double>::max();
   }
@@ -114,7 +99,7 @@ void KnnClassifier<T, L>::find_knearest(Data::Data<T, L>* p_query_point) {
 
 template <typename T, typename L>
 double KnnClassifier<T, L>::calculate_distance(Data::Data<T, L>* p_query_point,
-                                            Data::Data<T, L>* p_input) {
+                                               Data::Data<T, L>* p_input) {
   if (p_query_point->get_feature_vector_size() !=
       p_input->get_feature_vector_size()) {
     LOG(WARNING) << "Vector Size Mismatch!";

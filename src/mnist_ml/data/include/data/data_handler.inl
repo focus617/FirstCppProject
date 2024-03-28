@@ -2,7 +2,7 @@
 namespace xuzy::ML::Data {
 
 template <typename T, typename L>
-DataHandler<T, L>::DataHandler() : num_classes_(0), feature_vector_size_(0) {
+DataHandler<T, L>::DataHandler() : class_counts_(0), feature_vector_size_(0) {
   data_array_ = new std::vector<Data<T, L>*>;
   training_data_ = new std::vector<Data<T, L>*>;
   validation_data_ = new std::vector<Data<T, L>*>;
@@ -15,7 +15,7 @@ DataHandler<T, L>::~DataHandler() {
 }
 
 template <typename T, typename L>
-void DataHandler<T, L>::read_feature_vector(std::string path) {
+void DataHandler<T, L>::read_input_data(std::string path) {
   uint32_t header[4];  // [MAGIC | NUM_IMAGS | ROWSIZE | COLSIZE]
   unsigned char bytes[4];
 
@@ -52,7 +52,7 @@ void DataHandler<T, L>::read_feature_vector(std::string path) {
 }
 
 template <typename T, typename L>
-void DataHandler<T, L>::read_feature_labels(std::string path) {
+void DataHandler<T, L>::read_labels_data(std::string path) {
   uint32_t header[2];  // [MAGIC | NUM_LABELS]
   unsigned char bytes[4];
 
@@ -89,9 +89,9 @@ void DataHandler<T, L>::read_feature_labels(std::string path) {
 }
 
 template <typename T, typename L>
-void DataHandler<T, L>::read_feature_csv(std::string path,
-                                         std::string delimiter) {
-  num_classes_ = 0;
+void DataHandler<T, L>::read_dataset_in_csv(std::string path,
+                                            std::string delimiter) {
+  class_counts_ = 0;
   std::ifstream data_file(path.c_str());
   std::string line;  // holds each line
 
@@ -99,10 +99,11 @@ void DataHandler<T, L>::read_feature_csv(std::string path,
     if (line.length() == 0) continue;
 
     Data<T, L>* dt = new Data<T, L>();
-    dt->set_feature_vector(new std::vector<T>());
+    dt->set_normalized_feature_vector(new std::vector<T>());
 
     size_t position = 0;
-    std::string token;  // value in between delimiter
+    std::string token;  // value between delimiter
+
     // Extract Feature
     while ((position = line.find(delimiter)) != std::string::npos) {
       token = line.substr(0, position);
@@ -110,16 +111,23 @@ void DataHandler<T, L>::read_feature_csv(std::string path,
       line.erase(0, position + delimiter.length());
     }
     // Extract Label
-    if (class_map_.find(line) != class_map_.end()) {
-      dt->set_label(class_map_[line]);
-    } else {
-      class_map_[line] = num_classes_;
-      dt->set_label(class_map_[line]);
-      ++num_classes_;
+    if (class_map_.find(line) == class_map_.end()) {
+      // if new label
+      class_map_[line] = class_counts_;
+      ++class_counts_;
     }
+    dt->set_label(line);
+    dt->set_enumerated_label(class_map_[line]);
     data_array_->push_back(dt);
   }
-  feature_vector_size_ = data_array_->at(0)->get_feature_vector()->size();
+
+  for (Data<T, L>* data : *data_array_) {
+    data->set_class_vector(class_counts_);
+  }
+
+  normalize();
+  feature_vector_size_ =
+      data_array_->at(0)->get_normalized_feature_vector()->size();
 }
 
 template <typename T, typename L>
@@ -182,10 +190,47 @@ void DataHandler<T, L>::count_classes() {
     }
   }
 
-  num_classes_ = count;
-  for (Data<T, L>* data : *data_array_) data->set_class_vector(num_classes_);
+  class_counts_ = count;
+  for (Data<T, L>* data : *data_array_) data->set_class_vector(class_counts_);
 
-  LOG(INFO) << "Successfully extracted " << num_classes_ << " unique classes.";
+  LOG(INFO) << "Successfully extracted " << class_counts_ << " unique classes.";
+}
+
+template <typename T, typename L>
+void DataHandler<T, L>::normalize() {
+  std::vector<T> mins, maxs;
+  Data<T, L>* dt = data_array_->at(0);
+
+  // fill min and max lists with first feature vector
+  for (auto val : *dt->get_feature_vector()) {
+    mins.push_back(val);
+    maxs.push_back(val);
+  }
+  // find min and max value from rest fv
+  for (size_t i = 1; i < data_array_->size(); i++) {
+    dt = data_array_->at(i);
+    for (int j = 0; j < dt->get_feature_vector_size(); j++) {
+      double value = (double)dt->get_feature_vector()->at(j);
+      if (value < mins.at(j)) mins[j] = value;
+      if (value > maxs.at(j)) maxs[j] = value;
+    }
+  }
+
+  // normalize data array
+  for (size_t i = 0; i < data_array_->size(); i++) {
+    data_array_->at(i)->set_normalized_feature_vector(new std::vector<T>());
+    data_array_->at(i)->set_class_vector(class_counts_);
+
+    for (int j = 0; j < dt->get_feature_vector_size(); j++) {
+      if (maxs[j] - mins[j] < 0.0000001)
+        data_array_->at(i)->append_to_normalized_feature_vector(0.0);
+      else
+        data_array_->at(i)->append_to_normalized_feature_vector(
+            (double)(data_array_->at(i)->get_feature_vector()->at(j) -
+                     mins[j]) /
+            (maxs[j] - mins[j]));
+    }
+  }
 }
 
 template <typename T, typename L>
@@ -201,6 +246,31 @@ std::vector<Data<T, L>*>* DataHandler<T, L>::get_test_data() {
 template <typename T, typename L>
 std::vector<Data<T, L>*>* DataHandler<T, L>::get_validation_data() {
   return validation_data_;
+}
+
+template <typename T, typename L>
+int DataHandler<T, L>::get_class_counts() {
+  return class_counts_;
+}
+
+template <typename T, typename L>
+int DataHandler<T, L>::get_data_array_size() {
+  return data_array_->size();
+}
+
+template <typename T, typename L>
+int DataHandler<T, L>::get_training_data_size() {
+  return training_data_->size();
+}
+
+template <typename T, typename L>
+int DataHandler<T, L>::get_test_data_size() {
+  return test_data_->size();
+}
+
+template <typename T, typename L>
+int DataHandler<T, L>::get_validation_size() {
+  return validation_data_->size();
 }
 
 template <typename T, typename L>

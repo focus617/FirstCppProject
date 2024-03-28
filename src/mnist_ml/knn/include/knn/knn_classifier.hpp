@@ -1,8 +1,6 @@
 #pragma once
 
-#include <vector>
-
-#include "data/data.hpp"
+#include "data/common.hpp"
 
 namespace xuzy::ML::CLASSIFIER {
 
@@ -12,15 +10,15 @@ namespace xuzy::ML::CLASSIFIER {
  * typename L: type of label
  */
 template <typename T, typename L>
-class KnnClassifier {
+class KnnClassifier : public Data::CommonData<T, L> {
  public:
   KnnClassifier(int k);
   KnnClassifier();
   ~KnnClassifier();
 
-  void set_training_data(std::vector<Data::Data<T, L>*>* p_vector);
-  void set_test_data(std::vector<Data::Data<T, L>*>* p_vector);
-  void set_validation_data(std::vector<Data::Data<T, L>*>* p_vector);
+  // void set_training_data(std::vector<Data::Data<T, L>*>* p_vector);
+  // void set_test_data(std::vector<Data::Data<T, L>*>* p_vector);
+  // void set_validation_data(std::vector<Data::Data<T, L>*>* p_vector);
   void set_k(int p_value);
 
   double validate_performance();
@@ -39,11 +37,7 @@ class KnnClassifier {
 
  private:
   int k_;
-  std::vector<Data::Data<T, L>*>* training_data_;
-  std::vector<Data::Data<T, L>*>* test_data_;
-  std::vector<Data::Data<T, L>*>* validation_data_;
-
-  std::vector<Data::Data<T, L>*>* neighbors_ = nullptr;
+  std::vector<Data::Data<T, L>*>* neighbors_;
 };
 
 }  // namespace xuzy::ML::CLASSIFIER

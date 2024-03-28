@@ -8,6 +8,7 @@ aux_source_directory(. _SOURCES)
 # 添加子目录
 add_subdirectory(data)
 add_subdirectory(knn)
+add_subdirectory(neural_network)
 
 # 生成可执行程序
 add_executable(MnistMl ${_SOURCES})
@@ -17,7 +18,7 @@ set_target_properties(MnistMl PROPERTIES DEBUG_POSTFIX ${CMAKE_DEBUG_POSTFIX})
 
 target_compile_features(MnistMl PUBLIC cxx_std_20)
 set_target_properties(MnistMl PROPERTIES CXX_EXTENSIONS OFF)
-target_compile_definitions(MnistMl PRIVATE XUZY_DLL EUCLIDEAN)
+target_compile_definitions(MnistMl PRIVATE XUZY_DLL EUCLIDEAN NEURAL_NETWORK)
 target_compile_definitions(MnistMl PRIVATE NDEBUG _DEBUG)
 
 # 添加编译选项
@@ -44,6 +45,7 @@ target_include_directories(MnistMl
     PUBLIC
       $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/data/include>
       $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/knn/include>
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/neural_network/include>
       $<INSTALL_INTERFACE:include/xuzy>
 )
 

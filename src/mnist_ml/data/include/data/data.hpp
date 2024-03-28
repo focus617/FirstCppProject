@@ -37,6 +37,14 @@ class Data {
     feature_vector_->push_back(p_value);
   };
 
+  void set_normalized_feature_vector(std::vector<T>* p_vector) {
+    normalized_feature_vector_ = p_vector;
+  }
+
+  void append_to_normalized_feature_vector(T p_value) {
+    normalized_feature_vector_->push_back(p_value);
+  };
+
   void set_class_vector(int p_count) {
     class_vector_ = new std::vector<int>();
 
@@ -58,6 +66,10 @@ class Data {
 
   std::vector<T>* get_feature_vector() { return feature_vector_; }
 
+  std::vector<T>* get_normalized_feature_vector() {
+    return normalized_feature_vector_;
+  }
+
   std::vector<int>* get_class_vector() { return class_vector_; }
 
   L get_label() { return label_; }
@@ -66,13 +78,20 @@ class Data {
 
   double get_distance() { return distance_; }
 
- private:
-  std::vector<T>* feature_vector_;  // data without label
-  std::vector<int>* class_vector_;
-  L label_;   // label for this data
-  int enum_label_;  // e.g. A->1, B->2
+  void print_feature_vector() { LOG(INFO) << "[ " << feature_vector_ << " ]"; }
 
-  double distance_;  // temp calculate result
+  void print_normalized_feature_vector() {
+    LOG(INFO) << "[ " << normalized_feature_vector_ << " ]";
+  }
+
+ private:
+  std::vector<T>* feature_vector_;             // without label
+  std::vector<T>* normalized_feature_vector_;  // without label
+  L label_;                                    // label for this feature vector
+  int enum_label_;                             // e.g. A->1, B->2
+
+  std::vector<int>* class_vector_;  // used for neural network
+  double distance_;                 // temp calculate result
 };
 
 }  // namespace xuzy::ML::Data
