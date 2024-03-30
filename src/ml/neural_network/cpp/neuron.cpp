@@ -8,6 +8,8 @@ Neuron::Neuron(int previous_layer_size, int current_layer_size) {
   initialize_weights(previous_layer_size);
 }
 
+Neuron::~Neuron() { weights_.clear(); }
+
 void Neuron::initialize_weights(int previous_layer_size) {
   std::default_random_engine generator;
   std::normal_distribution<double> distribution(0.0, 1.0);

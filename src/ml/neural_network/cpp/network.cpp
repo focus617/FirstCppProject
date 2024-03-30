@@ -36,6 +36,13 @@ Network::Network(std::vector<int> p_layers_spec, int p_input_size,
       new Layer(layers_.at(layers_.size() - 1)->neurons.size(), p_num_classes));
 }
 
+Network::~Network() {
+  for (Layer* layer : layers_) {
+    delete layer;
+  }
+  layers_.clear();
+}
+
 double Network::activate(std::vector<double> p_weights,
                          std::vector<double> p_inputs) {
   double activation = p_weights.back();  // bias term
@@ -53,7 +60,7 @@ double Network::transfer_derivative(double p_output) {
   return p_output * (1 - p_output);
 }
 
-std::vector<double> Network::fprop(Data::Data<double, std::string>* data) {
+std::vector<double> Network::fprop(ETL::Data<double, std::string>* data) {
   std::vector<double> inputs = *(data->get_normalized_feature_vector());
 
   for (size_t i = 0; i < layers_.size(); i++) {
@@ -70,7 +77,7 @@ std::vector<double> Network::fprop(Data::Data<double, std::string>* data) {
   return inputs;  // outputs of output layer
 }
 
-void Network::bprop(Data::Data<double, std::string>* data) {
+void Network::bprop(ETL::Data<double, std::string>* data) {
   for (size_t i = layers_.size() - 1; i > 0; i--) {
     std::vector<double> errors;
 
@@ -101,7 +108,7 @@ void Network::bprop(Data::Data<double, std::string>* data) {
   }
 }
 
-void Network::update_weigths(Data::Data<double, std::string>* data) {
+void Network::update_weigths(ETL::Data<double, std::string>* data) {
   std::vector<double> inputs = *(data->get_normalized_feature_vector());
 
   for (size_t i = 0; i < layers_.size(); i++) {
@@ -121,7 +128,7 @@ void Network::update_weigths(Data::Data<double, std::string>* data) {
   }
 }
 
-int Network::predict(Data::Data<double, std::string>* data) {
+int Network::predict(ETL::Data<double, std::string>* data) {
   std::vector<double> outputs = fprop(data);
   return std::distance(outputs.begin(),
                        std::max_element(outputs.begin(), outputs.end()));
@@ -131,7 +138,7 @@ void Network::train(int p_num_epochs) {
   for (int i = 0; i < p_num_epochs; i++) {
     double sum_error = 0.0;
 
-    for (Data::Data<double, std::string>* data : *this->training_data_) {
+    for (ETL::Data<double, std::string>* data : *this->training_data_) {
       std::vector<double> outputs = fprop(data);
       std::vector<int> expected = *data->get_class_vector();
 
@@ -152,7 +159,7 @@ double Network::test() {
   double num_correct = 0.0;
   double count = 0.0;
 
-  for (Data::Data<double, std::string>* data : *this->test_data_) {
+  for (ETL::Data<double, std::string>* data : *this->test_data_) {
     ++count;
 
     int index = predict(data);
@@ -166,7 +173,7 @@ void Network::validate() {
   double num_correct = 0.0;
   double count = 0.0;
 
-  for (Data::Data<double, std::string>* data : *this->validation_data_) {
+  for (ETL::Data<double, std::string>* data : *this->validation_data_) {
     ++count;
 
     int index = predict(data);

@@ -88,7 +88,13 @@
         "*.in": "cpp",
         "version": "cpp",
         "source_location": "cpp",
-        "*.h": "c"
+        "*.h": "c",
+        "__hash_table": "cpp",
+        "__split_buffer": "cpp",
+        "__tree": "cpp",
+        "filesystem": "cpp",
+        "ios": "cpp",
+        "__bit_reference": "cpp"
     },
     "editor.wordWrap": "wordWrapColumn",
     "editor.wrappingIndent": "same",

@@ -13,7 +13,7 @@ class Layer {
   std::vector<Neuron*> neurons;
 
   Layer(int previous_layer_size, int current_layer_size);
-  ~Layer() = default;
+  ~Layer();
 
   int get_size() { return size_; }
   void set_size(int p_size) { size_ = p_size; }

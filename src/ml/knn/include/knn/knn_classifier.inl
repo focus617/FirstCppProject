@@ -4,19 +4,19 @@
 #include <limits>
 #include <map>
 
-#include "data/data_handler.hpp"
+#include "etl/data_handler.hpp"
 #include "stdint.h"
 
 namespace xuzy::ML::CLASSIFIER {
 
 template <typename T, typename L>
 KnnClassifier<T, L>::KnnClassifier(int k) : k_{k} {
-  neighbors_ = new std::vector<Data::Data<T, L>*>;
+  neighbors_ = new std::vector<ETL::Data<T, L>*>;
 }
 
 template <typename T, typename L>
 KnnClassifier<T, L>::KnnClassifier() {
-  neighbors_ = new std::vector<Data::Data<T, L>*>;
+  neighbors_ = new std::vector<ETL::Data<T, L>*>;
 }
 
 template <typename T, typename L>
@@ -41,11 +41,11 @@ double KnnClassifier<T, L>::test_performance() {
 
 template <typename T, typename L>
 double KnnClassifier<T, L>::performance(
-    std::vector<Data::Data<T, L>*>* p_data_set, bool show_detail) {
+    std::vector<ETL::Data<T, L>*>* p_data_set, bool show_detail) {
   int correct_count = 0;
   int data_index = 0;
 
-  for (Data::Data<T, L>* query_point : *p_data_set) {
+  for (ETL::Data<T, L>* query_point : *p_data_set) {
     find_knearest(query_point);
     if (predict() == query_point->get_label()) {
       ++correct_count;
@@ -64,7 +64,7 @@ double KnnClassifier<T, L>::performance(
 // if K = 2 : O(~N)
 // else:      O(NlogN)
 template <typename T, typename L>
-void KnnClassifier<T, L>::find_knearest(Data::Data<T, L>* p_query_point) {
+void KnnClassifier<T, L>::find_knearest(ETL::Data<T, L>* p_query_point) {
   double min = std::numeric_limits<double>::max();
   double previous_min = min;
 
@@ -98,10 +98,10 @@ void KnnClassifier<T, L>::find_knearest(Data::Data<T, L>* p_query_point) {
 }
 
 template <typename T, typename L>
-double KnnClassifier<T, L>::calculate_distance(Data::Data<T, L>* p_query_point,
-                                               Data::Data<T, L>* p_input) {
-  if (p_query_point->get_feature_vector_size() !=
-      p_input->get_feature_vector_size()) {
+double KnnClassifier<T, L>::calculate_distance(ETL::Data<T, L>* p_query_point,
+                                               ETL::Data<T, L>* p_input) {
+  if (p_query_point->get_feature_vector_dimension() !=
+      p_input->get_feature_vector_dimension()) {
     LOG(WARNING) << "Vector Size Mismatch!";
     exit(1);
   }
@@ -109,7 +109,7 @@ double KnnClassifier<T, L>::calculate_distance(Data::Data<T, L>* p_query_point,
   double distance = 0.0;
 
 #if defined(EUCLIDEAN)
-  for (int i = 0; i < p_query_point->get_feature_vector_size(); i++) {
+  for (int i = 0; i < p_query_point->get_feature_vector_dimension(); i++) {
     distance += pow(p_query_point->get_feature_vector()->at(i) -
                         p_input->get_feature_vector()->at(i),
                     2);

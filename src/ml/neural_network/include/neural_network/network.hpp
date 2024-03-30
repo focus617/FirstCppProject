@@ -1,13 +1,12 @@
 #pragma once
 
-#include "data/common.hpp"
-#include "data/data.hpp"
+#include "etl/dataset.hpp"
 #include "neural_network/layer.hpp"
 #include "neural_network/neuron.hpp"
 
 namespace xuzy::ML::CLASSIFIER {
 
-class Network : public Data::CommonData<double, std::string> {
+class Network : public ETL::DataSet<double, std::string> {
  public:
   /**
    * @brief Constructor
@@ -22,7 +21,7 @@ class Network : public Data::CommonData<double, std::string> {
   /**
    * @brief Destructor
    */
-  ~Network() = default;
+  ~Network();
 
   /**
    * @brief
@@ -48,15 +47,15 @@ class Network : public Data::CommonData<double, std::string> {
    * @param data Input data set
    * @returns last layer output
    */
-  std::vector<double> fprop(Data::Data<double, std::string>* data);
-  void bprop(Data::Data<double, std::string>* data);
-  void update_weigths(Data::Data<double, std::string>* data);
+  std::vector<double> fprop(ETL::Data<double, std::string>* data);
+  void bprop(ETL::Data<double, std::string>* data);
+  void update_weigths(ETL::Data<double, std::string>* data);
 
   /**
    * @brief Returns the index of the maximun value in the output array
    * @param
    */
-  int predict(Data::Data<double, std::string>* data);
+  int predict(ETL::Data<double, std::string>* data);
 
   /**
    * @brief

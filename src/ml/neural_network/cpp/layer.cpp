@@ -9,4 +9,8 @@ Layer::Layer(int previous_layer_size, int current_layer_size) {
   this->size_ = current_layer_size;
 }
 
+Layer::~Layer(){
+  neurons.clear();
+}
+
 }  // namespace xuzy::ML::CLASSIFIER

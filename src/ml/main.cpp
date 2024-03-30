@@ -1,6 +1,7 @@
 #include <glog/logging.h>
 
-#include "data/data_handler.hpp"
+#include "etl/data_handler.hpp"
+#include "etl/dataset.hpp"
 #include "knn/knn_classifier.hpp"
 #include "neural_network/network.hpp"
 
@@ -21,24 +22,29 @@ int main(int argc, char* argv[]) {
   init_logger(argv[0]);
 
 #ifdef MNIST
-  auto dh = new xuzy::ML::Data::DataHandler<uint8_t, uint8_t>();
+  auto dh = new xuzy::ML::ETL::DataHandler<uint8_t, uint8_t>();
+  auto dataset = new xuzy::ML::ETL::DataSet<uint8_t, uint8_t>();
+
   dh->read_input_data("../data/train-images-idx3-ubyte");
   dh->read_labels_data("../data/train-labels-idx1-ubyte");
-  dh->count_classes();
+  dh->init_classes_vector();
 #else
-  auto dh = new xuzy::ML::Data::DataHandler<double, std::string>();
+  auto dh = new xuzy::ML::ETL::DataHandler<double, std::string>();
+  auto dataset = new xuzy::ML::ETL::DataSet<double, std::string>();
+
   dh->read_dataset_in_csv("../data/iris.data", ",");
 #endif
 
-  dh->split_data();
+  dh->split_data(dataset);
+  delete dh;
 
 #if KNN
 
   auto knn_classifier =
       new xuzy::ML::CLASSIFIER::KnnClassifier<uint8_t, uint8_t>();
-  knn_classifier->set_training_data(dh->get_training_data());
-  knn_classifier->set_test_data(dh->get_test_data());
-  knn_classifier->set_validation_data(dh->get_validation_data());
+  knn_classifier->set_training_data(dataset->get_training_data());
+  knn_classifier->set_test_data(dataset->get_test_data());
+  knn_classifier->set_validation_data(dataset->get_validation_data());
 
   double best_performance = 0;
   int best_k = 1;
@@ -64,26 +70,28 @@ int main(int argc, char* argv[]) {
   LOG(INFO) << "Test Performance(for best K = " << best_k
             << ") = " << performance << " %";
 
+  delete knn_classifier;
+
 #endif
 
 #if NEURAL_NETWORK
-  int input_size =
-      dh->get_training_data()->at(0)->get_normalized_feature_vector()->size();
+  int input_size = dataset->get_training_data()
+                       ->at(0)
+                       ->get_normalized_feature_vector()
+                       ->size();
   int num_classes = dh->get_class_counts();
 
   LOG(INFO) << "Create NEURAL_NETWORK with InputSize = " << input_size
             << ", NumClasses = " << num_classes;
-  
+
   std::vector<int> hidden_layers = {10};
 
   auto lambda = [&]() {
-    auto net = new xuzy::ML::CLASSIFIER::Network(
-        hidden_layers,
-        dh->get_training_data()->at(0)->get_normalized_feature_vector()->size(),
-        dh->get_class_counts(), 0.25);
-    net->set_training_data(dh->get_training_data());
-    net->set_test_data(dh->get_test_data());
-    net->set_validation_data(dh->get_validation_data());
+    auto net = new xuzy::ML::CLASSIFIER::Network(hidden_layers, input_size,
+                                                 num_classes, 0.25);
+    net->set_training_data(dataset->get_training_data());
+    net->set_test_data(dataset->get_test_data());
+    net->set_validation_data(dataset->get_validation_data());
     net->train(15);
     net->validate();
 
@@ -95,6 +103,7 @@ int main(int argc, char* argv[]) {
   lambda();
 
 #endif
+  delete dataset;
 
   close_logger();
 

@@ -17,7 +17,7 @@ class Neuron {
   /**
    * @brief Destructor
    */
-  ~Neuron() = default;
+  ~Neuron();
 
   std::vector<double> get_weights() { return weights_; }
 

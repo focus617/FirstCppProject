@@ -6,10 +6,11 @@
 #include <unordered_set>
 #include <vector>
 
-#include "data/data.hpp"
+#include "etl/data.hpp"
+#include "etl/dataset.hpp"
 #include "stdint.h"
 
-namespace xuzy::ML::Data {
+namespace xuzy::ML::ETL {
 
 /**
  * @brief implement all of data ETL (Extract, Transform, Load) operation logic,
@@ -29,23 +30,20 @@ class DataHandler {
   void read_labels_data(std::string path);
   void read_dataset_in_csv(std::string path, std::string delimiter);
 
-  void split_data();
-  void count_classes();
-  void normalize();
+  void split_data(DataSet<T, L>* dataset);
 
-  std::vector<Data<T, L>*>* get_training_data();
-  std::vector<Data<T, L>*>* get_test_data();
-  std::vector<Data<T, L>*>* get_validation_data();
+  void normalize();
+  void init_classes_vector();
+
   std::map<L, int> get_class_map();
 
   int get_class_counts();
-  int get_data_array_size();
-  int get_training_data_size();
-  int get_test_data_size();
-  int get_validation_size();
+  int get_dataset_size();
 
  private:
   uint32_t convert_to_little_endian(const unsigned char* bytes);
+  void move_data(std::vector<Data<T, L>*>* candidate,
+                 std::vector<Data<T, L>*>* output_dataset, int size);
 
  public:
   const double TRAIN_SET_PERCENT = 0.75;
@@ -55,17 +53,12 @@ class DataHandler {
  private:
   // all of the data(pre-split)
   std::vector<Data<T, L>*>* data_array_;
-
-  // data set after splitting
-  std::vector<Data<T, L>*>* training_data_;
-  std::vector<Data<T, L>*>* test_data_;
-  std::vector<Data<T, L>*>* validation_data_;
+  // map of label to enum label
   std::map<L, int> class_map_;
-
+  // total number of classification
   int class_counts_;
-  int feature_vector_size_;
 };
 
-}  // namespace xuzy::ML::Data
+}  // namespace xuzy::ML::ETL
 
-#include "data/data_handler.inl"
+#include "etl/data_handler.inl"

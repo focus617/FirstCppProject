@@ -6,7 +6,7 @@ add_subdirectory(core)
 
 option(BUILD_RESTFUL "Build Restful App" ON)
 option(BUILD_WINDOWS "Build Windows App" ON)
-option(BUILD_MnistML "Build Mnist ML" ON)
+option(BUILD_ML "Build ML" ON)
 
 if (BUILD_RESTFUL)
     message(STATUS "Building Restful App...")
@@ -21,9 +21,9 @@ if (BUILD_WINDOWS)
     add_subdirectory(main_windows)
 endif()
 
-if (BUILD_MnistML)
-    message(STATUS "Building Mnist ML...")
-    add_subdirectory(mnist_ml)
+if (BUILD_ML)
+    message(STATUS "Building ML...")
+    add_subdirectory(ml)
 endif()
 
 

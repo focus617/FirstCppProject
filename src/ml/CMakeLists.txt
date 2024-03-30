@@ -6,20 +6,20 @@ find_package (glog REQUIRED)
 aux_source_directory(. _SOURCES)
 
 # 添加子目录
-add_subdirectory(data)
+add_subdirectory(etl)
 add_subdirectory(knn)
 add_subdirectory(neural_network)
 
 # 生成可执行程序
-add_executable(MnistMl ${_SOURCES})
+add_executable(Ml ${_SOURCES})
 
 # 给Debug版本的应用添加后缀
-set_target_properties(MnistMl PROPERTIES DEBUG_POSTFIX ${CMAKE_DEBUG_POSTFIX})
+set_target_properties(Ml PROPERTIES DEBUG_POSTFIX ${CMAKE_DEBUG_POSTFIX})
 
-target_compile_features(MnistMl PUBLIC cxx_std_20)
-set_target_properties(MnistMl PROPERTIES CXX_EXTENSIONS OFF)
-target_compile_definitions(MnistMl PRIVATE XUZY_DLL EUCLIDEAN NEURAL_NETWORK)
-target_compile_definitions(MnistMl PRIVATE NDEBUG _DEBUG)
+target_compile_features(Ml PUBLIC cxx_std_20)
+set_target_properties(Ml PROPERTIES CXX_EXTENSIONS OFF)
+target_compile_definitions(Ml PRIVATE XUZY_DLL EUCLIDEAN NEURAL_NETWORK)
+target_compile_definitions(Ml PRIVATE NDEBUG _DEBUG)
 
 # 添加编译选项
 if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
@@ -35,24 +35,24 @@ elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
   set(MY_RELEASE_OPTIONS /w3 /O2)
 endif()
 
-target_compile_options(MnistMl PRIVATE "$<$<CONFIG:DEBUG>:${MY_DEBUG_OPTIONS}>")
-target_compile_options(MnistMl PRIVATE 
+target_compile_options(Ml PRIVATE "$<$<CONFIG:DEBUG>:${MY_DEBUG_OPTIONS}>")
+target_compile_options(Ml PRIVATE 
                                    "$<$<CONFIG:RELEASE>:{MY_RELEASE_OPTIONS>")
 
 
 # 指定头文件路径
-target_include_directories(MnistMl
+target_include_directories(Ml
     PUBLIC
-      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/data/include>
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/etl/include>
       $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/knn/include>
       $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/neural_network/include>
       $<INSTALL_INTERFACE:include/xuzy>
 )
 
 # 添加链接库
-target_link_libraries(MnistMl PUBLIC
+target_link_libraries(Ml PUBLIC
     glog::glog
     ${EXTRA_LIBS}
 )
 
-install (TARGETS MnistMl DESTINATION bin)
+install (TARGETS Ml DESTINATION bin)
