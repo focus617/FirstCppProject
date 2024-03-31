@@ -3,6 +3,7 @@
 #include <glog/logging.h>
 
 #include <vector>
+#include <iomanip>
 
 #include "stdint.h"
 #include "stdio.h"
@@ -31,7 +32,7 @@ class Data {
   double distance_;                 // used for KNN
 
  public:
-  Data(){
+  Data() {
     feature_vector_ = new std::vector<T>;
     normalized_feature_vector_ = new std::vector<T>;
     class_vector_ = new std::vector<int>;
@@ -103,10 +104,17 @@ class Data {
 
   double get_distance() { return distance_; }
 
-  void print_feature_vector() { LOG(INFO) << "[ " << feature_vector_ << " ]"; }
+  void dump_data(unsigned precision) {
+    LOG(INFO) << std::setprecision(precision)
+              << "[" << feature_vector_->at(0) << ", "
+              << feature_vector_->at(1) << ", ... , "
+              << feature_vector_->back() << "]"
+              << "\tLabel: " << label_
+              << "\tEnum_Label: " << enum_label_;
+  }
 
   void print_normalized_feature_vector() {
-    LOG(INFO) << "[ " << normalized_feature_vector_ << " ]";
+    LOG(INFO) << "[ " << *normalized_feature_vector_ << " ]";
   }
 };
 

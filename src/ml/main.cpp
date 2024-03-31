@@ -4,6 +4,7 @@
 #include "etl/dataset.hpp"
 #include "knn/knn_classifier.hpp"
 #include "neural_network/network.hpp"
+#include "perceptron/perceptron.hpp"
 
 void init_logger(const char* argv0) {
   // Initialize Google’s logging library.
@@ -25,18 +26,51 @@ int main(int argc, char* argv[]) {
   auto dh = new xuzy::ML::ETL::DataHandler<uint8_t, uint8_t>();
   auto dataset = new xuzy::ML::ETL::DataSet<uint8_t, uint8_t>();
 
-  dh->read_input_data("../data/train-images-idx3-ubyte");
-  dh->read_labels_data("../data/train-labels-idx1-ubyte");
+  dh->read_input_data(
+      "../dataset/Mnist_handwritting_digital/train-images-idx3-ubyte");
+  dh->read_labels_data(
+      "../dataset/Mnist_handwritting_digital/train-labels-idx1-ubyte");
   dh->init_classes_vector();
 #else
   auto dh = new xuzy::ML::ETL::DataHandler<double, std::string>();
   auto dataset = new xuzy::ML::ETL::DataSet<double, std::string>();
 
-  dh->read_dataset_in_csv("../data/iris.data", ",");
+  dh->read_dataset_from_csv("../dataset/iris/iris.data", ",");
 #endif
+
+  // #ifdef _DEBUG
+  //   dh->dump_datasets(3);
+  // #endif
 
   dh->split_data(dataset);
   delete dh;
+
+#define PERCEPTRON = 1
+
+#ifdef PERCEPTRON
+  auto perceptron = new xuzy::ML::CLASSIFIER::Perceptron(4);
+  perceptron->set_dataset(dataset);
+
+  perceptron->train();
+
+  int correct = 0;
+  int count = 0;
+
+  auto test_dataset = dataset->get_test_data();
+  for (auto data : *test_dataset) {
+    if ((data->get_enumerated_label() != 0) &&
+        (data->get_enumerated_label() != 1)) {
+      continue;
+    }
+
+    ++count;
+    if (data->get_enumerated_label() == perceptron->classify(data)) ++correct;
+  }
+  LOG(INFO) << "Total Data Size : " << count;
+  LOG(INFO) << "Performance : " << 100 * correct / count << " %";
+
+  delete perceptron;
+#endif
 
 #if KNN
 
@@ -71,6 +105,7 @@ int main(int argc, char* argv[]) {
             << ") = " << performance << " %";
 
   delete knn_classifier;
+  delete dataset;
 
 #endif
 
@@ -102,10 +137,10 @@ int main(int argc, char* argv[]) {
 
   lambda();
 
-#endif
   delete dataset;
 
-  close_logger();
+#endif
 
+  close_logger();
   return EXIT_SUCCESS;
 }

@@ -94,7 +94,9 @@
         "__tree": "cpp",
         "filesystem": "cpp",
         "ios": "cpp",
-        "__bit_reference": "cpp"
+        "__bit_reference": "cpp",
+        "__nullptr": "cpp",
+        "__locale": "cpp"
     },
     "editor.wordWrap": "wordWrapColumn",
     "editor.wrappingIndent": "same",

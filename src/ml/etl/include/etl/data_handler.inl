@@ -100,13 +100,14 @@ void DataHandler<T, L>::read_labels_data(std::string path) {
 }
 
 template <typename T, typename L>
-void DataHandler<T, L>::read_dataset_in_csv(std::string path,
-                                            std::string delimiter) {
+void DataHandler<T, L>::read_dataset_from_csv(std::string path,
+                                              std::string delimiter) {
   class_counts_ = 0;
-  std::ifstream data_file(path.c_str());
+  std::ifstream dataset_file(path.c_str());
   std::string line;  // holds each line
 
-  while (std::getline(data_file, line)) {
+  // Each line is a sample data with feature vector and label
+  while (std::getline(dataset_file, line)) {
     if (line.length() == 0) continue;
 
     size_t position = 0;
@@ -120,13 +121,17 @@ void DataHandler<T, L>::read_dataset_in_csv(std::string path,
       line.erase(0, position + delimiter.length());
     }
     // Extract Label
+    data->set_label(line);
+
+    // Setup enumerated_label
     if (class_map_.find(line) == class_map_.end()) {
       // if new label
       class_map_[line] = class_counts_;
       ++class_counts_;
     }
-    data->set_label(line);
     data->set_enumerated_label(class_map_[line]);
+
+    // Append new data to dataset
     data_array_->push_back(data);
   }
 
@@ -209,6 +214,11 @@ void DataHandler<T, L>::normalize() {
             (maxs[j] - mins[j]));
     }
   }
+}
+
+template <typename T, typename L>
+void DataHandler<T, L>::dump_datasets(unsigned precision) {
+  for (Data<T, L>* data : *data_array_) data->dump_data(precision);
 }
 
 template <typename T, typename L>

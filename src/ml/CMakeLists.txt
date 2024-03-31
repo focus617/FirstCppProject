@@ -7,6 +7,7 @@ aux_source_directory(. _SOURCES)
 
 # 添加子目录
 add_subdirectory(etl)
+add_subdirectory(perceptron)
 add_subdirectory(knn)
 add_subdirectory(neural_network)
 
@@ -18,7 +19,7 @@ set_target_properties(Ml PROPERTIES DEBUG_POSTFIX ${CMAKE_DEBUG_POSTFIX})
 
 target_compile_features(Ml PUBLIC cxx_std_20)
 set_target_properties(Ml PROPERTIES CXX_EXTENSIONS OFF)
-target_compile_definitions(Ml PRIVATE XUZY_DLL EUCLIDEAN NEURAL_NETWORK)
+target_compile_definitions(Ml PRIVATE XUZY_DLL EUCLIDEAN)
 target_compile_definitions(Ml PRIVATE NDEBUG _DEBUG)
 
 # 添加编译选项
@@ -44,6 +45,7 @@ target_compile_options(Ml PRIVATE
 target_include_directories(Ml
     PUBLIC
       $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/etl/include>
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/perceptron/include>
       $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/knn/include>
       $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/neural_network/include>
       $<INSTALL_INTERFACE:include/xuzy>

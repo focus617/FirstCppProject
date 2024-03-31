@@ -28,7 +28,7 @@ class DataHandler {
 
   void read_input_data(std::string path);
   void read_labels_data(std::string path);
-  void read_dataset_in_csv(std::string path, std::string delimiter);
+  void read_dataset_from_csv(std::string path, std::string delimiter);
 
   void split_data(DataSet<T, L>* dataset);
 
@@ -39,6 +39,8 @@ class DataHandler {
 
   int get_class_counts();
   int get_dataset_size();
+
+  void dump_datasets(unsigned precision);
 
  private:
   uint32_t convert_to_little_endian(const unsigned char* bytes);
