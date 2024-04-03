@@ -2,6 +2,7 @@
 
 #include <glog/logging.h>
 
+#include <algorithm>
 #include <numeric>
 
 namespace xuzy::ML::CLASSIFIER {

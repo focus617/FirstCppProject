@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 3.16.0)
 
-project(my_first_proj VERSION 0.1.0 LANGUAGES CXX)
+project(my_first_proj VERSION 0.1.0 LANGUAGES CXX CUDA)
 
 # set compile feature
-set(CMAKE_CXX_STANDARD 20)                  # Default C++ standard for targets
+set(CMAKE_CXX_STANDARD 17)                  # Default C++ standard for targets
 set(CMAKE_CXX_STANDARD_REQUIRED True)       # Make C++20 a hard requirement
-set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS} -Wall -Werror -std=c++20 -Wno-unused-parameter")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -Wall -Werror -std=c++20")
+set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS} -Wall -Werror -std=c++17 -Wno-unused-parameter")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -Wall -Werror -std=c++17")
 set(EXTRA_COMPILE_OPTIONS "-Wextra -Wshadow -pedantic")
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
@@ -46,6 +46,9 @@ if (STATIC_ANALYSIZE_CODE)
     message(STATUS "Cpp-Check Code...")
     include(cmake/cppcheck.cmake)
 endif()
+
+# Set 3rd-party-library directory
+set(CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/install")
 
 # build my module
 add_subdirectory(src)

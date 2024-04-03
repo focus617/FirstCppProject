@@ -1,6 +1,22 @@
-set(CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/install")
 # Import extern Libraries
 find_package (glog REQUIRED)
+
+set(PYTHON_EXECUTABLE "/usr/bin/python3")
+set(Torch_DIR /usr/local/libtorch/share/cmake/Torch)
+
+find_package (Torch REQUIRED PATHS "/usr/local/libtorch")
+if(NOT Torch_FOUND)
+    message(FATAL_ERROR "Pytorch Not Found!")
+endif(NOT Torch_FOUND)
+
+message(STATUS "Find LibTorch VERSION: ${Torch_VERSION}")
+message(STATUS "LibTorch status :")
+message(STATUS "    libraries: ${TORCH_LIBRARIES}")
+message(STATUS "    Torch Flags: ${TORCH_CXX_FLAGS}")
+
+set(CMAKE_CUDA_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS} -pthread")
 
 # 查找当前目录下的所有源文件，并将名称保存到 _SOURCES 变量
 aux_source_directory(. _SOURCES)
@@ -17,7 +33,7 @@ add_executable(Ml ${_SOURCES})
 # 给Debug版本的应用添加后缀
 set_target_properties(Ml PROPERTIES DEBUG_POSTFIX ${CMAKE_DEBUG_POSTFIX})
 
-target_compile_features(Ml PUBLIC cxx_std_20)
+set_target_properties(Ml PROPERTIES CXX_STANDARD 17)
 set_target_properties(Ml PROPERTIES CXX_EXTENSIONS OFF)
 target_compile_definitions(Ml PRIVATE XUZY_DLL EUCLIDEAN)
 target_compile_definitions(Ml PRIVATE NDEBUG _DEBUG)
@@ -37,23 +53,30 @@ elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
 endif()
 
 target_compile_options(Ml PRIVATE "$<$<CONFIG:DEBUG>:${MY_DEBUG_OPTIONS}>")
-target_compile_options(Ml PRIVATE 
-                                   "$<$<CONFIG:RELEASE>:{MY_RELEASE_OPTIONS>")
+target_compile_options(Ml PRIVATE "$<$<CONFIG:RELEASE>:{MY_RELEASE_OPTIONS>")
 
 
 # 指定头文件路径
 target_include_directories(Ml
     PUBLIC
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}
       $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/etl/include>
       $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/perceptron/include>
       $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/knn/include>
       $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/neural_network/include>
+      $<BUILD_INTERFACE:${TORCH_INCLUDE_DIRS}
       $<INSTALL_INTERFACE:include/xuzy>
+)
+
+# Precompiled headers
+target_precompile_headers(core 
+  PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/pch.h"
 )
 
 # 添加链接库
 target_link_libraries(Ml PUBLIC
     glog::glog
+    ${TORCH_LIBRARIES}
     ${EXTRA_LIBS}
 )
 

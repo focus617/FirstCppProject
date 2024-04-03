@@ -96,7 +96,8 @@
         "ios": "cpp",
         "__bit_reference": "cpp",
         "__nullptr": "cpp",
-        "__locale": "cpp"
+        "__locale": "cpp",
+        "complex": "cpp"
     },
     "editor.wordWrap": "wordWrapColumn",
     "editor.wrappingIndent": "same",

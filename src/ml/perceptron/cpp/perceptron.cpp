@@ -1,5 +1,6 @@
 #include "perceptron/perceptron.hpp"
 
+#include <algorithm>
 #include <numeric>
 #include <random>
 
@@ -64,7 +65,7 @@ void Perceptron::train() {
     int incorrect = 0;
 
     std::random_device seed;
-    shuffle(training_dataset->begin(), training_dataset->end(), seed);
+    std::shuffle(training_dataset->begin(), training_dataset->end(), seed);
 
     for (ETL::Data<double, std::string>* data : *training_dataset) {
       if ((data->get_enumerated_label() != 0) &&

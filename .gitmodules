@@ -31,3 +31,6 @@
 [submodule "extern/walnut"]
 	path = extern/walnut
 	url = https://github.com/StudioCherno/Walnut.git
+[submodule "extern/kineto"]
+	path = extern/kineto
+	url = https://github.com/pytorch/kineto.git
