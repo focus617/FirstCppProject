@@ -4,8 +4,8 @@
     {
         "name": "MyApp",
         "description": "first C++ Project",
-        "generator": "Unix Base",
-        "binaryDir": "${sourceDir}/build"
+        "generator": "Unix Makefiles",
+        "binaryDir": "${sourceDir}/build/debug"
     }
     ]
 }
